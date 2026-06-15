@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace AppointmentBooking.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class BusinessProfileController(ILogger<BusinessProfileController> logger) : BaseController
+    public class BusinessProfileController(ILogger<BusinessProfileController> logger, IConfiguration configuration) : BaseController
     {
         readonly ILogger<BusinessProfileController> _logger = logger;
+        private readonly IConfiguration _configuration=configuration;
 
         [AllowAnonymous]
         public async Task<ActionResult> Index()
@@ -90,19 +91,35 @@ namespace AppointmentBooking.Web.Controllers
         public async Task<ActionResult> ResetToDefaults()
         {
             var profile = await GetCurrentProfileAsync();
+
+            var businessSettingsSection = _configuration.GetSection("BusinessSettings:DefaultProfile");
+            var colorSection = businessSettingsSection.GetSection("Colors");
+
             // Reset all to defaults
-            profile.BusinessName = Localizer["BusinessProfile_DefaultBusinessName"];
-            profile.BusinessType = Localizer["BusinessProfile_DefaultBusinessType"];
+            profile.BusinessName = businessSettingsSection["BusinessName"] ?? Localizer["BusinessProfile_DefaultBusinessName"];
+            profile.BusinessType = businessSettingsSection["BusinessType"] ?? Localizer["BusinessProfile_DefaultBusinessType"];
             profile.Tagline = null;
             profile.LogoUrl = null;
             profile.FaviconUrl = null;
-            profile.Colors = new BrandingColors();
-            profile.Localization = new LocalizationConfig();
-            profile.WorkingHoursStart = TimeSpan.FromHours(Constants.Defaults.workingHoursStart);
-            profile.WorkingHoursEnd = TimeSpan.FromHours(Constants.Defaults.workingHoursEnd);
-            profile.SlotDurationMinutes = Constants.Defaults.SlotDurationMinutes;
+            profile.Colors = new BrandingColors
+            {
+                Primary = colorSection["Primary"] ?? Constants.DefaultPrimaryColor,
+                Secondary = colorSection["Secondary"] ?? Constants.DefaultSecondaryColor,
+                Accent = colorSection["Accent"] ?? Constants.DefaultAccentColor,
+            };
+            profile.Localization = new LocalizationConfig
+            {
+                Currency = businessSettingsSection["Currency"] ?? Constants.DefaultCurrency,
+                Language = businessSettingsSection["Language"] ?? Constants.DefaultLanguage,
+                Direction = businessSettingsSection["Direction"] ?? Constants.DefaultDirection,
+                TimeZone = businessSettingsSection["TimeZone"] ?? Constants.DefaultTimeZone,
+
+            };
+            profile.WorkingHoursStart = TimeSpan.TryParse(businessSettingsSection["WorkingHoursStart"], out var workingHoursStart) ? workingHoursStart : TimeSpan.FromHours(Constants.Defaults.workingHoursStart);
+            profile.WorkingHoursEnd = TimeSpan.TryParse(businessSettingsSection["WorkingHoursEnd"], out var workingHoursEnd) ? workingHoursEnd : TimeSpan.FromHours(Constants.Defaults.workingHoursEnd);
+            profile.SlotDurationMinutes = int.TryParse(businessSettingsSection["SlotDurationMinutes"], out var slotDuration) ? slotDuration : Constants.Defaults.SlotDurationMinutes;
             profile.Contact = new ContactInfo();
-            profile.CustomLabels = new Dictionary<string, string>
+            profile.CustomLabels = businessSettingsSection.GetSection("CustomLabels").Get<Dictionary<string, string>>() ?? new()
                 {
                     { "service", Localizer["BusinessProfile_DefaultLabel_Service"] },
                     { "serviceItem", Localizer["BusinessProfile_DefaultLabel_ServiceItem"] },

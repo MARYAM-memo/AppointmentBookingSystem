@@ -32,7 +32,7 @@ secrets.json
 *.pem
 .env
 .env.*
-launchSettings.json
+
 
 # ============================================
 # Logs
