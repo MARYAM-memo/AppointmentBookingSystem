@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Validations/" />
+    <Folder Include="Validations/Account/" />
+    <Folder Include="Validations/BusinessProfile/" />
+    <Folder Include="Validations/Service/" />
+    <Folder Include="ViewModels/Appointment/" />
+    <Folder Include="ViewModels/Customer/" />
+    <Folder Include="ViewModels/Dashboard/" />
+    <Folder Include="ViewModels/General/" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AppointmentBooking.Core/AppointmentBooking.Core.csproj" />
+  </ItemGroup>
+</Project>

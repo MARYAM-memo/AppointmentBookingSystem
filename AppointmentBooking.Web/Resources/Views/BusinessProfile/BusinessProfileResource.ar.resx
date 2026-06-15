@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle_Settings" xml:space="preserve">
+  <value>إعدادات النظام</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Customization" xml:space="preserve">
+  <value>إعدادات النظام والتخصيص</value>
+  <comment/>
+</data>
+  <data name="PageSubtitle" xml:space="preserve">
+  <value>تخصيص الهوية البصرية والإعدادات العامة للنظام</value>
+  <comment/>
+</data>
+  <data name="Section_Identity" xml:space="preserve">
+  <value>الهوية البصرية</value>
+  <comment/>
+</data>
+  <data name="Label_BusinessName" xml:space="preserve">
+  <value>اسم النشاط</value>
+  <comment/>
+</data>
+  <data name="Placeholder_BusinessName" xml:space="preserve">
+  <value>اسم النشاط التجاري</value>
+  <comment/>
+</data>
+  <data name="Label_BusinessType" xml:space="preserve">
+  <value>نوع النشاط</value>
+  <comment/>
+</data>
+  <data name="BusinessType_General" xml:space="preserve">
+  <value>عام</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Salon" xml:space="preserve">
+  <value>صالون تجميل</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Clinic" xml:space="preserve">
+  <value>عيادة طبية</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Consultant" xml:space="preserve">
+  <value>استشارات</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Spa" xml:space="preserve">
+  <value>سبا</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Gym" xml:space="preserve">
+  <value>نادي رياضي</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Restaurant" xml:space="preserve">
+  <value>مطعم</value>
+  <comment/>
+</data>
+  <data name="BusinessType_Other" xml:space="preserve">
+  <value>أخرى</value>
+  <comment/>
+</data>
+  <data name="Label_Tagline" xml:space="preserve">
+  <value>الشعار (Tagline)</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Tagline" xml:space="preserve">
+  <value>عبارة قصيرة تصف النشاط</value>
+  <comment/>
+</data>
+  <data name="Label_LogoUrl" xml:space="preserve">
+  <value>رابط الشعار (Logo)</value>
+  <comment/>
+</data>
+  <data name="Placeholder_LogoUrl" xml:space="preserve">
+  <value>https://...</value>
+  <comment/>
+</data>
+  <data name="Label_FaviconUrl" xml:space="preserve">
+  <value>رابط Favicon</value>
+  <comment/>
+</data>
+  <data name="Placeholder_FaviconUrl" xml:space="preserve">
+  <value>https://...</value>
+  <comment/>
+</data>
+  <data name="Section_Colors" xml:space="preserve">
+  <value>الألوان</value>
+  <comment/>
+</data>
+  <data name="Label_PrimaryColor" xml:space="preserve">
+  <value>اللون الأساسي</value>
+  <comment/>
+</data>
+  <data name="Label_SecondaryColor" xml:space="preserve">
+  <value>اللون الثانوي</value>
+  <comment/>
+</data>
+  <data name="Label_AccentColor" xml:space="preserve">
+  <value>لون التمييز</value>
+  <comment/>
+</data>
+  <data name="Label_DarkModeColor" xml:space="preserve">
+  <value>لون الوضع المظلم (اختياري)</value>
+  <comment/>
+</data>
+  <data name="Placeholder_DarkModeColor" xml:space="preserve">
+  <value>تلقائي</value>
+  <comment/>
+</data>
+  <data name="Label_Language" xml:space="preserve">
+  <value>اللغة</value>
+  <comment/>
+</data>
+  <data name="Language_Arabic" xml:space="preserve">
+  <value>العربية</value>
+  <comment/>
+</data>
+  <data name="Language_English" xml:space="preserve">
+  <value>الإنجليزية</value>
+  <comment/>
+</data>
+  <data name="Label_Direction" xml:space="preserve">
+  <value>اتجاه النص</value>
+  <comment/>
+</data>
+  <data name="Direction_RTL" xml:space="preserve">
+  <value>من اليمين لليسار (RTL)</value>
+  <comment/>
+</data>
+  <data name="Direction_LTR" xml:space="preserve">
+  <value>من اليسار لليمين (LTR)</value>
+  <comment/>
+</data>
+  <data name="Label_TimeZone" xml:space="preserve">
+  <value>المنطقة الزمنية</value>
+  <comment/>
+</data>
+  <data name="TimeZone_UTC" xml:space="preserve">
+  <value>UTC</value>
+  <comment/>
+</data>
+  <data name="TimeZone_Cairo" xml:space="preserve">
+  <value>القاهرة (EET)</value>
+  <comment/>
+</data>
+  <data name="TimeZone_Riyadh" xml:space="preserve">
+  <value>الرياض (AST)</value>
+  <comment/>
+</data>
+  <data name="TimeZone_Dubai" xml:space="preserve">
+  <value>دبي (GST)</value>
+  <comment/>
+</data>
+  <data name="TimeZone_Istanbul" xml:space="preserve">
+  <value>إسطنبول (TRT)</value>
+  <comment/>
+</data>
+  <data name="Label_WorkingHoursStart" xml:space="preserve">
+  <value>بداية العمل</value>
+  <comment/>
+</data>
+  <data name="Label_WorkingHoursEnd" xml:space="preserve">
+  <value>نهاية العمل</value>
+  <comment/>
+</data>
+  <data name="Label_SlotDuration" xml:space="preserve">
+  <value>مدة الموعد (دقيقة)</value>
+  <comment/>
+</data>
+  <data name="Label_Phone" xml:space="preserve">
+  <value>الهاتف</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Phone" xml:space="preserve">
+  <value>01xxxxxxxxx</value>
+  <comment/>
+</data>
+  <data name="Label_Email" xml:space="preserve">
+  <value>البريد الإلكتروني</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Email" xml:space="preserve">
+  <value>email@example.com</value>
+  <comment/>
+</data>
+  <data name="Label_Address" xml:space="preserve">
+  <value>العنوان</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Address" xml:space="preserve">
+  <value>العنوان</value>
+  <comment/>
+</data>
+  <data name="Button_AddLabel" xml:space="preserve">
+  <value>إضافة تسمية</value>
+  <comment/>
+</data>
+  <data name="Button_ResetDefaults" xml:space="preserve">
+  <value>إعادة الافتراضي</value>
+  <comment/>
+</data>
+  <data name="Button_Export" xml:space="preserve">
+  <value>تصدير</value>
+  <comment/>
+</data>
+  <data name="LivePreview_Title" xml:space="preserve">
+  <value>معاينة حية</value>
+  <comment/>
+</data>
+  <data name="LivePreview_BusinessName" xml:space="preserve">
+  <value>اسم النشاط</value>
+  <comment/>
+</data>
+  <data name="LivePreview_TaglinePlaceholder" xml:space="preserve">
+  <value>شعار النشاط</value>
+  <comment/>
+</data>
+  <data name="LivePreview_PrimaryButton" xml:space="preserve">
+  <value>زر أساسي</value>
+  <comment/>
+</data>
+  <data name="LivePreview_AccentButton" xml:space="preserve">
+  <value>زر تمييز</value>
+  <comment/>
+</data>
+  <data name="LivePreview_SelectedColors" xml:space="preserve">
+  <value>الألوان المختارة:</value>
+  <comment/>
+</data>
+  <data name="LivePreview_Primary" xml:space="preserve">
+  <value>أساسي</value>
+  <comment/>
+</data>
+  <data name="LivePreview_Secondary" xml:space="preserve">
+  <value>ثانوي</value>
+  <comment/>
+</data>
+  <data name="LivePreview_Accent" xml:space="preserve">
+  <value>تمييز</value>
+  <comment/>
+</data>
+  <data name="Prompt_LabelKey" xml:space="preserve">
+  <value>أدخل مفتاح التسمية (بالإنجليزية):</value>
+  <comment/>
+</data>
+  <data name="Placeholder_LabelValue" xml:space="preserve">
+  <value>القيمة</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Details" xml:space="preserve">
+  <value>تفاصيل النظام</value>
+  <comment/>
+</data>
+  <data name="Label_Primary" xml:space="preserve">
+  <value>الأساسي</value>
+  <comment/>
+</data>
+  <data name="Label_Secondary" xml:space="preserve">
+  <value>الثانوي</value>
+  <comment/>
+</data>
+  <data name="Label_Accent" xml:space="preserve">
+  <value>التمييز</value>
+  <comment/>
+</data>
+  <data name="Label_DarkMode" xml:space="preserve">
+  <value>الوضع المظلم</value>
+  <comment/>
+</data>
+  <data name="Section_Localization" xml:space="preserve">
+  <value>الإعدادات المحلية</value>
+  <comment/>
+</data>
+  <data name="Label_Currency" xml:space="preserve">
+  <value>العملة</value>
+  <comment/>
+</data>
+  <data name="Section_WorkingHours" xml:space="preserve">
+  <value>ساعات العمل</value>
+  <comment/>
+</data>
+  <data name="Label_StartTime" xml:space="preserve">
+  <value>بداية العمل</value>
+  <comment/>
+</data>
+  <data name="Label_EndTime" xml:space="preserve">
+  <value>نهاية العمل</value>
+  <comment/>
+</data>
+  <data name="Label_Minutes" xml:space="preserve">
+  <value>دقيقة</value>
+  <comment/>
+</data>
+  <data name="Section_Contact" xml:space="preserve">
+  <value>معلومات التواصل</value>
+  <comment/>
+</data>
+  <data name="Value_Empty" xml:space="preserve">
+  <value>—</value>
+  <comment/>
+</data>
+  <data name="Section_CustomLabels" xml:space="preserve">
+  <value>التسميات المخصصة</value>
+  <comment/>
+</data>
+  <data name="Button_EditSettings" xml:space="preserve">
+  <value>تعديل الإعدادات</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Preview" xml:space="preserve">
+  <value>معاينة النظام</value>
+  <comment/>
+</data>
+  <data name="Preview_Title" xml:space="preserve">
+  <value>معاينة -</value>
+  <comment/>
+</data>
+  <data name="Button_Appointments" xml:space="preserve">
+  <value>الحجوزات</value>
+  <comment/>
+</data>
+  <data name="Button_BookNow" xml:space="preserve">
+  <value>احجز الآن</value>
+  <comment/>
+</data>
+  <data name="Button_AboutUs" xml:space="preserve">
+  <value>تعرف علينا</value>
+  <comment/>
+</data>
+  <data name="Section_Services" xml:space="preserve">
+  <value>الخدمات</value>
+  <comment/>
+</data>
+  <data name="Service_Item" xml:space="preserve">
+  <value>خدمة</value>
+  <comment/>
+</data>
+  <data name="Service_Description" xml:space="preserve">
+  <value>وصف تجريبي للخدمة المعروضة</value>
+  <comment/>
+</data>
+  <data name="Button_Book" xml:space="preserve">
+  <value>احجز</value>
+  <comment/>
+</data>
+</root>

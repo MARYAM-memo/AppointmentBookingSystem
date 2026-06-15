@@ -1,0 +1,130 @@
+﻿@using AppointmentBooking.Web.Resources.Views.Account
+@model AppointmentBooking.Application.ViewModels.Account.LoginViewModel
+
+@inject IStringLocalizer<AccountResource> Localizer
+@{
+    ViewData["Title"] = Localizer["Title_Login"];
+}
+
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="bi bi-calendar-check-fill"></i>
+            </div>
+            <h1 class="auth-title">@Localizer["Welcome_Back"]</h1>
+            <p class="auth-subtitle">@Localizer["Subtitle_Login"]</p>
+        </div>
+
+        <div class="auth-body">
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+            {
+                <div class="auth-error-summary">
+                    <ul>
+                        @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                        {
+                            <li><i class="bi bi-exclamation-circle-fill"></i> @error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <form asp-action="Login" asp-controller="Account" method="post" id="loginForm" novalidate>
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                <div class="auth-form-group">
+                    <label asp-for="Email" class="auth-form-label">@Localizer["Label_Email"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-envelope auth-input-icon"></i>
+                        <input asp-for="Email"
+                               class="auth-form-control @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_Email"]" autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Email" class="auth-validation-msg"></span>
+                </div>
+
+                <div class="auth-form-group">
+                    <label asp-for="Password" class="auth-form-label">@Localizer["Label_Password"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-lock auth-input-icon"></i>
+                        <input asp-for="Password" type="password"
+                               class="auth-form-control @(ViewData.ModelState["Password"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_Password"]" autocomplete="current-password"
+                               id="passwordInput" />
+                        <button type="button" class="auth-toggle-password"
+                                onclick="togglePassword('passwordInput', this)">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="auth-validation-msg"></span>
+                </div>
+
+                <div class="auth-form-group">
+                    <label class="auth-remember">
+                        <input asp-for="RememberMe" type="checkbox" />
+                        <span>@Localizer["Label_RememberMe"]</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-btn" id="submitBtn">
+                    <span id="btnText">@Localizer["Button_Login"]</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p class="auth-footer-text">
+                @Localizer["Text_NoAccount"]
+                <a asp-action="Register" asp-controller="Account"
+                   class="auth-footer-link">@Localizer["Link_Register"]</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+
+        // Form submission with loading state
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            if (this.checkValidity()) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="auth-spinner"></span> @Localizer["Button_LoggingIn"]';
+            }
+        });
+
+        function comingSoon() {
+            Swal.fire({
+                title: '@Localizer["Message_GoogleComingSoon_Title"]',
+                text: '@Localizer["Message_GoogleComingSoon_Text"]',
+                icon: 'info',
+                confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--biz-primary').trim(),
+                confirmButtonText: '@Localizer["Button_ConfirmText"]'
+            });
+        }
+
+        // Focus first input
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('Email')?.focus();
+        });
+    </script>
+}

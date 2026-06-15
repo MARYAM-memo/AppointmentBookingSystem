@@ -1,0 +1,219 @@
+﻿@using AppointmentBooking.Application.Interfaces
+@using AppointmentBooking.Web.Resources.Views.BusinessProfile
+@inject IStringLocalizer<BusinessProfileResource> BusinessProfileLocalizer
+
+@{
+    var theme = await ProfileService.GetCurrentViewModelAsync();
+    var direction = theme.Dir;
+    var language = theme.Lang;
+    var colors = theme.Colors;
+}
+
+<!DOCTYPE html>
+<html lang="@language" dir="@direction" data-bs-theme="@(Context.Request.Cookies["biz-theme"] ?? "light")">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @theme.BusinessName</title>
+
+    @if (!string.IsNullOrEmpty(theme.FaviconUrl))
+    {
+        <link rel="icon" type="image/x-icon" href="@theme.FaviconUrl" />
+    }
+
+    <!-- Bootstrap 5.3 RTL/LTR -->
+    @if (theme.IsRtl)
+    {
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" />
+    }
+    else
+    {
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    }
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    <!-- Google Fonts -->
+    <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+    <!-- Dynamic CSS Variables -->
+    <partial name="_ThemeShared" model="theme" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body class="@Methods.GetDirection(direction)">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark biz-navbar sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Dashboard" asp-action="Index">
+                    @if (!string.IsNullOrEmpty(theme.LogoUrl))
+                    {
+                        <img src="@theme.LogoUrl" alt="@theme.BusinessName" class="biz-logo" />
+                    }
+                    else
+                    {
+                        <i class="bi bi-calendar-check-fill biz-brand-icon"></i>
+                    }
+                    <div class="d-flex flex-column">
+                        <span class="biz-brand-name">@theme.BusinessName</span>
+                        @if (!string.IsNullOrEmpty(theme.Tagline))
+                        {
+                            <small class="biz-brand-tagline">@(theme.Tagline.Length > 50 ? theme.Tagline.Substring(0, 50) +
+                                                                                                                                                                                                                                                                                                     "..." :
+                                                                                                                                                                                                                                                                                                                                theme.Tagline)</small>
+                            }
+                        </div>
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="mainNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="bi bi-house-door"></i> @ViewsSharedLocalizer["Layout_Nav_Home"]
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Services" asp-action="Index">
+                                    <i class="bi bi-grid"></i> @(theme.CustomLabels.GetValueOrDefault("service",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"]) ==
+                                                                                                                                                                                                                                                                                                                                                                                                                                       "Services" ?
+                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"] :
+                                                                                                                                                                                                                                                                                                                                                                                                    theme.CustomLabels.GetValueOrDefault("service",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"]) )
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Customers" asp-action="Index">
+                                    <i class="bi bi-people"></i> @(theme.CustomLabels.GetValueOrDefault("customer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Customers"]))
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointments" asp-action="Index">
+                                    <i class="bi bi-calendar-week"></i>
+                                    @(theme.CustomLabels.GetValueOrDefault("appointment",
+                                                                                                                                                                                                                                                                                                                                                                @ViewsSharedLocalizer["Layout_Nav_Appointments"]))
+                                </a>
+                            </li>
+                        </ul>
+
+                        <partial name="_LoginPartial" />
+
+                        <!-- Theme Toggle -->
+                        <button class="btn btn-sm btn-outline-light m-2" id="themeToggle"
+                                title="@ViewsSharedLocalizer["Layout_ThemeToggle_Title"]">
+                            <i class="bi bi-moon-stars"></i>
+                        </button>
+
+                        <!-- Language Toggle -->
+                        <button class="btn btn-sm btn-outline-light m-2" id="languageToggle"
+                                title="@ViewsSharedLocalizer["Layout_LanguageToggle_Title"]">
+                            <i class="bi bi-globe"></i>
+                            <span class="d-none d-md-inline-block ms-1">
+                                @(theme.GetCultureInfo().Name == "ar-EG" ?
+                                BusinessProfileLocalizer["Language_English"] : BusinessProfileLocalizer["Language_Arabic"])
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <partial name="_Alerts" />
+
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+
+        <!-- Footer - Reduced Size -->
+        <footer class="biz-footer mt-auto">
+            <div class="container">
+                <div class="row gy-3">
+                    <div class="col-md-4">
+                        <h5 class="biz-footer-title">
+                            <i class="bi bi-calendar-check-fill"></i> @theme.BusinessName
+                        </h5>
+                        <p class="biz-footer-desc">@ViewsSharedLocalizer["Layout_Footer_Description"]</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="biz-footer-subtitle">@ViewsSharedLocalizer["Layout_Footer_ContactUs"]</h6>
+                        <ul class="list-unstyled biz-contact-list">
+                            @if (!string.IsNullOrEmpty(theme.Contact.Phone))
+                            {
+                                <li><i class="bi bi-telephone"></i> @theme.Contact.Phone</li>
+                            }
+                            @if (!string.IsNullOrEmpty(theme.Contact.Email))
+                            {
+                                <li><i class="bi bi-envelope"></i> @theme.Contact.Email</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="biz-footer-subtitle">@ViewsSharedLocalizer["Layout_Footer_WorkingHours"]</h6>
+                        <p class="mb-0">
+                            <i class="bi bi-clock"></i>
+                            @theme.WorkingHoursStart.FormatTime() - @theme.WorkingHoursEnd.FormatTime()
+                        </p>
+                    </div>
+                </div>
+                <hr class="biz-footer-divider" />
+                <div class="text-center">
+                    <p class="mb-0 small">&copy; @DateTime.UtcNow.Year @theme.BusinessName.
+                        @ViewsSharedLocalizer["Layout_Footer_Copyright_Text"].</p>
+                    </div>
+                </div>
+            </footer>
+
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            <!-- Scripts -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Global Config for JS -->
+            <script>
+                window.BizConfig = {
+                businessName: '@theme.BusinessName',
+                lang: '@language',
+                dir: '@direction',
+                isRtl: @(theme.IsRtl.ToString().ToLower()),
+                currency: '@theme.Localization.Currency',
+                timeZone: '@theme.Localization.TimeZone',
+                workingHours: {
+                start: '@theme.WorkingHoursStart.FormatTime()',
+                end: '@theme.WorkingHoursEnd.FormatTime()'
+                },
+                slotDuration: @theme.SlotDurationMinutes,
+                labels: @Html.Raw(Json.Serialize(theme.CustomLabels)),
+                colors: {
+                primary: '@colors.Primary',
+                secondary: '@colors.Secondary',
+                accent: '@colors.Accent'
+                }
+                };
+
+                // Force cleanup when navigating away via standard links
+                document.addEventListener('click', function (e) {
+                const link = e.target.closest('a');
+                if (link && link.href && !link.target && !link.hasAttribute('data-ajax')) {
+                // Standard navigation - cleanup before leaving
+                if (window.AnimationManager) {
+                window.AnimationManager.destroy();
+                }
+                }
+                });
+
+
+            </script>
+
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @await RenderSectionAsync("Scripts", required: false)
+        </body>
+
+    </html>

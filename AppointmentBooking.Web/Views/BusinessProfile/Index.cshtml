@@ -1,0 +1,179 @@
+﻿@using AppointmentBooking.Web.Resources.Views.BusinessProfile
+@inject IStringLocalizer<BusinessProfileResource> Localizer
+
+@model BusinessProfileViewModel
+@{
+    ViewData["Title"] = Localizer["PageTitle_Details"];
+}
+
+<div class="profile-details">
+    <div class="container">
+        <!-- Header -->
+        <div class="profile-header">
+            <div class="profile-logo"> @if (!string.IsNullOrEmpty(Model.LogoUrl)) {
+                <img src="@Model.LogoUrl" alt="@Model.BusinessName" />
+            } else
+            {
+
+                <i class="bi bi-calendar-check-fill"></i>
+            }
+        </div>
+        <h1 class="profile-name">@Model.BusinessName</h1> @if (!string.IsNullOrEmpty(Model.Tagline)) {
+        <p class="mb-2 opacity-75">@Model.Tagline</p>
+    }
+    <span class="profile-type"> <i class="bi bi-shop me-1"></i>
+        @Model.BusinessType </span>
+    </div>
+
+    <div class="row">
+        <!-- Colors -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="bi bi-palette"></i>
+                    <h5>@Localizer["Section_Colors"]</h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="info-item">
+                        <span class="info-label">@Localizer["Label_Primary"]</span>
+                        <span class="info-value">
+                            <span class="color-dot" style="background: @Model.Colors.Primary;"></span>
+                            @Model.Colors.Primary
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Localizer["Label_Secondary"]</span>
+                        <span class="info-value">
+                            <span class="color-dot" style="background: @Model.Colors.Secondary;"></span>
+                            @Model.Colors.Secondary
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Localizer["Label_Accent"]</span>
+                        <span class="info-value">
+                            <span class="color-dot" style="background: @Model.Colors.Accent;"></span>
+                            @Model.Colors.Accent
+                        </span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Colors.DarkModePrimary))
+                    {
+                        <div class="info-item">
+                            <span class="info-label">@Localizer["Label_DarkMode"]</span>
+                            <span class="info-value">
+                                <span class="color-dot" style="background: @Model.Colors.DarkModePrimary;"></span>
+                                @Model.Colors.DarkModePrimary
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Localization -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="bi bi-globe"></i>
+                    <h5>@Localizer["Section_Localization"]</h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="info-item">
+                        <span class="info-label">@Localizer["Label_Currency"]</span>
+                        <span class="info-value">@Model.Localization.Currency</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Localizer["Label_Language"]</span>
+                        <span class="info-value">@(Model.Localization.Language == "ar" ?
+                                                                                        Localizer["Language_Arabic"].Value : Localizer["Language_English"].Value)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">@Localizer["Label_Direction"]</span>
+                            <span class="info-value">@(Model.Localization.Direction == "rtl" ?
+                                                                                                Localizer["Direction_RTL"].Value : Localizer["Direction_LTR"].Value)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_TimeZone"]</span>
+                                <span class="info-value">@Model.Localization.TimeZone</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Working Hours -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="bi bi-clock"></i>
+                            <h5>@Localizer["Section_WorkingHours"]</h5>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_StartTime"]</span>
+                                <span class="info-value">@Model.WorkingHoursStart.FormatTime()</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_EndTime"]</span>
+                                <span class="info-value">@Model.WorkingHoursEnd.FormatTime()</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_SlotDuration"]</span>
+                                <span class="info-value">@Model.SlotDurationMinutes @Localizer["Label_Minutes"]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="bi bi-person-lines-fill"></i>
+                            <h5>@Localizer["Section_Contact"]</h5>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_Phone"]</span>
+                                <span class="info-value">@(Model.Contact.Phone ?? Localizer["Value_Empty"].Value)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_Email"]</span>
+                                <span class="info-value">@(Model.Contact.Email ?? Localizer["Value_Empty"].Value)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">@Localizer["Label_Address"]</span>
+                                <span class="info-value">@(Model.Contact.Address ?? Localizer["Value_Empty"].Value)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Labels -->
+                <div class="col-12">
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="bi bi-tags"></i>
+                            <h5>@Localizer["Section_CustomLabels"]</h5>
+                        </div>
+                        <div class="info-card-body">
+                            @foreach (var label in Model.CustomLabels)
+                            {
+                                <span class="label-badge">
+                                    <span class="key">@label.Key:</span>
+                                    <span class="value">@label.Value</span>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="text-center mt-4">
+                    <a asp-action="Edit" class="btn btn-biz-primary btn-lg">
+                        <i class="bi bi-pencil-square"></i> @Localizer["Button_EditSettings"]
+                    </a>
+                </div>
+            }
+        </div>
+    </div>

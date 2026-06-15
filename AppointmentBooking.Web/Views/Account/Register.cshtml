@@ -1,0 +1,208 @@
+﻿@using AppointmentBooking.Web.Resources.Views.Account
+@model RegisterViewModel
+@inject IStringLocalizer<AccountResource> Localizer
+@{
+    ViewData["Title"] = Localizer["Title_Register"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="bi bi-person-plus-fill"></i>
+            </div>
+            <h1 class="auth-title">@Localizer["Heading_Register"]</h1>
+            <p class="auth-subtitle">@Localizer["Subtitle_Register"]</p>
+        </div>
+
+        <div class="auth-body">
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+            {
+                <div class="auth-error-summary">
+                    <ul>
+                        @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                        {
+                            <li><i class="bi bi-exclamation-circle-fill"></i> @error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <form asp-action="Register" asp-controller="Account" method="post" id="registerForm" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="auth-form-group">
+                    <label asp-for="Name" class="auth-form-label">@Localizer["Label_FullName"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-person auth-input-icon"></i>
+                        <input asp-for="Name"
+                               class="auth-form-control @(ViewData.ModelState["Name"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_FullName"]" autocomplete="name" />
+                    </div>
+                    <span asp-validation-for="Name" class="auth-validation-msg"></span>
+                </div>
+
+                <div class="auth-form-group">
+                    <label asp-for="Email" class="auth-form-label">@Localizer["Label_Email"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-envelope auth-input-icon"></i>
+                        <input asp-for="Email"
+                               class="auth-form-control @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_Email"]" autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Email" class="auth-validation-msg"></span>
+                </div>
+
+                <div class="auth-form-group">
+                    <label asp-for="Password" class="auth-form-label">@Localizer["Label_Password"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-lock auth-input-icon"></i>
+                        <input asp-for="Password" type="password"
+                               class="auth-form-control @(ViewData.ModelState["Password"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_Password"]" autocomplete="new-password"
+                               id="passwordInput" />
+                        <button type="button" class="auth-toggle-password"
+                                onclick="togglePassword('passwordInput', this)">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="auth-validation-msg"></span>
+
+                    <!-- Password Strength Meter -->
+                    <div class="password-strength" id="passwordStrength" style="display: none;">
+                        <div class="password-strength-bar">
+                            <div class="password-strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="password-strength-text" id="strengthText"></div>
+                    </div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label asp-for="ConfirmPassword" class="auth-form-label">@Localizer["Label_ConfirmPassword"]</label>
+                    <div class="auth-input-wrapper">
+                        <i class="bi bi-lock-fill auth-input-icon"></i>
+                        <input asp-for="ConfirmPassword" type="password"
+                               class="auth-form-control @(ViewData.ModelState["ConfirmPassword"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                               placeholder="@Localizer["Placeholder_Password"]" autocomplete="new-password"
+                               id="confirmPasswordInput" />
+                        <button type="button" class="auth-toggle-password"
+                                onclick="togglePassword('confirmPasswordInput', this)">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="auth-validation-msg"></span>
+                </div>
+
+                <button type="submit" class="auth-btn" id="submitBtn">
+                    <span id="btnText">@Localizer["Button_Register"]</span>
+                </button>
+
+                <p class="auth-terms">
+                    @Localizer["Text_TermsAgreement"] <a href="#">@Localizer["Link_TermsOfUse"]</a> و <a
+                    href="#">@Localizer["Link_PrivacyPolicy"]</a>
+                </p>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p class="auth-footer-text">
+                @Localizer["Text_AlreadyHaveAccount"]
+                <a asp-action="Login" asp-controller="Account" class="auth-footer-link">@Localizer["Link_Login"]</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+
+        // Password strength checker
+        const passwordInput = document.getElementById('passwordInput');
+        const strengthContainer = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput?.addEventListener('input', function () {
+            const password = this.value;
+
+            if (password.length === 0) {
+                strengthContainer.style.display = 'none';
+                return;
+            }
+
+            strengthContainer.style.display = 'block';
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            const specialChars = /[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?@@]/;
+            if (specialChars.test(password)) strength++;
+
+            strengthFill.className = 'password-strength-fill';
+
+            if (strength <= 2) {
+                strengthFill.classList.add('strength-weak');
+                strengthText.textContent = '@Localizer["PasswordStrength_Weak"]';
+                strengthText.style.color = '#ef4444';
+            } else if (strength <= 3) {
+                strengthFill.classList.add('strength-fair');
+                strengthText.textContent = '@Localizer["PasswordStrength_Fair"]';
+                strengthText.style.color = '#f59e0b';
+            } else if (strength <= 4) {
+                strengthFill.classList.add('strength-good');
+                strengthText.textContent = '@Localizer["PasswordStrength_Good"]';
+                strengthText.style.color = '#3b82f6';
+            } else {
+                strengthFill.classList.add('strength-strong');
+                strengthText.textContent = '@Localizer["PasswordStrength_Strong"]';
+                strengthText.style.color = '#22c55e';
+            }
+        });
+
+        // Confirm password match check
+        const confirmInput = document.getElementById('confirmPasswordInput');
+        confirmInput?.addEventListener('input', function () {
+            if (this.value && this.value !== passwordInput.value) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        // Form submission with loading state
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+
+            if (this.checkValidity()) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="auth-spinner"></span> @Localizer["Button_Processing"]';
+            }
+        });
+
+        // Focus first input
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('Name')?.focus();
+        });
+    </script>
+}

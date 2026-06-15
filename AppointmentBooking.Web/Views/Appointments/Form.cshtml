@@ -1,0 +1,1127 @@
+@using AppointmentBooking.Application.ViewModels.Appointment
+@using AppointmentBooking.Web.Resources.Views.Appointments
+
+@inject IStringLocalizer<AppointmentResource> Localizer
+
+@model AppointmentRequestViewModel
+@{
+      var isEdit = ViewBag.IsEdit as bool? ?? false;
+      var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+      ViewData["Title"] = (isEdit ? ViewsSharedLocalizer["Button_Edit"] : Localizer["Booking_Add"]) + " " +
+Localizer["Booking_Title"];
+
+}
+
+@* Page Header *@
+<div class="d-flex align-items-center gap-3 m-4">
+      <a asp-action="Index" class="btn btn-icon btn-ghost">
+            <i class="bi bi-arrow-right"></i>
+      </a>
+      <div>
+            <h2 class="fw-bold mb-0">@ViewData["Title"]</h2>
+            <p class="text-muted mb-0">@(isEdit ? Localizer["Booking_UpdateData"] : Localizer["Booking_CreateNew"])</p>
+      </div>
+</div>
+
+<div class="row g-4 m-4">
+      @* Main Form *@
+      <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                  <div class="card-body p-4">
+                        <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" id="appointmentForm" novalidate>
+                              @Html.AntiForgeryToken()
+                              @if (isEdit)
+                              {
+                                    <input type="hidden" asp-for="Id" />
+                              }
+
+                              <div class="row g-3">
+                                    @* Customer *@
+                                    <div class="col-md-6">
+                                          <label asp-for="CustomerId"
+                                                 class="form-label fw-bold">@ViewsSharedLocalizer["TableHeader_Customer"]</label>
+                                          <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                      <i class="bi bi-person text-muted"></i>
+                                                </span>
+                                                <select asp-for="CustomerId" class="form-select"
+                                                        asp-items="ViewBag.Customers" required>
+                                                      <option value="">@Localizer["Placeholder_SelectCustomer"]</option>
+                                                </select>
+                                          </div>
+                                          <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                                          <div class="form-text">
+                                                <a asp-controller="Customers" asp-action="Create" target="_blank">
+                                                      <i class="bi bi-plus-circle"></i> @Localizer["Link_NewCustomer"]
+                                                </a>
+                                          </div>
+                                    </div>
+
+                                    @* Service *@
+                                    <div class="col-md-6">
+                                          <label asp-for="ServiceId"
+                                                 class="form-label fw-bold">@Localizer["Label_SelectService"]</label>
+                                          <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                      <i class="bi bi-stars text-muted"></i>
+                                                </span>
+                                                <select asp-for="ServiceId" class="form-select"
+                                                        asp-items="ViewBag.Services" id="ServiceId" required
+                                                        onchange="onServiceChange()">
+                                                      <option value="">@Localizer["Placeholder_SelectService"]</option>
+                                                </select>
+                                          </div>
+                                          <span asp-validation-for="ServiceId" class="text-danger small"></span>
+                                    </div>
+
+                                    @* Date *@
+                                    <div class="col-md-6">
+                                          <label asp-for="AppointmentDate"
+                                                 class="form-label fw-bold">@Localizer["Label_AppointmentDate"]</label>
+                                          <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                      <i class="bi bi-calendar text-muted"></i>
+                                                </span>
+                                                <input asp-for="AppointmentDate" type="date" class="form-control"
+                                                       id="AppointmentDate" required onchange="onDateChange()"
+                                                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                                       max="@DateTime.Today.AddMonths(3).ToString("yyyy-MM-dd")" />
+                                          </div>
+                                          <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                                    </div>
+
+                                    @* Status *@
+                                    <div class="col-md-6">
+                                          <label asp-for="Status"
+                                                 class="form-label fw-bold">@ViewsSharedLocalizer["TableHeader_Status"]</label>
+                                          <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                      <i class="bi bi-flag text-muted"></i>
+                                                </span>
+                                                <select asp-for="Status" class="form-select"
+                                                        asp-items="ViewBag.StatusList"></select>
+                                          </div>
+                                    </div>
+
+                                    @* Time Slots *@
+                                    <div class="col-12">
+                                          <label id="timeLabel"
+                                                 class="form-label fw-bold">@Localizer["Label_SelectTime"]</label>
+                                          <div id="slotsContainer" class="slots-grid" role="group"
+                                               aria-labelledby="timeLabel">
+                                                <div class="text-center py-4 text-muted" id="slotsPlaceholder">
+                                                      <i class="bi bi-clock-history display-4"></i>
+                                                      <p class="mt-2">@Localizer["Message_SelectServiceAndDate"]</p>
+                                                </div>
+                                          </div>
+                                          <input type="hidden" asp-for="StartTime" id="startTimeInput" name="StartTime"
+                                                 required />
+                                          <span asp-validation-for="StartTime" class="text-danger small"></span>
+                                    </div>
+
+                                    @* Selected Time Display *@
+                                    <div class="col-12" id="selectedTimeDisplay" style="display: none;">
+                                          <div class="alert alert-info d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                <span>@Localizer["Message_SelectedTime"] <strong
+                                                      id="selectedTimeText"></strong></span>
+                                                </div>
+                                          </div>
+
+                                          @* Pricing *@
+                                          <div class="col-md-4">
+                                                <label asp-for="TotalPrice"
+                                                       class="form-label fw-bold">@ViewsSharedLocalizer["Label_BasePrice"]</label>
+                                                <div class="input-group">
+                                                      <input asp-for="TotalPrice" class="form-control readonly-field"
+                                                             id="TotalPrice" readonly tabindex="-1" />
+                                                      <span class="input-group-text">@PriceExtension.CurrentCurrency</span>
+                                                </div>
+                                          </div>
+
+                                          <div class="col-md-4">
+                                                <label asp-for="DiscountAmount"
+                                                       class="form-label fw-bold">@Localizer["Label_Discount"]</label>
+                                                <div class="input-group">
+                                                      <input asp-for="DiscountAmount" type="number" step="0.01" min="0"
+                                                             class="form-control" id="DiscountAmount"
+                                                             onchange="calculateFinalPrice()" />
+                                                      <span class="input-group-text">@PriceExtension.CurrentCurrency</span>
+                                                </div>
+                                                <span class="text-danger small" id="discountValidation"></span>
+                                                <span asp-validation-for="DiscountAmount" class="text-danger small"
+                                                      id="discountValidation"></span>
+                                          </div>
+
+                                          <div class="col-md-4">
+                                                <label asp-for="FinalPrice"
+                                                       class="form-label fw-bold">@Localizer["Label_FinalPrice"]</label>
+                                                <div class="input-group">
+                                                      <input asp-for="FinalPrice" class="form-control readonly-field"
+                                                             id="FinalPrice" readonly tabindex="-1" />
+                                                      <span class="input-group-text">@PriceExtension.CurrentCurrency</span>
+                                                </div>
+                                          </div>
+
+                                          @* Notes *@
+                                          <div class="col-12">
+                                                <label asp-for="Notes"
+                                                       class="form-label fw-bold">@ViewsSharedLocalizer["Label_Notes"]</label>
+                                                <textarea asp-for="Notes" class="form-control" rows="3"
+                                                          placeholder="@Localizer["Placeholder_Notes"]"></textarea>
+                                                <span asp-validation-for="Notes" class="text-danger small"></span>
+
+                                          </div>
+                                    </div>
+
+                                    @* Submit *@
+                                    <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                                          <button type="submit" class="btn btn-primary flex-grow-1 fw-bold" id="submitBtn"
+                                                  disabled>
+                                                <i class="bi bi-check-lg me-1"></i>
+                                                @(isEdit ? ViewsSharedLocalizer["Button_SaveChanges"] :
+                                                Localizer["Button_CreateBooking"])
+                                          </button>
+                                          <a asp-action="Index" class="btn btn-outline-secondary">
+                                                <i class="bi bi-x-lg"></i> @ViewsSharedLocalizer["Button_Cancel"]
+                                          </a>
+                                    </div>
+                              </form>
+                        </div>
+                  </div>
+            </div>
+
+            @* Side Panel *@
+            <div class="col-lg-4">
+                  @* Service Preview *@
+                  <div class="card shadow-sm border-0" id="servicePreview" style="display: none;">
+                        <div class="card-body text-center">
+                              <div class="service-preview-icon mb-3" id="previewIconContainer">
+                                    <i class="bi bi-stars display-4" id="previewIcon"></i>
+                              </div>
+                              <h5 class="fw-bold mb-1" id="previewServiceName">@Localizer["ServicePreview_ServiceName"]</h5>
+                              <p class="text-muted mb-3" id="previewDuration">30 دقيقة</p>
+
+                              <div class="d-flex justify-content-center gap-3 text-start">
+                                    <div>
+                                          <small class="text-muted d-block">@ViewsSharedLocalizer["TableHeader_Price"]</small>
+                                          <span class="fw-bold fs-5" id="previewPrice">0
+                                                @Html.Raw(PriceExtension.CurrentCurrency)</span>
+                                          </div>
+                                          <div>
+                                                <small class="text-muted d-block">@Localizer["Service_TotalDuration"]</small>
+                                                <span class="fw-bold" id="previewTotalDuration">30 دقيقة</span>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+
+                        @* Quick Info *@
+                        <div class="card shadow-sm border-0 mt-4 bg-primary bg-opacity-10">
+                              <div class="card-body">
+                                    <h6 class="fw-bold text-primary mb-3">
+                                          <i class="bi bi-info-circle me-2"></i>
+                                          @Localizer["QuickInfo_Title"]
+                                    </h6>
+                                    <ul class="list-unstyled mb-0 small">
+                                          <li class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                @Localizer["QuickInfo_Step1"]
+                                          </li>
+                                          <li class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                @Localizer["QuickInfo_Step2"]
+                                          </li>
+                                          <li class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                @Localizer["QuickInfo_Step3"]
+                                          </li>
+                                          <li class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                @Localizer["QuickInfo_Step4"]
+                                          </li>
+                                    </ul>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+            @*
+            @section Styles {
+                  <style>
+                        .slots-grid {
+                              display: grid;
+                              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                              gap: 0.75rem;
+                        }
+
+                        .slot-btn {
+                              padding: 0.75rem;
+                              border: 2px solid rgba(var(--biz-primary-rgb, 13, 110, 253), 0.2);
+                              border-radius: var(--border-radius);
+                              background: var(--brand-card-bg, white);
+                              cursor: pointer;
+                              transition: all 0.15s ease;
+                              text-align: center;
+                              font-size: 0.9rem;
+                              color: var(--brand, #212529);
+                        }
+
+                        .slot-btn:hover:not(:disabled) {
+                              border-color: var(--biz-primary);
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.08);
+                              transform: translateY(-2px);
+                        }
+
+                        .slot-btn.selected {
+                              border-color: var(--biz-primary, #ff0040aa);
+                              background: var(--biz-primary, #ff004041);
+                              box-shadow: 0 0 0 3px rgba(var(--biz-primary-rgb, 13, 110, 253), 0.3);
+                              transform: scale(1.02);
+                              color: var(--brand, #212529);
+                        }
+
+                        .slot-btn.selected.disabled {
+                              opacity: 0.7;
+                              text-decoration: none;
+                              border-color: var(--biz-primary, #ff0040aa);
+                              background: rgba(255, 0, 64, 0.2);
+                        }
+
+                        .slot-btn:disabled {
+                              opacity: 0.5;
+                              cursor: not-allowed;
+                              background: var(--gray-100);
+                              text-decoration: line-through;
+                        }
+
+                        .slot-btn .slot-time {
+                              font-weight: 600;
+                              display: block;
+                        }
+
+                        .slot-btn .slot-status {
+                              font-size: 0.75rem;
+                              opacity: 0.8;
+                        }
+
+                        .service-preview-icon {
+                              width: 80px;
+                              height: 80px;
+                              border-radius: 50%;
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.1);
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              margin: 0 auto;
+                              transition: all 0.25s ease;
+                              color: var(--biz-primary);
+                        }
+
+                        .slot-btn.current-appointment {
+                              border-color: var(--biz-primary);
+                              background: rgba(var(--biz-primary-rgb), 0.15);
+                              font-weight: bold;
+                        }
+
+                        .slot-btn.current-appointment::after {
+                              content: ' (Current)';
+                              font-size: 0.7rem;
+                              display: block;
+                        }
+
+                        /* Dark mode support */
+                        [data-bs-theme="dark"] .slot-btn {
+                              background: rgba(0, 0, 0, 0.2);
+                              border-color: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.3);
+                              color: var(--brand, #a8b4c0);
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn:hover:not(:disabled) {
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.15);
+                        }
+
+                        [data-bs-theme="dark"] .service-preview-icon {
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.15);
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn.selected {
+                              border-color: var(--biz-primary, #5d0017aa);
+                              background: var(--biz-primary, #70001c41);
+                              color: var(--brand, #a8b4c0);
+                        }
+                  </style>
+            }
+ *@
+            @section Styles {
+                  <style>
+                        /* ========== Slots Grid ========== */
+                        .slots-grid {
+                              display: grid;
+                              grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                              gap: 0.75rem;
+                        }
+
+                        /* ========== Base Slot Button ========== */
+                        .slot-btn {
+                              padding: 0.75rem 0.5rem;
+                              border: 2px solid transparent;
+                              border-radius: var(--border-radius, 0.5rem);
+                              background: var(--brand-card-bg, white);
+                              cursor: pointer;
+                              transition: all 0.2s ease;
+                              text-align: center;
+                              font-size: 0.9rem;
+                              color: var(--brand, #212529);
+                              position: relative;
+                              overflow: hidden;
+                        }
+
+                        .slot-btn .slot-time {
+                              font-weight: 600;
+                              display: block;
+                              font-size: 0.9rem;
+                        }
+
+                        .slot-btn .slot-status {
+                              font-size: 0.75rem;
+                              opacity: 0.85;
+                              display: block;
+                              margin-top: 2px;
+                        }
+
+                        /* ========== Available ========== */
+                        .slot-btn.available {
+                              border-color: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.35);
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.06);
+                        }
+
+                        .slot-btn.available:hover {
+                              border-color: var(--biz-primary);
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.12);
+                              transform: translateY(-2px);
+                              box-shadow: 0 4px 12px rgba(var(--biz-primary-rgb), 0.15);
+                        }
+
+                        /* ========== Selected (User Clicked) ========== */
+                        .slot-btn.selected {
+                              border-color: var(--biz-primary, #ff0040aa);
+                              background: var(--biz-primary);
+                              color: white;
+                              box-shadow: 0 0 0 3px rgba(var(--biz-primary-rgb, 13, 110, 253), 0.3);
+                              transform: scale(1.03);
+                        }
+
+                        .slot-btn.selected .slot-status {
+                              color: rgba(255, 255, 255, 0.9);
+                        }
+
+                        /* ========== Current Appointment (Edit Mode) ========== */
+                        .slot-btn.current-appointment {
+                              border-color: var(--brand-warning, #ffc107);
+                              background: rgba(255, 193, 7, 0.15);
+                              color: var(--brand, #212529);
+                              animation: pulse-current 2s infinite;
+                        }
+
+                        .slot-btn.current-appointment::before {
+                              content: '★';
+                              position: absolute;
+                              top: 3px;
+                              right: 5px;
+                              font-size: 0.7rem;
+                              color: var(--brand-warning);
+                        }
+
+                        @@keyframes pulse-current {
+
+                              0%,
+                              100% {
+                                    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+                              }
+
+                              50% {
+                                    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
+                              }
+                        }
+
+                        .slot-btn.current-appointment:hover {
+                              border-color: var(--brand-warning);
+                              background: rgba(255, 193, 7, 0.25);
+                              transform: translateY(-2px);
+                        }
+
+                        /* Current + Selected (after user re-clicks current) */
+                        .slot-btn.current-appointment.selected {
+                              background: var(--brand-warning);
+                              color: #000;
+                              animation: none;
+                        }
+
+                        .slot-btn.current-appointment.selected .slot-status {
+                              color: rgba(0, 0, 0, 0.7);
+                        }
+
+                        /* ========== Booked / Fully Booked ========== */
+                        .slot-btn.disabled.booked,
+                        .slot-btn.disabled.fully-booked {
+                              opacity: 0.6;
+                              cursor: not-allowed;
+                              background: var(--gray-100, #f8f9fa);
+                              border-color: var(--gray-300, #dee2e6);
+                              text-decoration: line-through;
+                        }
+
+                        .slot-btn.disabled.fully-booked {
+                              background: rgba(220, 53, 69, 0.08);
+                              border-color: rgba(220, 53, 69, 0.3);
+                              color: #dc3545;
+                              text-decoration: none;
+                        }
+
+                        .slot-btn.disabled.fully-booked .slot-status {
+                              font-weight: 600;
+                        }
+
+                        /* ========== Past Slot ========== */
+                        .slot-btn.disabled.past-slot {
+                              opacity: 0.4;
+                              cursor: not-allowed;
+                              background: var(--gray-200, #e9ecef);
+                              border-color: var(--gray-400, #ced4da);
+                              color: var(--gray-600, #6c757d);
+                        }
+
+                        /* ========== Disabled Base ========== */
+                        .slot-btn:disabled {
+                              cursor: not-allowed;
+                        }
+
+                        /* ========== Service Preview ========== */
+                        .service-preview-icon {
+                              width: 80px;
+                              height: 80px;
+                              border-radius: 50%;
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.1);
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              margin: 0 auto;
+                              transition: all 0.25s ease;
+                              color: var(--biz-primary);
+                        }
+
+                        /* ========== Dark Mode ========== */
+                        [data-bs-theme="dark"] .slot-btn.available {
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.1);
+                              border-color: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.4);
+                              color: var(--brand, #a8b4c0);
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn.selected {
+                              background: var(--biz-primary);
+                              color: white;
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn.current-appointment {
+                              background: rgba(255, 193, 7, 0.2);
+                              color: var(--brand, #a8b4c0);
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn.disabled.booked,
+                        [data-bs-theme="dark"] .slot-btn.disabled.fully-booked {
+                              background: rgba(255, 255, 255, 0.05);
+                              border-color: rgba(255, 255, 255, 0.1);
+                        }
+
+                        [data-bs-theme="dark"] .slot-btn.disabled.past-slot {
+                              background: rgba(255, 255, 255, 0.03);
+                              border-color: rgba(255, 255, 255, 0.08);
+                              color: var(--gray-600, #6c757d);
+                        }
+
+                        [data-bs-theme="dark"] .service-preview-icon {
+                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.15);
+                        }
+                  </style>
+            }
+
+            @section Scripts {
+                  <partial name="_ValidationScriptsPartial" />
+                  <script>
+                        // Services data from server
+                        const servicesData = @Html.Raw(Json.Serialize(ViewBag.ServicesData ?? new List<object>()));
+                        const isEditMode = @(isEdit.ToString().ToLower());
+                        const existingStartTime = '@Model.StartTime.FormatTime()';
+                        const existingDate = '@Model.AppointmentDate.ToString("yyyy-MM-dd")';
+
+                        const servicesMap = new Map();
+
+                        if (servicesData && servicesData.length > 0) {
+                              servicesData.forEach(service => {
+                                    const serviceId = service.id?.toString();
+                                    if (serviceId) {
+                                          servicesMap.set(serviceId, service);
+                                    }
+                              });
+                        } else {
+                              console.warn('⚠️ No services data found in ViewBag.ServicesData!');
+                              console.warn('Make sure SetViewBagServicesDataAsync() is called in the controller.');
+                        }
+                        let selectedService = null;
+
+                        function onServiceChange() {
+                              const serviceId = document.getElementById('ServiceId').value;
+                              const servicePreview = document.getElementById('servicePreview');
+                              const dateValue = document.getElementById('AppointmentDate').value;
+
+                              if (!serviceId) {
+                                    servicePreview.style.display = 'none';
+                                    document.getElementById('TotalPrice').value = '0.00';
+                                    document.getElementById('FinalPrice').value = '0.00';
+                                    document.getElementById('DiscountAmount').value = '';
+                                    selectedService = null;
+                                    updateSubmitState();
+                                    return;
+                              }
+
+                              const service = servicesMap.get(serviceId.toString());
+
+                              if (service) {
+
+                                    selectedService = service;
+                                    updateServicePreview(service);
+
+                                    // Refresh slots if date is selected
+                                    if (dateValue) {
+                                          onDateChange();
+                                    }
+                              }
+                              else {
+                                    console.error('Service not found for ID:', serviceId);
+                              }
+                        }
+
+                        function updateServicePreview(service) {
+                              if (!service) return;
+
+                              const preview = document.getElementById('servicePreview');
+                              preview.style.display = 'block';
+                              var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture.Name';
+                              document.getElementById('previewServiceName').textContent = service.name || '@Localizer["ServicePreview_ServiceName"]';
+                              document.getElementById('previewDuration').textContent = formatDuration(service.duration);
+                              document.getElementById('previewPrice').textContent = (service.price || 0).toLocaleString(currentCulture) + ' @Html.Raw(PriceExtension.CurrentCurrency)';
+                              document.getElementById('previewTotalDuration').textContent = formatDuration(service.totalDuration || service.duration);
+
+                              const icon = document.getElementById('previewIcon');
+                              icon.className = `bi ${service.icon || 'bi-stars'} display-4`;
+
+                              const iconContainer = document.getElementById('previewIconContainer');
+                              if (service.color) {
+                                    iconContainer.style.color = service.color;
+                              } else {
+                                    iconContainer.style.color = 'var(--biz-primary)';
+                              }
+
+                              const TotalPrice = parseFloat(service.price) || 0;
+                              document.getElementById('TotalPrice').value = TotalPrice.toFixed(2);
+                              calculateFinalPrice();
+                        }
+
+                        function formatDuration(minutes) {
+
+                              if (minutes === undefined || minutes === null) {
+                                    console.warn('formatDuration: minutes is null/undefined');
+                                    return '0 دقيقة';
+                              }
+
+                              let duration = minutes;
+                              if (typeof minutes === 'string') {
+                                    duration = parseInt(minutes, 10);
+                                    if (isNaN(duration)) {
+                                          console.warn('formatDuration: failed to parse string:', minutes);
+                                          return '0 دقيقة';
+                                    }
+                              }
+
+                              if (duration <= 0 || isNaN(duration)) {
+                                    console.warn('formatDuration: invalid number:', duration);
+                                    return '0 دقيقة';
+                              }
+                              const h = Math.floor(duration / 60);
+                              const m = duration % 60;
+                              if (h > 0 && m > 0) return `${h} س ${m} د`;
+                              if (h > 0) return `${h} ساعة${h > 1 ? 'ات' : ''}`;
+                              return `${m} دقيقة`;
+                        }
+
+                        function isWeekend(dateString) {
+                              if (!dateString) return false;
+
+                              const date = new Date(dateString);
+                              const dayOfWeek = date.getDay();
+
+                              return dayOfWeek === 5 || dayOfWeek === 6;
+                        }
+
+                        function getDayName(dateString) {
+                              if (!dateString) return '';
+
+                              const date = new Date(dateString);
+                              const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                              return days[date.getDay()];
+                        }
+
+                        function onDateChange() {
+                              const serviceId = document.getElementById('ServiceId').value;
+                              const date = document.getElementById('AppointmentDate').value;
+                              const container = document.getElementById('slotsContainer');
+
+                              if (!date) {
+                                    container.innerHTML = `
+                                                                                          <div class="text-center py-4 text-muted" id="slotsPlaceholder">
+                                                                                              <i class="bi bi-calendar text-muted display-4"></i>
+                                                                                              <p class="mt-2">@Localizer["Message_SelectDateFirst"]</p>
+                                                                                          </div>`;
+                                    return;
+                              }
+
+                              if (isWeekend(date)) {
+                                    const dayName = getDayName(date);
+                                    container.innerHTML = `
+                                                                                          <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3">
+                                                                                              <i class="bi bi-calendar-x display-4"></i>
+                                                                                              <p class="mt-2 fw-bold mb-1">@Localizer["Message_WeekendBooking"] ${dayName}</p>
+                                                                                              <small class="text-muted">@Localizer["Message_WeekendClosed"]</small>
+                                                                                              <div class="mt-3">
+                                                                                                  <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                                                                          onclick="document.getElementById('AppointmentDate').value = ''; onDateChange();">
+                                                                                                      <i class="bi bi-arrow-repeat"></i> @Localizer["Button_ChooseAnotherDate"]
+                                                                                                  </button>
+                                                                                              </div>
+                                                                                          </div>`;
+
+                                    document.getElementById('submitBtn').disabled = true;
+                                    document.getElementById('startTimeInput').value = '';
+                                    document.getElementById('selectedTimeDisplay').style.display = 'none';
+                                    return;
+                              }
+
+                              if (!serviceId) {
+                                    container.innerHTML = `
+                                                      <div class="text-center py-4 text-muted" id="slotsPlaceholder">
+                                                          <i class="bi bi-stars display-4"></i>
+                                                          <p class="mt-2">@Localizer["Message_SelectServiceFirst"]</p>
+                                                      </div>`;
+                                    return;
+                              }
+
+                              container.innerHTML = `
+                                                      <div class="text-center py-4">
+                                                          <div class="spinner-border text-primary" role="status">
+                                                              <span class="visually-hidden">@Localizer["Message_LoadingSlots"]</span>
+                                                          </div>
+                                                          <p class="mt-2 text-muted">@Localizer["Message_LoadingSlots"]</p>
+                                                      </div>`;
+
+                              const isEdit = '@isEdit' === 'True';
+                              const appointmentId = isEdit ? '@Model.Id' : '';
+
+                              let url = `/Appointments/GetAvailableSlots?serviceId=${encodeURIComponent(serviceId)}&date=${encodeURIComponent(date)}`;
+
+                              // Add excludeAppointmentId in Edit mode
+                              if (isEdit && appointmentId) {
+                                    url += `&excludeAppointmentId=${encodeURIComponent(appointmentId)}`;
+                              }
+
+                              fetch(url)
+                                    .then(r => {
+                                          if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+                                          return r.json();
+                                    })
+                                    .then(slots => renderSlots(slots))
+                                    .catch(err => {
+                                          console.error('Error loading slots:', err);
+                                          container.innerHTML = `
+                                                                  <div class="alert alert-danger mb-0">
+                                                                      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                      @Localizer["Message_LoadingSlots"] @Localizer["Message_TryDifferentDate"]
+                                                                  </div>`;
+                                    });
+
+                              updateSubmitState();
+                        }
+
+                        function renderSlots(slots) {
+                              const container = document.getElementById('slotsContainer');
+                              const isToday = document.getElementById('AppointmentDate').value === new Date().toISOString().split('T')[0];
+
+                              const existingStartTime = '@Model.StartTime.FormatTime()';
+
+                              if (!slots || slots.length === 0) {
+                                    container.innerHTML = `
+                                                         <div class="text-center py-4 text-muted">
+                                                             <i class="bi bi-calendar-x display-4"></i>
+                                                             <p class="mt-2">@Localizer["Message_NoSlotsAvailable"]</p>
+                                                             <small class="text-muted">@Localizer["Message_TryDifferentDate"]</small>
+                                                         </div>`;
+                                    return;
+                              }
+
+
+                              // Clock processing: Determine if the clock is past (for the current date only)
+                              const processedSlots = slots.map(slot => {
+                                    let isAvailable = slot.isAvailable;
+                                    let isPastSlot = slot.isPastSlot || false;
+                                    let isCurrentAppointment = slot.isCurrentAppointment || false;
+                                    let isFullyBooked = !isAvailable && !isPastSlot && !isCurrentAppointment;
+                                    let isSelected = existingStartTime && slot.startTime === existingStartTime;
+
+                                    // Capacity display
+                                    let capacityInfo = '';
+                                    if (slot.maxCapacity > 1) {
+                                          const booked = slot.bookedCount || 0;
+                                          const max = slot.maxCapacity;
+                                          capacityInfo = ` (${booked}/${max})`;
+                                    }
+
+                                    // Determine status text and CSS class
+                                    let statusText, btnClass;
+
+                                    if (isCurrentAppointment) {
+                                          statusText = '@Html.Raw(Localizer["Slot_Current"])' + capacityInfo;
+                                          btnClass = 'slot-btn current-appointment';  //Always clickable
+                                    } else if (isSelected && !isCurrentAppointment) {
+                                          statusText = '@Html.Raw(Localizer["Slot_Selected"])' + capacityInfo;
+                                          btnClass = 'slot-btn selected';
+                                    } else if (isFullyBooked) {
+                                          statusText = '@Html.Raw(Localizer["Slot_Full"])' + capacityInfo;
+                                          btnClass = 'slot-btn disabled fully-booked';
+                                    } else if (isPastSlot) {
+                                          statusText = '@Html.Raw(Localizer["Slot_Past"])';
+                                          btnClass = 'slot-btn disabled past-slot';
+                                    } else if (!isAvailable) {
+                                          statusText = '@Html.Raw(Localizer["Slot_Booked"])' + capacityInfo;
+                                          btnClass = 'slot-btn disabled booked';
+                                    } else {
+                                          statusText = '@Html.Raw(Localizer["Slot_Available"])' + capacityInfo;
+                                          btnClass = 'slot-btn available';
+                                    }
+
+                                    return {
+                                          ...slot,
+                                          isClickable: isAvailable || isCurrentAppointment,
+                                          statusText: statusText,
+                                          btnClass: btnClass,
+                                          isSelected: isSelected || isCurrentAppointment
+                                    };
+                              });
+
+                              container.innerHTML = processedSlots.map(slot => {
+                                    const clickHandler = slot.isClickable
+                                          ? `onclick="selectSlot('${slot.startTime}', '${slot.displayText}', event)"`
+                                          : '';
+                                    const disabledAttr = slot.isClickable ? '' : 'disabled';
+                                    return `
+                                                          <button type="button" 
+                                                               class="${slot.btnClass}" 
+                                                                ${clickHandler}
+                                                                ${disabledAttr}
+                                                                  data-start="${slot.startTime}">
+                                                              <span class="slot-time">${slot.displayText}</span>
+                                                              <span class="slot-status">${slot.statusText}</span>
+                                                          </button>
+                                                      `;
+                              }).join('');
+
+                              // Auto-select current appointment or existing slot
+                              const currentSlot = processedSlots.find(s => s.isCurrentAppointment);
+                              const selectedSlot = processedSlots.find(s => s.isSelected && !s.isCurrentAppointment);
+
+                              if (currentSlot) {
+                                    // Edit mode: select the current appointment slot
+                                    document.getElementById('startTimeInput').value = currentSlot.startTime;
+                                    document.getElementById('selectedTimeDisplay').style.display = 'block';
+                                    document.getElementById('selectedTimeText').textContent = currentSlot.displayText;
+
+                                    // Highlight it
+                                    const btn = document.querySelector(`.slot-btn[data-start="${currentSlot.startTime}"]`);
+                                    if (btn) btn.classList.add('selected');
+
+                                    updateSubmitState();
+                              } else if (selectedSlot && selectedSlot.isClickable) {
+                                    // Select the previously selected slot (if available)
+                                    setTimeout(() => {
+                                          const btn = document.querySelector(`.slot-btn[data-start="${selectedSlot.startTime}"]`);
+                                          if (btn) btn.click();
+                                    }, 100);
+                              }
+
+                        }
+
+                        function selectSlot(startTime, displayText, event) {
+                              if (!startTime) return;
+
+                              // Update hidden input
+                              document.getElementById('startTimeInput').value = startTime;
+
+                              // Update UI - remove selected from all
+                              document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+
+                              // Add selected class to the clicked button
+                              if (event && event.currentTarget) {
+                                    event.currentTarget.classList.add('selected');
+                              } else {
+                                    const targetBtn = document.querySelector(`.slot-btn[data-start="${startTime}"]`);
+                                    if (targetBtn) targetBtn.classList.add('selected');
+                              }
+
+                              // Show selected time
+                              document.getElementById('selectedTimeDisplay').style.display = 'block';
+                              document.getElementById('selectedTimeText').textContent = displayText;
+
+                              stopSlotMonitoring();
+                              lastSlotsHash = ''; // Reset hash
+
+                              // Enable submit
+                              updateSubmitState();
+                        }
+
+                        function calculateFinalPrice() {
+                              const total = parseFloat(document.getElementById('TotalPrice').value) || 0;
+                              const discount = parseFloat(document.getElementById('DiscountAmount').value) || 0;
+                              const validationSpan = document.getElementById("discountValidation");
+                              const finalPriceInput = document.getElementById('FinalPrice');
+                              if (discount > total) {
+                                    validationSpan.innerText =
+                                          "@Localizer["Validation_DiscountExceedsTotal"]";
+                                    finalPriceInput.value = total.toFixed(2);
+                                    return;
+                              }
+
+                              validationSpan.innerText = "";
+
+                              const final = total - discount;
+                              finalPriceInput.value = final.toFixed(2);
+                        }
+
+                        function updateSubmitState() {
+                              const serviceId = document.getElementById('ServiceId').value;
+                              const startTime = document.getElementById('startTimeInput').value;
+                              document.getElementById('submitBtn').disabled = !(serviceId && startTime);
+                        }
+
+           
+                        // ============================================================
+                        // 🔥 AUTO-REFRESH ON CONCURRENT BOOKING CONFLICT
+                        // ============================================================
+
+                        // Check if server detected a conflict and wants us to refresh slots
+                        const conflictDetected = @(ViewBag.ConflictDetected != null && (bool)ViewBag.ConflictDetected ? "true" : "false");
+                        const conflictServiceId = '@(ViewBag.ConflictServiceId ?? "")';
+                        const conflictDate = '@(ViewBag.ConflictDate ?? "")';
+
+                        if (conflictDetected && conflictServiceId && conflictDate) {
+                              // Show conflict warning
+                              showConflictWarning();
+
+                              // Auto-refresh the slots after a short delay
+                              setTimeout(() => {
+                                    refreshSlotsAfterConflict(conflictServiceId, conflictDate);
+                              }, 1500);
+                        }
+
+                        function showConflictWarning() {
+                              // Create or update the slots container with conflict message
+                              const container = document.getElementById('slotsContainer');
+
+                              container.innerHTML = `
+                                                                                            <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3 border border-warning">
+                                                                                                <i class="bi bi-exclamation-triangle-fill display-4 text-warning"></i>
+                                                                                                <p class="mt-2 fw-bold mb-1 text-warning">⚠️ @Localizer["Message_ConflictWarning"]</p>
+                                                                                                <small class="text-muted">@Localizer["Message_UpdatingSlots"]</small>
+                                                                                                <div class="mt-2">
+                                                                                                    <div class="spinner-border spinner-border-sm text-warning" role="status">
+                                                                                                        <span class="visually-hidden">@Localizer["Message_Updating"]</span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        `;
+
+                              // Clear selected time
+                              document.getElementById('startTimeInput').value = '';
+                              document.getElementById('selectedTimeDisplay').style.display = 'none';
+                              updateSubmitState();
+
+                              // Show toast notification (if you have a toast system)
+                              if (typeof showToast === 'function') {
+                                    showToast('warning', '@Localizer["Message_ConflictWarning"] @Localizer["Message_UpdatingSlots"]');
+                              }
+                        }
+
+                        function refreshSlotsAfterConflict(serviceId, date) {
+                              // Reset the date input to trigger fresh load
+                              const dateInput = document.getElementById('AppointmentDate');
+                              const serviceSelect = document.getElementById('ServiceId');
+
+                              // Make sure we have the right service selected
+                              if (serviceSelect.value !== serviceId.toString()) {
+                                    serviceSelect.value = serviceId;
+                                    onServiceChange(); // This will update preview and price
+                              }
+
+                              // Force refresh slots
+                              onDateChange();
+
+                              // Scroll to slots section smoothly
+                              document.getElementById('slotsContainer').scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                              });
+                        }
+
+                        // ============================================================
+                        // 🔥 REAL-TIME SLOT MONITORING (Optional - every 30 seconds)
+                        // Only when slots are visible and no time selected yet
+                        // ============================================================
+
+                        let slotMonitoringInterval = null;
+                        let lastSlotsHash = '';
+
+                        function startSlotMonitoring() {
+                              if (slotMonitoringInterval) return; // Already running
+
+                              slotMonitoringInterval = setInterval(() => {
+                                    const serviceId = document.getElementById('ServiceId').value;
+                                    const date = document.getElementById('AppointmentDate').value;
+                                    const startTime = document.getElementById('startTimeInput').value;
+
+                                    // Only monitor if: service selected + date selected + NO time selected yet
+                                    if (serviceId && date && !startTime) {
+                                          checkSlotsChanged(serviceId, date);
+                                    }
+                              }, 30000); // Check every 30 seconds
+                        }
+
+                        function stopSlotMonitoring() {
+                              if (slotMonitoringInterval) {
+                                    clearInterval(slotMonitoringInterval);
+                                    slotMonitoringInterval = null;
+                              }
+                        }
+
+                        async function checkSlotsChanged(serviceId, date) {
+                              try {
+                                    const isEdit = '@isEdit' === 'True';
+                                    const appointmentId = isEdit ? '@Model.Id' : '';
+
+                                    let url = `/Appointments/GetAvailableSlots?serviceId=${encodeURIComponent(serviceId)}&date=${encodeURIComponent(date)}`;
+
+                                    // Add excludeAppointmentId in Edit mode
+                                    if (isEdit && appointmentId) {
+                                          url += `&excludeAppointmentId=${encodeURIComponent(appointmentId)}`;
+                                    }
+
+                                    const response = await fetch(url);
+                                    if (!response.ok) return;
+
+                                    const slots = await response.json();
+                                    const currentHash = JSON.stringify(slots.map(s => `${s.startTime}:${s.isAvailable}`));
+
+                                    // If first time, just store hash
+                                    if (!lastSlotsHash) {
+                                          lastSlotsHash = currentHash;
+                                          return;
+                                    }
+
+                                    // If changed, show subtle notification
+                                    if (lastSlotsHash !== currentHash) {
+                                          lastSlotsHash = currentHash;
+
+                                          // Show subtle update indicator
+                                          const container = document.getElementById('slotsContainer');
+                                          const indicator = document.createElement('div');
+                                          indicator.id = 'slotsUpdatedIndicator';
+                                          indicator.className = 'alert alert-info alert-dismissible fade show mb-2';
+                                          indicator.innerHTML = `
+                                                                                                    <i class="bi bi-arrow-repeat me-2"></i>
+                                                                                                    <strong>@Localizer["Message_SlotsUpdated"]</strong> @Localizer["Message_SomeSlotsChanged"] 
+                                                                                                    <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+                                                                                                `;
+
+                                          container.insertBefore(indicator, container.firstChild);
+
+                                          // Auto-remove after 5 seconds
+                                          setTimeout(() => {
+                                                indicator?.remove();
+                                          }, 5000);
+
+                                          // Refresh the slots display
+                                          renderSlots(slots);
+                                    }
+                              } catch (err) {
+                                    //
+                              }
+                        }
+
+            
+                        // Initialize on load for edit mode
+                        document.addEventListener('DOMContentLoaded', async () => {
+                              const serviceId = document.getElementById('ServiceId').value;
+                              const dateInput = document.getElementById('AppointmentDate');
+                              const appointmentDate = dateInput.value;
+
+                              // Initialize service preview
+                              onServiceChange();
+
+                              if (appointmentDate) {
+                                    await onDateChange();
+                              }
+
+                              dateInput.addEventListener('change', function () {
+                                    if (this.value && isWeekend(this.value)) {
+                                          const dayName = getDayName(this.value);
+
+                                          const warningMsg = document.getElementById('weekendWarning');
+                                          if (!warningMsg) {
+                                                const warning = document.createElement('div');
+                                                warning.id = 'weekendWarning';
+                                                warning.className = 'alert alert-warning mt-2';
+                                                warning.innerHTML = `
+                                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                                                    <strong>@Localizer["Warning_Weekend"]</strong> @Localizer["Message_WeekendBooking"] ${dayName} @Localizer["Message_WeekendHoliday"]
+                                                                                                `;
+                                                dateInput.parentNode.insertBefore(warning, dateInput.nextSibling);
+                                          }
+                                    } else {
+                                          const warning = document.getElementById('weekendWarning');
+                                          if (warning) warning.remove();
+                                    }
+                              });
+
+                              // Start monitoring if no time selected yet
+                              if (serviceId && appointmentDate && !document.getElementById('startTimeInput').value) {
+                                    startSlotMonitoring();
+                              }
+                        });
+
+                        // Stop monitoring when time is selected
+                        document.getElementById('startTimeInput').addEventListener('change', () => {
+                              if (document.getElementById('startTimeInput').value) {
+                                    stopSlotMonitoring();
+                              }
+                        });
+
+                        // Re-start monitoring if time is cleared
+                        function updateSubmitState() {
+                              const serviceId = document.getElementById('ServiceId').value;
+                              const startTime = document.getElementById('startTimeInput').value;
+
+                              document.getElementById('submitBtn').disabled = !(serviceId && startTime);
+
+                              // If time cleared, restart monitoring
+                              if (!startTime && serviceId) {
+                                    startSlotMonitoring();
+                              }
+                        }
+                  </script>
+            }

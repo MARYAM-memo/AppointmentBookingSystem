@@ -1,0 +1,235 @@
+﻿@using AppointmentBooking.Application.ViewModels.Service
+@using AppointmentBooking.Web.Resources.Views.Services
+
+@inject IStringLocalizer<ServicesResource> Localizer
+
+@model ServiceResponseViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    var appointmentCount = ViewBag.BookingCount as int? ?? 0;
+}
+
+@* Header *@
+<div class="d-flex align-items-center gap-3 m-3">
+    <a asp-action="Index" class="btn btn-icon btn-ghost">
+        <i class="bi bi-arrow-right"></i>
+    </a>
+    <div class="flex-grow-1">
+        <h2 class="fw-bold mb-0">@Model.Name</h2>
+        <p class="text-muted mb-0">
+            @if (!string.IsNullOrEmpty(Model.Category))
+            {
+                <span class="badge bg-light text-dark me-1">@Model.Category</span>
+            }
+            @if (!string.IsNullOrEmpty(Model.SubCategory))
+            {
+                <span class="badge bg-light text-dark">@Model.SubCategory</span>
+            }
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> @ViewsSharedLocalizer["Button_Edit"]
+        </a>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
+              onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"]');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> @ViewsSharedLocalizer["Button_Delete"]
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4 m-2">
+    @* Main Info *@
+    <div class="col-lg-8">
+        <div class="card service-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex align-items-start gap-4 mb-4">
+                    <div class="service-detail-icon" style="background: @(Model.Color ?? "var(--brand-primary)");">
+                        <i class="bi @(Model.Icon ?? "bi-stars")"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h4 class="fw-bold mb-2">@Model.Name</h4>
+                        <p class="text-muted mb-3">@Model.Description</p>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            @if (Model.IsPopular)
+                            {
+                                <span class="badge bg-warning"><i class="bi bi-star-fill me-1"></i>
+                                    @Localizer["Badge_Featured"]</span>
+                                }
+                                @if (!Model.IsActive)
+                                {
+                                    <span class="badge bg-secondary">@Localizer["Badge_Inactive"]</span>
+                                }
+                                <span class="badge bg-primary">@appointmentCount @Localizer["Badge_Booking"]</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    @* Details Grid *@
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted fw-bold mb-3">@Localizer["Section_DurationAndPricing"]</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li class="d-flex justify-content-between py-2 border-bottom">
+                                    <span><i
+                                        class="bi bi-clock text-primary me-2"></i>@Localizer["Label_ServiceDuration"]</span>
+                                        <span class="fw-bold">@Model.Duration.FormatTime()</span>
+                                    </li>
+                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                        <span><i
+                                            class="bi bi-currency-exchange text-success me-2"></i>@ViewsSharedLocalizer["Label_BasePrice"]</span>
+                                            <span class="fw-bold">@Model.Price.ToCurrency()</span>
+                                        </li>
+                                        @if (Model.PricePerAdditionalHour.HasValue)
+                                        {
+                                            <li class="d-flex justify-content-between py-2 border-bottom">
+                                                <span><i
+                                                    class="bi bi-hourglass-split text-info me-2"></i>@Localizer["Label_ExtraHourPrice"]</span>
+                                                    <span class="fw-bold">@Model.PricePerAdditionalHour.Value.ToCurrency()</span>
+                                                </li>
+                                            }
+                                            <li class="d-flex justify-content-between py-2 border-bottom">
+                                                <span><i
+                                                    class="bi bi-calculator text-warning me-2"></i>@Localizer["Label_TotalDuration"]</span>
+                                                    <span class="fw-bold">@Model.TotalDuration.FormatTime()</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <h6 class="text-muted fw-bold mb-3">@Localizer["Section_Settings"]</h6>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="d-flex justify-content-between py-2 border-bottom">
+                                                    <span><i
+                                                        class="bi bi-people text-primary me-2"></i>@Localizer["Label_MaxCapacity"]</span>
+                                                        <span class="fw-bold">@Model.MaxCapacity</span>
+                                                    </li>
+                                                    @if (Model.BufferBefore != null)
+                                                    {
+                                                        <li class="d-flex justify-content-between py-2 border-bottom">
+                                                            <span><i
+                                                                class="bi bi-arrow-left-circle text-warning me-2"></i>@Localizer["Label_BufferBefore"]</span>
+                                                                <span class="fw-bold">@Model.BufferBefore.Value.TotalMinutes
+                                                                    @Localizer["Label_Minutes"]</span>
+                                                                </li>
+                                                            }
+                                                            @if (Model.BufferAfter != null)
+                                                            {
+                                                                <li class="d-flex justify-content-between py-2 border-bottom">
+                                                                    <span><i
+                                                                        class="bi bi-arrow-right-circle text-warning me-2"></i>@Localizer["Label_BufferAfter"]</span>
+                                                                        <span class="fw-bold">@Model.BufferAfter.Value.TotalMinutes
+                                                                            @Localizer["Label_Minutes"]</span>
+                                                                        </li>
+                                                                    }
+                                                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                                                        <span><i
+                                                                            class="bi bi-sort-numeric-down text-info me-2"></i>@Localizer["Label_DisplayOrder"]</span>
+                                                                            <span class="fw-bold">#@Model.DisplayOrder</span>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+
+                                                            @* Required Documents *@
+                                                            @if (Model.RequiredDocuments?.Any() == true)
+                                                            {
+                                                                <hr />
+                                                                <h6 class="text-muted fw-bold mb-3">
+                                                                    <i class="bi bi-file-text me-2"></i>
+                                                                    @Localizer["Section_RequiredDocuments"]
+                                                                </h6>
+                                                                <div class="d-flex gap-2 flex-wrap">
+                                                                    @foreach (var doc in Model.RequiredDocuments)
+                                                                    {
+                                                                        <span class="badge bg-light text-dark border">
+                                                                            <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                                            @doc
+                                                                        </span>
+                                                                    }
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* Side Info *@
+                                                <div class="col-lg-4">
+                                                    <div class="card service-card shadow-sm border-0 mb-4">
+                                                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                                        {
+                                                            <!-- مع صورة -->
+                                                            <div class="position-relative" style="background-image: linear-gradient(10deg, @(Model.Color ?? "var(--brand-primary)"), rgba(0,0,0,0.6)), url('@Model.ImageUrl'); background-size: cover;
+                                                                background-position: center;
+                                                                border-radius: 0.75rem 0.75rem 0 0;
+                                                                min-height: 180px;">
+                                                                <div class="card-body text-center position-relative"
+                                                                     style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);">
+                                                                    <div class="display-1 mb-3" style="color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                                                                        <i class="bi @(Model.Icon ?? "bi-stars")"></i>
+                                                                    </div>
+                                                                    <h5 class="fw-bold text-white">@Model.Name</h5>
+                                                                    <p class="text-white-50">@Model.Category</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <!-- بدون صورة (الوضع العادي) -->
+                                                            <div class="card-body text-center">
+                                                                <div class="display-1 mb-3" style="color: @(Model.Color ?? "var(--brand-primary)");">
+                                                                    <i class="bi @(Model.Icon ?? "bi-stars")"></i>
+                                                                </div>
+                                                                <h5 class="fw-bold">@Model.Name</h5>
+                                                                <p class="text-muted">@Model.Category</p>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    <div class="card service-card shadow-sm border-0">
+                                                        <div class="card-header py-3">
+                                                            <h6 class="mb-0 fw-bold">@Localizer["Section_Statistics"]</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <span class="text-muted">@Localizer["Label_TotalAppointments"]</span>
+                                                                <span class="fw-bold fs-5">@appointmentCount</span>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <span class="text-muted">@Localizer["Label_AddedDate"]</span>
+                                                                <span class="fw-bold">@Model.CreatedAt.ToString("yyyy/MM/dd")</span>
+                                                            </div>
+                                                            @if (Model.UpdatedAt.HasValue)
+                                                            {
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <span class="text-muted">@Localizer["Label_LastUpdated"]</span>
+                                                                    <span class="fw-bold">@Model.UpdatedAt.Value.ToString("yyyy/MM/dd")</span>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @section Styles {
+                                                <style>
+                                                    .service-detail-icon {
+                                                        width: 80px;
+                                                        height: 80px;
+                                                        border-radius: 18px;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                        font-size: 2.5rem;
+                                                        color: white;
+                                                        flex-shrink: 0;
+                                                    }
+                                                </style>
+                                            }

@@ -1,0 +1,333 @@
+﻿@using AppointmentBooking.Application.ViewModels.Service
+@using AppointmentBooking.Web.Resources.Views.Services
+
+@inject IStringLocalizer<ServicesResource> Localizer
+
+@model ServiceRequestViewModel
+@{
+    var isEdit = ViewBag.IsEdit as bool? ?? false;
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    ViewData["Title"] = (isEdit ? Localizer["PageTitle_Edit"] : Localizer["PageTitle_Add"]) + " " +
+labels.GetValueOrDefault("serviceItem", Localizer["Service_Item"].Value);
+}
+
+@* Page Header *@
+<div class="d-flex align-items-center gap-3 mb-4 m-3">
+    <a asp-action="Index" class="btn btn-icon btn-ghost">
+        <i class="bi bi-arrow-right"></i>
+    </a>
+    <div>
+        <h2 class="fw-bold mb-0">@ViewData["Title"]</h2>
+        <p class="text-muted mb-0">@(isEdit ? Localizer["Form_UpdateData"] : Localizer["Form_AddNew"])</p>
+    </div>
+</div>
+
+<form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
+    @if (isEdit)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div class="row g-4 m-3">
+        @* Basic Info Column *@
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-info-circle text-primary me-2"></i>
+                        @Localizer["Section_BasicInfo"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @* Name *@
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["Label_ServiceName"]</label>
+                            <input asp-for="Name" class="form-control form-control-lg" id="nameInput"
+                                   placeholder="@Localizer["Placeholder_ServiceName"]" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        @* Category *@
+                        <div class="col-md-3">
+                            <label asp-for="Category" class="form-label fw-bold">@Localizer["Label_Category"]</label>
+                            <input asp-for="Category" class="form-control" list="categories"
+                                   placeholder="@Localizer["Placeholder_Category"]" />
+                            <datalist id="categories">
+                                <option value="@Localizer["Category_Wash"]"></option>
+                                <option value="@Localizer["Category_Polish"]"></option>
+                                <option value="@Localizer["Category_Maintenance"]"></option>
+                                <option value="@Localizer["Category_Beauty"]"></option>
+                            </datalist>
+                        </div>
+
+                        @* SubCategory *@
+                        <div class="col-md-3">
+                            <label asp-for="SubCategory"
+                                   class="form-label fw-bold">@Localizer["Label_SubCategory"]</label>
+                            <input asp-for="SubCategory" class="form-control"
+                                   placeholder="@Localizer["Placeholder_SubCategory"]" />
+                        </div>
+
+                        @* Description *@
+                        <div class="col-12">
+                            <label asp-for="Description"
+                                   class="form-label fw-bold">@Localizer["Label_Description"]</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"
+                                      placeholder="@Localizer["Placeholder_Description"]"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Pricing & Duration Card *@
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-currency-exchange text-success me-2"></i>
+                        @Localizer["Section_PricingAndDuration"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @* Duration *@
+                        <div class="col-md-4">
+                            <label asp-for="DurationMinutes"
+                                   class="form-label fw-bold">@Localizer["Label_DurationMinutes"]</label>
+                            <div class="input-group">
+                                <input asp-for="DurationMinutes" type="number" class="form-control" min="1"
+                                       max="1440" />
+                                <span class="input-group-text">@Localizer["Label_MinutesUnit"]</span>
+                            </div>
+                            <span asp-validation-for="DurationMinutes" class="text-danger small"></span>
+                        </div>
+
+                        @* Price *@
+                        <div class="col-md-4">
+                            <label asp-for="Price"
+                                   class="form-label fw-bold">@ViewsSharedLocalizer["Label_BasePrice"]</label>
+                            <div class="input-group">
+                                <input asp-for="Price" type="number" id="priceInput" step="0.01" class="form-control" />
+                                <span class="input-group-text">@PriceExtension.CurrentCurrency</span>
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+
+                        @* Extra Hour Price *@
+                        <div class="col-md-4">
+                            <label asp-for="PricePerAdditionalHour"
+                                   class="form-label fw-bold">@Localizer["Label_ExtraHourPrice"]</label>
+                            <div class="input-group">
+                                <input asp-for="PricePerAdditionalHour" type="number" step="0.01" class="form-control"
+                                       placeholder="@Localizer["Placeholder_Optional"]" />
+                                <span class="input-group-text">@Localizer["Label_PerHour"]</span>
+                            </div>
+                        </div>
+
+                        @* Buffer Before *@
+                        <div class="col-md-4">
+                            <label asp-for="BufferBeforeMinutes"
+                                   class="form-label fw-bold">@Localizer["Label_BufferBefore"]</label>
+                            <div class="input-group">
+                                <input asp-for="BufferBeforeMinutes" type="number" class="form-control"
+                                       placeholder="0" />
+                                <span class="input-group-text">@Localizer["Label_MinutesUnit"]</span>
+                            </div>
+                            <div class="form-text">@Localizer["FormText_BufferBefore"]</div>
+                        </div>
+
+                        @* Buffer After *@
+                        <div class="col-md-4">
+                            <label asp-for="BufferAfterMinutes"
+                                   class="form-label fw-bold">@Localizer["Label_BufferAfter"]</label>
+                            <div class="input-group">
+                                <input asp-for="BufferAfterMinutes" type="number" class="form-control"
+                                       placeholder="0" />
+                                <span class="input-group-text">@Localizer["Label_MinutesUnit"]</span>
+                            </div>
+                            <div class="form-text">@Localizer["FormText_BufferAfter"]</div>
+                        </div>
+
+                        @* Max Capacity *@
+                        <div class="col-md-4">
+                            <label asp-for="MaxCapacity"
+                                   class="form-label fw-bold">@Localizer["Label_MaxCapacity"]</label>
+                            <input asp-for="MaxCapacity" type="number" class="form-control" min="1" max="100" />
+                            <div class="form-text">@Localizer["FormText_MaxCapacity"]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Documents Card *@
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-file-text text-info me-2"></i>
+                        @Localizer["Section_RequiredDocuments"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <label asp-for="RequiredDocuments" class="form-label fw-bold">@Localizer["Label_Documents"]</label>
+                    <textarea asp-for="RequiredDocuments" class="form-control" rows="2"
+                              placeholder="@Localizer["Placeholder_Documents"]"></textarea>
+                    <div class="form-text">@Localizer["FormText_Documents"]</div>
+                </div>
+            </div>
+        </div>
+
+        @* Settings Column *@
+        <div class="col-lg-4">
+            @* Display Settings *@
+            <div class="card shadow-sm border-0">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-palette text-warning me-2"></i>
+                        @Localizer["Section_Settings"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @* Icon *@
+                    <div class="mb-3">
+                        <label asp-for="Icon" class="form-label fw-bold">@Localizer["Label_Icon"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi @(Model.Icon ?? "bi-stars")"
+                                                                  id="iconPreview"></i></span>
+                                <input asp-for="Icon" class="form-control" id="iconInput"
+                                       placeholder="@Localizer["Placeholder_Icon"]" />
+                            </div>
+                            <div class="form-text">
+                                <a href="https://icons.getbootstrap.com/" target="_blank">@Localizer["Link_IconsList"]</a>
+                            </div>
+                        </div>
+
+                        @* Color *@
+                        <div class="mb-3">
+                            <label asp-for="Color" class="form-label fw-bold">@Localizer["Label_ServiceColor"]</label>
+                            <div class="input-group">
+                                <input type="color" class="form-control form-control-color" id="colorPicker"
+                                       value="@(Model.Color ?? "#2c6e7c")" style="width: 50px;" />
+                                <input asp-for="Color" class="form-control" id="colorInput"
+                                       placeholder="@Localizer["Placeholder_Color"]" />
+                            </div>
+                            <div class="color-preview mt-2 rounded" id="colorPreview"
+                                 style="height: 30px; background: @(Model.Color ?? "#2c6e7c");"></div>
+                        </div>
+
+                        @* Image URL *@
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label fw-bold">@Localizer["Label_ImageUrl"]</label>
+                            <input asp-for="ImageUrl" class="form-control"
+                                   placeholder="@Localizer["Placeholder_ImageUrl"]" />
+                        </div>
+
+                        @* Display Order *@
+                        <div class="mb-3">
+                            <label asp-for="DisplayOrder"
+                                   class="form-label fw-bold">@Localizer["Label_DisplayOrder"]</label>
+                            <input asp-for="DisplayOrder" type="number" class="form-control" />
+                            <div class="form-text">@Localizer["FormText_DisplayOrder"]</div>
+                        </div>
+
+                        @* Toggles *@
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                            <label class="form-check-label fw-bold" asp-for="IsActive">@Localizer["Label_IsActive"]</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" asp-for="IsPopular" />
+                            <label class="form-check-label fw-bold"
+                                   asp-for="IsPopular">@Localizer["Label_IsPopular"]</label>
+                        </div>
+                    </div>
+                </div>
+
+                @* Submit Card *@
+                <div class="card shadow-sm border-0 mt-4 bg-primary text-white">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-lightning-charge me-2"></i>
+                            @Localizer["SubmitCard_Title"]
+                        </h6>
+                        <button type="submit" class="btn btn-light w-100 fw-bold mb-2">
+                            <i class="bi bi-check-lg me-1"></i>
+                            @(isEdit ? ViewsSharedLocalizer["Button_SaveChanges"] : Localizer["Button_CreateService"])
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-light w-100">
+                            <i class="bi bi-x-lg me-1"></i> @ViewsSharedLocalizer["Button_Cancel"]
+                        </a>
+                    </div>
+                </div>
+
+                @* Preview Card *@
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-header py-3">
+                        <h6 class="mb-0 fw-bold">@Localizer["Preview_Title"]</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="preview-icon mb-2" id="previewIconContainer">
+                            <i class="bi @(Model.Icon ?? "bi-stars") display-4" id="previewIcon"
+                               style="color: @(Model.Color ?? "#2c6e7c");"></i>
+                        </div>
+                        <h6 class="preview-name mb-1" id="previewName">@Html.Raw(Model.Name ??
+                                                                                                                                        Localizer["Preview_DefaultName"])</h6>
+                            <span class="preview-price fw-bold text-primary" id="previewPrice">@Html.Raw(Model.Price > 0 ?
+                                                                                                                        Model.Price.ToCurrency() : $"0.00 {PriceExtension.CurrentCurrency}")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            @section Scripts {
+                <partial name="_ValidationScriptsPartial" />
+                <script>
+                    // Live Preview
+                    const nameInput = document.getElementById('nameInput');
+                    const priceInput = document.getElementById('priceInput');
+                    const iconInput = document.getElementById('iconInput');
+                    const colorInput = document.getElementById('colorInput');
+                    const colorPicker = document.getElementById('colorPicker');
+
+                    const previewName = document.getElementById('previewName');
+                    const previewPrice = document.getElementById('previewPrice');
+                    const previewIcon = document.getElementById('previewIcon');
+                    const iconPreview = document.getElementById('iconPreview');
+                    const colorPreview = document.getElementById('colorPreview');
+
+                    function updatePreview() {
+                        previewName.textContent = nameInput.value || '@Html.Raw(Localizer["Preview_DefaultName"])';
+                        previewPrice.textContent = (parseFloat(priceInput.value) || 0).toFixed(2) + ' @Html.Raw(PriceExtension.CurrentCurrency)';
+
+                        const iconClass = iconInput.value || 'bi-stars';
+                        previewIcon.className = `bi ${iconClass} display-4`;
+                        iconPreview.className = `bi ${iconClass}`;
+
+                        const color = colorInput.value || '#2c6e7c';
+                        previewIcon.style.color = color;
+                        colorPreview.style.background = color;
+                    }
+
+                    // Color picker sync
+                    colorPicker.addEventListener('input', (e) => {
+                        colorInput.value = e.target.value;
+                        updatePreview();
+                    });
+
+                    colorInput.addEventListener('input', (e) => {
+                        colorPicker.value = e.target.value;
+                        updatePreview();
+                    });
+
+                    // Other inputs
+                    [nameInput, priceInput, iconInput].forEach(el => {
+                        el.addEventListener('input', updatePreview);
+                    });
+
+                    // Initialize
+                    updatePreview();
+                </script>
+            }

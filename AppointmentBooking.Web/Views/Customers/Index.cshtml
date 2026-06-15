@@ -1,0 +1,342 @@
+﻿@using AppointmentBooking.Application.ViewModels.Customer
+@using AppointmentBooking.Web.Resources.Views.Customers
+@inject IStringLocalizer<CustomerResource> Localizer
+
+@model CustomerListViewModel
+@{
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    ViewData["Title"] = labels.GetValueOrDefault("customer", Localizer["PageTitle_Customers"].Value);
+}
+
+@* Page Header *@
+<div class="d-flex flex-wrap justify-content-between align-items-center m-4 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-people-fill text-primary m-2"></i>
+            @labels.GetValueOrDefault("customer", Localizer["PageTitle_Customers"].Value)
+        </h2>
+        <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i>
+        @Localizer["Button_AddCustomer"]
+    </a>
+</div>
+
+@* Stats Row *@
+<div class="row g-3 m-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon rounded-circle bg-primary bg-opacity-10 text-primary"
+                     style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0">@Model.Customers.Count</h5>
+                    <small class="text-muted">@Localizer["Stats_TotalCustomers"]</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon rounded-circle bg-success bg-opacity-10 text-success"
+                     style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0">@Model.Customers.Sum(c => c.TotalAppointments)</h5>
+                    <small class="text-muted">@Localizer["Stats_TotalAppointments"]</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon rounded-circle bg-warning bg-opacity-10 text-warning"
+                     style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0">@Model.Customers.Count(c => c.TotalAppointments > 5)</h5>
+                    <small class="text-muted">@Localizer["Stats_VIPCustomers"]</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Filters *@
+<div class="card shadow-sm border-0 m-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">@Localizer["Label_Search"]</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control border-start-0"
+                           placeholder="@Localizer["Placeholder_Search"]" />
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label text-muted small fw-bold">@Localizer["Label_SortBy"]</label>
+                <select name="sortBy" class="form-select" onchange="this.form.submit()">
+                    <option value="">@Localizer["Sort_Default"]</option>
+                    <option value="name" selected="@(Model.SortBy == "name")">@Localizer["Sort_ByName"]</option>
+                    <option value="appointments" selected="@(Model.SortBy == "appointments")">
+                        @Localizer["Sort_ByAppointments"]
+                    </option>
+                    <option value="recent" selected="@(Model.SortBy == "recent")">@Localizer["Sort_ByRecent"]</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-funnel"></i> @Localizer["Button_Filter"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Customers Table *@
+<div class="card shadow-sm border-0 m-4">
+    <div class="table-responsive">
+        <table class="app-table m-0">
+            <thead>
+                <tr>
+                    <th>@ViewsSharedLocalizer["TableHeader_Customer"]</th>
+                    <th>@Localizer["TableHeader_Contact"]</th>
+                    <th>@Localizer["TableHeader_Appointments"]</th>
+                    <th>@Localizer["TableHeader_LastVisit"]</th>
+                    <th>@Localizer["TableHeader_AddedDate"]</th>
+                    <th style="width: 120px;">@Localizer["TableHeader_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in Model.Customers)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="customer-avatar" style="width: 42px; height: 42px; border-radius: 50%; 
+                                    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+                                    color: white; display: flex; align-items: center; justify-content: center;
+                                    font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                                    @customer.FullName[0]
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">@customer.FullName</h6>
+                                    @if (!string.IsNullOrEmpty(customer.Notes))
+                                    {
+                                        <small class="text-muted" title="@customer.Notes">
+                                            <i class="bi bi-stickies"></i> @customer.Notes[..Math.Min(30,
+                                                                                                                                                                                                                                                                                                            customer.Notes.Length)]...
+                                        </small>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="d-flex align-items-center gap-1">
+                                    <i class="bi bi-telephone-fill text-success small"></i>
+                                    <span dir="ltr" class="fw-medium">@customer.PhoneNumber</span>
+                                </span>
+                                @if (!string.IsNullOrEmpty(customer.Email))
+                                {
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="bi bi-envelope-fill text-primary small"></i>
+                                        <small class="text-muted">@customer.Email</small>
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">
+                                <h6> @customer.TotalAppointments</h6>
+                            </span>
+                        </td>
+                        <td>
+                            @if (customer.LastAppointmentDate.HasValue)
+                            {
+                                <span class="d-flex align-items-center gap-1">
+                                    <i class="bi bi-clock-history text-warning small"></i>
+                                    @customer.LastAppointmentDate.Value.ToString("yyyy/MM/dd")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">@Localizer["Value_Empty"]</span>
+                            }
+                        </td>
+                        <td>
+                            <small class="text-muted">@customer.CreatedAt.ToString("yyyy/MM/dd")</small>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-sm btn-icon btn-ghost"
+                                   title="@Localizer["Button_View"]">
+                                    <i class="bi bi-eye text-info"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-sm btn-icon btn-ghost"
+                                   title="@ViewsSharedLocalizer["Button_Edit"]">
+                                    <i class="bi bi-pencil text-primary"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@customer.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"] @customer.FullName؟');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-icon btn-ghost"
+                                            title="@ViewsSharedLocalizer["Button_Delete"]">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@* Pagination Section for Customers *@
+@if (Model.TotalPages > 1)
+{
+    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0 gap-1 flex-wrap">
+                @* Previous Button *@
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy">
+                        <i class="bi bi-chevron-right"></i>
+                        <span class="d-none d-md-inline">@Localizer["Pagination_Previous"]</span>
+                    </a>
+                </li>
+
+                @* Page Numbers *@
+                @{
+                    int startPage = Math.Max(1, Model.PageNumber - 2);
+                    int endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+
+                    if (startPage > 1)
+                    {
+                        <li class="page-item d-none d-sm-block">
+                            <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="1"
+                               asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm"
+                               asp-route-sortBy="@Model.SortBy"">1</a>
+                        </li>
+                        @if (startPage > 2)
+                        {
+                            <li class=" page-item disabled d-none d-sm-block"><span
+                                class="page-link rounded">...</span>
+                            </li>
+                        }
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@i"
+                               asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm"
+                               asp-route-sortBy="@Model.SortBy">@i</a>
+                        </li>
+                    }
+
+                    if (endPage < Model.TotalPages)
+                    {
+                        @if (endPage < Model.TotalPages - 1)
+                        {
+                            <li class="page-item disabled d-none d-sm-block"><span class="page-link rounded">...</span></li>
+                        }
+                        <li class="page-item d-none d-sm-block">
+                            <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@Model.TotalPages"
+                               asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm"
+                               asp-route-sortBy="@Model.SortBy">@Model.TotalPages</a>
+                        </li>
+                    }
+                }
+
+                @* Next Button *@
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy">
+                        <span class="d-none d-md-inline">@Localizer["Pagination_Next"]</span>
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        @* Info and Page Size selector *@
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+            <small class="text-muted">
+                @Localizer["Pagination_Showing"] @(((Model.PageNumber - 1) * Model.PageSize) + 1) -
+                @Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)
+                @Localizer["Pagination_Of"] <strong>@Model.TotalCount</strong> @labels.GetValueOrDefault("customer",
+                Localizer["PageTitle_Customers"].Value)
+            </small>
+
+            <div class="d-flex align-items-center gap-2">
+                <label class="text-muted small mb-0">@Localizer["Pagination_ShowLabel"]</label>
+                <select class="form-select form-select-sm w-auto" onchange="window.location.href=this.value"
+                        style="min-width: 70px;">
+                    @foreach (var size in new[] { 10, 25, 50, 100 })
+                    {
+                        var url = Url.Action("Index", new
+                        {
+                            pageSize = size,
+                            pageNumber = 1,
+                            search = Model.SearchTerm,
+                            sortBy = Model.SortBy,
+                        });
+                        <option value="@url" selected="@(Model.PageSize == size)">
+                            @size
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!Model.Customers.Any())
+{
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-people display-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">@Localizer["EmptyState_NoCustomers"]</h5>
+        <p class="text-muted">@Localizer["EmptyState_StartAdding"]</p>
+        <a asp-action="Create" class="btn btn-primary mt-2">
+            <i class="bi bi-person-plus"></i> @Localizer["Button_AddCustomer"]
+        </a>
+    </div>
+}
+
+
+@section Styles {
+    <style>
+        .customer-avatar {
+            transition: transform var(--transition-fast);
+        }
+
+        tr:hover .customer-avatar {
+            transform: scale(1.1);
+        }
+
+        .app-table td {
+            vertical-align: middle;
+            padding: 1rem 0.75rem;
+        }
+    </style>
+}

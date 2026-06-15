@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="Email_Required" xml:space="preserve">
+      <value>Email is required</value>
+      <comment/>
+  </data>
+  <data name="Email_MaxLength" xml:space="preserve">
+      <value>Email must not exceed 100 characters</value>
+      <comment/>
+  </data>
+  <data name="Password_MinLength" xml:space="preserve">
+      <value>Password must be at least 6 characters</value>
+      <comment/>
+  </data>
+  <data name="Password_MaxLength" xml:space="preserve">
+      <value>Password must not exceed 50 characters</value>
+      <comment/>
+  </data>
+  <data name="RememberMe_Required" xml:space="preserve">
+      <value>RememberMe field is required</value>
+      <comment/>
+  </data>
+
+  <data name="Name_Required" xml:space="preserve">
+    <value>Name is required</value>
+    <comment/>
+  </data>
+  <data name="Name_MinLength" xml:space="preserve">
+      <value>Name must be at least 3 characters</value>
+      <comment/>
+  </data>
+  <data name="Name_MaxLength" xml:space="preserve">
+      <value>Name must not exceed 50 characters</value>
+      <comment/>
+  </data>
+  <data name="Name_InvalidPattern" xml:space="preserve">
+      <value>Name must contain only letters</value>
+      <comment/>
+  </data>
+  <data name="Email_Invalid" xml:space="preserve">
+      <value>Invalid email format</value>
+      <comment/>
+  </data>
+  <data name="Password_Required" xml:space="preserve">
+      <value>Password is required</value>
+      <comment/>
+  </data>
+  <data name="Password_RequireUpper" xml:space="preserve">
+      <value>Password must contain at least one uppercase letter</value>
+      <comment/>
+  </data>
+  <data name="Password_RequireLower" xml:space="preserve">
+      <value>Password must contain at least one lowercase letter</value>
+      <comment/>
+  </data>
+  <data name="Password_RequireDigit" xml:space="preserve">
+      <value>Password must contain at least one digit</value>
+      <comment/>
+  </data>
+  <data name="Password_RequireSpecial" xml:space="preserve">
+      <value>Password must contain at least one special character</value>
+      <comment/>
+  </data>
+
+  <data name="ConfirmPassword_Required" xml:space="preserve">
+      <value>Confirm password is required</value>
+      <comment/>
+  </data>
+  <data name="ConfirmPassword_NotMatch" xml:space="preserve">
+      <value>Password and confirm password do not match</value>
+      <comment/>
+  </data>
+  <data name="Appointment_Id_Invalid" xml:space="preserve">
+    <value>Invalid appointment ID</value>
+    <comment/>
+</data>
+  <data name="Appointment_Customer_Required" xml:space="preserve">
+    <value>Please select a customer</value>
+    <comment/>
+</data>
+  <data name="Appointment_Service_Required" xml:space="preserve">
+    <value>Please select a service</value>
+    <comment/>
+</data>
+  <data name="Appointment_Date_Required" xml:space="preserve">
+    <value>Please select an appointment date</value>
+    <comment/>
+</data>
+  <data name="Appointment_Date_Past" xml:space="preserve">
+    <value>Cannot book an appointment in the past</value>
+    <comment/>
+</data>
+  <data name="Appointment_Date_Weekend" xml:space="preserve">
+    <value>Cannot book appointments on Fridays and Saturdays (weekend days)</value>
+    <comment/>
+</data>
+  <data name="Appointment_Time_Required" xml:space="preserve">
+    <value>Please select an appointment time</value>
+    <comment/>
+</data>
+  <data name="Appointment_Time_InvalidBusinessHours" xml:space="preserve">
+    <value>Appointment time must be within business hours</value>
+    <comment/>
+</data>
+  <data name="Appointment_Time_Past" xml:space="preserve">
+    <value>Cannot book an appointment in the past for today</value>
+    <comment/>
+</data>
+  <data name="Appointment_Status_Invalid" xml:space="preserve">
+    <value>Invalid appointment status</value>
+    <comment/>
+</data>
+  <data name="Appointment_Pricing_Invalid" xml:space="preserve">
+    <value>Invalid pricing data: Ensure total price is greater than zero, discount is not negative and does not exceed total price, and final price matches the calculation.</value>
+    <comment/>
+</data>
+  <data name="Appointment_Notes_MaxLength" xml:space="preserve">
+    <value>Notes cannot exceed 1000 characters</value>
+    <comment/>
+</data>
+
+  <data name="Branding_Primary_Required" xml:space="preserve">
+    <value>Primary color is required</value>
+    <comment/>
+</data>
+  <data name="Branding_Primary_InvalidHex" xml:space="preserve">
+    <value>Primary color must be a valid Hex color (e.g., #2c6e7c)</value>
+    <comment/>
+</data>
+  <data name="Branding_Secondary_Required" xml:space="preserve">
+    <value>Secondary color is required</value>
+    <comment/>
+</data>
+  <data name="Branding_Secondary_InvalidHex" xml:space="preserve">
+    <value>Secondary color must be a valid Hex color</value>
+    <comment/>
+</data>
+  <data name="Branding_Accent_Required" xml:space="preserve">
+    <value>Accent color is required</value>
+    <comment/>
+</data>
+  <data name="Branding_Accent_InvalidHex" xml:space="preserve">
+    <value>Accent color must be a valid Hex color</value>
+    <comment/>
+</data>
+  <data name="Branding_DarkModePrimary_InvalidHex" xml:space="preserve">
+    <value>Dark mode primary color must be a valid Hex color</value>
+    <comment/>
+</data>
+  <data name="Branding_Contrast_Required" xml:space="preserve">
+    <value>There must be sufficient contrast between primary and secondary colors</value>
+    <comment/>
+</data>
+  <data name="Contact_Phone_MaxLength" xml:space="preserve">
+    <value>Phone number must not exceed 20 digits</value>
+    <comment/>
+</data>
+  <data name="Contact_Phone_InvalidFormat" xml:space="preserve">
+    <value>Invalid phone number format</value>
+    <comment/>
+</data>
+  <data name="Contact_Email_InvalidFormat" xml:space="preserve">
+    <value>Invalid email format</value>
+    <comment/>
+</data>
+  <data name="Contact_Email_MaxLength" xml:space="preserve">
+    <value>Email must not exceed 100 characters</value>
+    <comment/>
+</data>
+  <data name="Contact_Address_MaxLength" xml:space="preserve">
+    <value>Address must not exceed 500 characters</value>
+    <comment/>
+</data>
+  <data name="Contact_AtLeastOneMethod" xml:space="preserve">
+    <value>At least one contact method must be provided (phone, email, or address)</value>
+    <comment/>
+</data>
+  <data name="Localization_Currency_Required" xml:space="preserve">
+    <value>Please enter currency code</value>
+    <comment/>
+</data>
+  <data name="Localization_Currency_MaxLength" xml:space="preserve">
+    <value>Currency code is too long</value>
+    <comment/>
+</data>
+  <data name="Localization_Language_Required" xml:space="preserve">
+    <value>Please select a language</value>
+    <comment/>
+</data>
+  <data name="Localization_Language_Invalid" xml:space="preserve">
+    <value>Please select Arabic (ar) or English (en)</value>
+    <comment/>
+</data>
+  <data name="Localization_Direction_Required" xml:space="preserve">
+    <value>Text direction is required</value>
+    <comment/>
+</data>
+  <data name="Localization_Direction_Invalid" xml:space="preserve">
+    <value>Text direction must be 'rtl' or 'ltr'</value>
+    <comment/>
+</data>
+  <data name="Localization_TimeZone_Required" xml:space="preserve">
+    <value>Time zone is required</value>
+    <comment/>
+</data>
+  <data name="Localization_TimeZone_Invalid" xml:space="preserve">
+    <value>Invalid time zone</value>
+    <comment/>
+</data>
+  <data name="Localization_ConsistentLanguageAndDirection" xml:space="preserve">
+    <value>Arabic language must use 'rtl' direction, and English language must use 'ltr' direction</value>
+    <comment/>
+</data>
+  <data name="Profile_BusinessName_Required" xml:space="preserve">
+    <value>Business name is required</value>
+    <comment/>
+</data>
+  <data name="Profile_BusinessName_MinLength" xml:space="preserve">
+    <value>Business name must be at least 3 characters</value>
+    <comment/>
+</data>
+  <data name="Profile_BusinessName_MaxLength" xml:space="preserve">
+    <value>Business name must not exceed 100 characters</value>
+    <comment/>
+</data>
+  <data name="Profile_BusinessName_InvalidPattern" xml:space="preserve">
+    <value>Business name can only contain letters, numbers, spaces, hyphens, or underscores</value>
+    <comment/>
+</data>
+  <data name="Profile_Tagline_MaxLength" xml:space="preserve">
+    <value>Tagline must not exceed 200 characters</value>
+    <comment/>
+</data>
+  <data name="Profile_LogoUrl_Invalid" xml:space="preserve">
+    <value>Invalid logo URL</value>
+    <comment/>
+</data>
+  <data name="Profile_FaviconUrl_Invalid" xml:space="preserve">
+    <value>Invalid favicon URL</value>
+    <comment/>
+</data>
+  <data name="Profile_WorkingHoursStart_Required" xml:space="preserve">
+    <value>Working hours start time is required</value>
+    <comment/>
+</data>
+  <data name="Profile_WorkingHoursEnd_Required" xml:space="preserve">
+    <value>Working hours end time is required</value>
+    <comment/>
+</data>
+  <data name="Profile_WorkingHoursEnd_AfterStart" xml:space="preserve">
+    <value>End time must be after start time</value>
+    <comment/>
+</data>
+  <data name="Profile_SlotDuration_InclusiveBetween" xml:space="preserve">
+    <value>Slot duration must be between 5 and 120 minutes</value>
+    <comment/>
+</data>
+  <data name="Profile_SlotDuration_DivisibleBy5" xml:space="preserve">
+    <value>Slot duration must be a multiple of 5</value>
+    <comment/>
+</data>
+  <data name="Profile_Colors_Required" xml:space="preserve">
+    <value>Color settings are required</value>
+    <comment/>
+</data>
+  <data name="Profile_Localization_Required" xml:space="preserve">
+    <value>Localization settings are required</value>
+    <comment/>
+</data>
+  <data name="Profile_Contact_Required" xml:space="preserve">
+    <value>Contact information is required</value>
+    <comment/>
+</data>
+  <data name="Profile_CustomLabels_MaxCount" xml:space="preserve">
+    <value>Maximum number of custom labels is 20</value>
+    <comment/>
+</data>
+  <data name="Profile_CustomLabels_NotEmpty" xml:space="preserve">
+    <value>All custom labels must have non-empty key and value</value>
+    <comment/>
+</data>
+  <data name="Profile_WorkingHours_Logical" xml:space="preserve">
+    <value>Working hours must be logical (at least 4 hours)</value>
+    <comment/>
+</data>
+  <data name="Profile_LogoAndFavicon_SameDomain" xml:space="preserve">
+    <value>Logo URL and Favicon URL must be from the same domain if both are provided</value>
+    <comment/>
+</data>
+  <data name="Customer_Id_Invalid" xml:space="preserve">
+    <value>Invalid customer ID</value>
+    <comment/>
+</data>
+  <data name="Customer_FullName_Required" xml:space="preserve">
+    <value>Full name is required</value>
+    <comment/>
+</data>
+  <data name="Customer_FullName_MinLength" xml:space="preserve">
+    <value>Full name must be at least 3 characters</value>
+    <comment/>
+</data>
+  <data name="Customer_FullName_MaxLength" xml:space="preserve">
+    <value>Full name cannot exceed 100 characters</value>
+    <comment/>
+</data>
+  <data name="Customer_FullName_InvalidPattern" xml:space="preserve">
+    <value>Full name must contain only letters (Arabic or English)</value>
+    <comment/>
+</data>
+  <data name="Customer_Phone_Required" xml:space="preserve">
+    <value>Phone number is required</value>
+    <comment/>
+</data>
+  <data name="Customer_Phone_MinLength" xml:space="preserve">
+    <value>Phone number must be at least 8 digits</value>
+    <comment/>
+</data>
+  <data name="Customer_Phone_MaxLength" xml:space="preserve">
+    <value>Phone number cannot exceed 15 digits</value>
+    <comment/>
+</data>
+  <data name="Customer_Email_Invalid" xml:space="preserve">
+    <value>Invalid email address</value>
+    <comment/>
+</data>
+  <data name="Customer_Email_MaxLength" xml:space="preserve">
+    <value>Email cannot exceed 150 characters</value>
+    <comment/>
+</data>
+  <data name="Customer_Notes_MaxLength" xml:space="preserve">
+    <value>Notes cannot exceed 1000 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Id_Invalid" xml:space="preserve">
+    <value>ID must be a positive number</value>
+    <comment/>
+</data>
+  <data name="Service_Name_Required" xml:space="preserve">
+    <value>Service name is required</value>
+    <comment/>
+</data>
+  <data name="Service_Name_MinLength" xml:space="preserve">
+    <value>Service name must be at least 3 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Name_MaxLength" xml:space="preserve">
+    <value>Service name must not exceed 200 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Name_InvalidPattern" xml:space="preserve">
+    <value>Service name can only contain letters, numbers, spaces, and hyphens</value>
+    <comment/>
+</data>
+  <data name="Service_Description_MaxLength" xml:space="preserve">
+    <value>Description must not exceed 2000 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Category_Required" xml:space="preserve">
+    <value>Category is required</value>
+    <comment/>
+</data>
+  <data name="Service_Category_MaxLength" xml:space="preserve">
+    <value>Category must not exceed 100 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Category_InvalidPattern" xml:space="preserve">
+    <value>Category contains invalid characters</value>
+    <comment/>
+</data>
+  <data name="Service_SubCategory_MaxLength" xml:space="preserve">
+    <value>Sub-category must not exceed 100 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Duration_Required" xml:space="preserve">
+    <value>Service duration is required</value>
+    <comment/>
+</data>
+  <data name="Service_Duration_InclusiveBetween" xml:space="preserve">
+    <value>Service duration must be between 5 and 480 minutes</value>
+    <comment/>
+</data>
+  <data name="Service_Duration_DivisibleBy5" xml:space="preserve">
+    <value>Service duration must be a multiple of 5</value>
+    <comment/>
+</data>
+  <data name="Service_Price_Required" xml:space="preserve">
+    <value>Service price is required</value>
+    <comment/>
+</data>
+  <data name="Service_Price_Negative" xml:space="preserve">
+    <value>Price cannot be negative</value>
+    <comment/>
+</data>
+  <data name="Service_Price_MaxValue" xml:space="preserve">
+    <value>Price cannot exceed 100,000</value>
+    <comment/>
+</data>
+  <data name="Service_PricePerExtraHour_Negative" xml:space="preserve">
+    <value>Price per extra hour cannot be negative</value>
+    <comment/>
+</data>
+  <data name="Service_PricePerExtraHour_MaxValue" xml:space="preserve">
+    <value>Price per extra hour cannot exceed 50,000</value>
+    <comment/>
+</data>
+  <data name="Service_PricePerExtraHour_NotExceedDouble" xml:space="preserve">
+    <value>Price per extra hour must not exceed double the base price</value>
+    <comment/>
+</data>
+  <data name="Service_BufferBefore_InclusiveBetween" xml:space="preserve">
+    <value>Preparation time before service must be between 0 and 120 minutes</value>
+    <comment/>
+</data>
+  <data name="Service_BufferBefore_NotExceedDuration" xml:space="preserve">
+    <value>Preparation time before service must not exceed service duration</value>
+    <comment/>
+</data>
+  <data name="Service_BufferAfter_InclusiveBetween" xml:space="preserve">
+    <value>Preparation time after service must be between 0 and 120 minutes</value>
+    <comment/>
+</data>
+  <data name="Service_BufferAfter_NotExceedDuration" xml:space="preserve">
+    <value>Preparation time after service must not exceed service duration</value>
+    <comment/>
+</data>
+  <data name="Service_MaxCapacity_Required" xml:space="preserve">
+    <value>Maximum capacity is required</value>
+    <comment/>
+</data>
+  <data name="Service_MaxCapacity_InclusiveBetween" xml:space="preserve">
+    <value>Maximum capacity must be between 1 and 100 people</value>
+    <comment/>
+</data>
+  <data name="Service_RequiredDocuments_MaxLength" xml:space="preserve">
+    <value>Required documents list must not exceed 1000 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Icon_InvalidPattern" xml:space="preserve">
+    <value>Icon must be from Bootstrap Icons library (e.g., bi-star, bi-clock)</value>
+    <comment/>
+</data>
+  <data name="Service_Icon_MaxLength" xml:space="preserve">
+    <value>Icon name must not exceed 50 characters</value>
+    <comment/>
+</data>
+  <data name="Service_Color_InvalidHex" xml:space="preserve">
+    <value>Color must be a valid Hex color (e.g., #2c6e7c)</value>
+    <comment/>
+</data>
+  <data name="Service_ImageUrl_Invalid" xml:space="preserve">
+    <value>Invalid image URL</value>
+    <comment/>
+</data>
+  <data name="Service_ImageUrl_MaxLength" xml:space="preserve">
+    <value>Image URL must not exceed 500 characters</value>
+    <comment/>
+</data>
+  <data name="Service_DisplayOrder_Positive" xml:space="preserve">
+    <value>Display order must be a positive number</value>
+    <comment/>
+</data>
+  <data name="Service_DisplayOrder_MaxValue" xml:space="preserve">
+    <value>Display order cannot exceed 1000</value>
+    <comment/>
+</data>
+  <data name="Service_Buffers_Logical" xml:space="preserve">
+    <value>Total preparation time before and after service must not exceed service duration</value>
+    <comment/>
+</data>
+  <data name="Service_CategorySubcategory_Valid" xml:space="preserve">
+    <value>If sub-category is specified, main category must be specified first</value>
+    <comment/>
+</data>
+  <data name="Service_ActiveIfPopular" xml:space="preserve">
+    <value>Popular services must be active</value>
+    <comment/>
+</data>
+
+  <data name="Appointment_Time_NotAvailable" xml:space="preserve">
+    <value>The selected time is not available</value>
+    <comment/>
+</data>
+  <data name="Appointment_AlreadyBooked" xml:space="preserve">
+    <value>Sorry, this time slot was just booked by another user. Please choose another time.</value>
+    <comment/>
+</data>
+  <data name="Appointment_NotFound" xml:space="preserve">
+    <value>Appointment not found</value>
+    <comment/>
+</data>
+  <data name="Common_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+    <comment/>
+</data>
+  <data name="Common_Today" xml:space="preserve">
+    <value>Today</value>
+    <comment/>
+</data>
+  <data name="Common_Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+    <comment/>
+</data>
+  <data name="Appointment_UpdateConcurrency" xml:space="preserve">
+    <value>This appointment was modified by another user while you were editing. Please refresh the page and try again.</value>
+    <comment/>
+</data>
+  <data name="Appointment_Delete_CompletedNotAllowed" xml:space="preserve">
+    <value>Cannot delete a completed appointment</value>
+    <comment/>
+</data>
+  <data name="Appointment_Status_InvalidTransition" xml:space="preserve">
+    <value>Invalid status transition</value>
+    <comment/>
+</data>
+  <data name="Appointment_ServiceNotFound" xml:space="preserve">
+    <value>Service {0} not found</value>
+    <comment/>
+</data>
+</root>

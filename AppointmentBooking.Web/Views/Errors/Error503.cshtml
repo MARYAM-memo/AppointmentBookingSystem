@@ -1,0 +1,47 @@
+﻿@using AppointmentBooking.Web.Resources.Views.Errors
+@inject IStringLocalizer<ErrorsResource> Localizer
+
+@model ErrorPageViewModel
+@{
+    Layout = "~/Views/Errors/_ErrorMaster.cshtml";
+}
+
+<div class="error-icon-wrap error-icon-503">
+    <i class="bi @Model.Icon"></i>
+</div>
+
+<div class="error-code error-code-503">@Model.StatusCode</div>
+<h1 class="error-title">@Model.Title</h1>
+<p class="error-message">@Model.Message</p>
+<p class="error-description">@Model.Description</p>
+
+<div class="mb-4">
+    <div class="card biz-card mx-auto" style="max-width: 400px;">
+        <div class="card-body">
+            <h6 class="card-title mb-3"><i class="bi bi-tools"></i> @Localizer["Error_MaintenanceStatus"]</h6>
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="spinner-border text-primary" role="status" style="width: 1.5rem; height: 1.5rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span>@Localizer["Error_UnderMaintenance"]</span>
+            </div>
+            <p class="text-muted small mb-0">@Localizer["Error_ComingSoon"]</p>
+        </div>
+    </div>
+</div>
+
+<div class="error-suggestions">
+    @foreach (var suggestion in Model.Suggestions)
+    {
+        <a href="@suggestion.Url"
+           class="error-suggestion-btn @(suggestion == Model.Suggestions.First() ? "error-suggestion-primary" : "error-suggestion-outline")">
+            <i class="bi @suggestion.Icon"></i>
+            @suggestion.Text
+        </a>
+    }
+</div>
+
+<div class="error-trace">
+    <div class="error-trace-label">@Localizer["Error_TrackingId"]</div>
+    <div class="error-trace-value">@Model.TraceId</div>
+</div>

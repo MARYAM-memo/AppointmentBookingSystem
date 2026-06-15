@@ -1,0 +1,36 @@
+﻿@using System.Text.Json
+
+@{
+    var messageJson = TempData["Message"]?.ToString();
+}
+
+@if (!string.IsNullOrEmpty(messageJson))
+{
+    var message = JsonSerializer.Deserialize<AlertMessage>(messageJson);
+
+    TempData.Remove("Message");
+
+    var cssClass = message?.Type switch
+    {
+        MessageType.Success => "alert-success",
+        MessageType.Error => "alert-danger",
+        MessageType.Warning => "alert-warning",
+        _ => "alert-info"
+    };
+
+    var cssIcon = message?.Type switch
+    {
+        MessageType.Success => "bi-check-circle-fill",
+        MessageType.Error => "bi-exclamation-triangle-fill",
+        MessageType.Warning => "bi-exclamation-circle-fill",
+        _ => "bi-exclamation-circle-fill"
+    };
+
+    <div class="container mt-3">
+        <div class="alert @cssClass alert-dismissible fade show" role="alert">
+            <i class="bi @cssIcon me-2"></i>
+            @message?.Title
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+}

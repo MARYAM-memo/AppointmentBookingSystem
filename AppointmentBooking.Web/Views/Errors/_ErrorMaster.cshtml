@@ -1,0 +1,293 @@
+﻿@model AppointmentBooking.Application.ViewModels.Account.ErrorPageViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.Title;
+}
+
+@section Styles {
+    <style>
+        /* ============================================
+           CENTRALIZED ERROR PAGES - Master Styles
+           ============================================ */
+
+        .error-master {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .error-master::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(var(--biz-primary-rgb), 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(var(--biz-secondary-rgb), 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Status Code */
+        .error-code {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.05em;
+        }
+
+        .error-code-400 { color: #f59e0b; }
+        .error-code-401 { color: #dc2626; }
+        .error-code-403 { color: #dc2626; }
+        .error-code-404 { 
+            background: linear-gradient(135deg, var(--biz-primary), var(--biz-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .error-code-405 { color: #f59e0b; }
+        .error-code-408 { color: #f59e0b; }
+        .error-code-409 { color: #f59e0b; }
+        .error-code-422 { color: #db2777; }
+        .error-code-429 { color: #f59e0b; }
+        .error-code-500 { color: #dc2626; }
+        .error-code-502 { color: #dc2626; }
+        .error-code-503 { color: #4f46e5; }
+        .error-code-504 { color: #dc2626; }
+
+        /* Icon */
+        .error-icon-wrap {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3.5rem;
+            position: relative;
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+
+        @@keyframes errorPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 currentColor; }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 15px transparent; }
+        }
+
+        .error-icon-400 { background: #fef3c7; color: #d97706; }
+        .error-icon-401 { background: #fee2e2; color: #dc2626; }
+        .error-icon-403 { background: #fee2e2; color: #dc2626; }
+        .error-icon-404 { background: rgba(var(--biz-primary-rgb), 0.1); color: var(--biz-primary); }
+        .error-icon-405 { background: #fef3c7; color: #d97706; }
+        .error-icon-408 { background: #fef3c7; color: #d97706; }
+        .error-icon-409 { background: #fef3c7; color: #d97706; }
+        .error-icon-422 { background: #fce7f3; color: #db2777; }
+        .error-icon-429 { background: #fef3c7; color: #d97706; }
+        .error-icon-500 { background: #fee2e2; color: #dc2626; }
+        .error-icon-502 { background: #fee2e2; color: #dc2626; }
+        .error-icon-503 { background: #e0e7ff; color: #4f46e5; }
+        .error-icon-504 { background: #fee2e2; color: #dc2626; }
+
+        /* Title & Message */
+        .error-title {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-message {
+            font-size: 1.05rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .error-description {
+            font-size: 0.95rem;
+            color: #9ca3af;
+            margin-bottom: 2rem;
+        }
+
+        /* Suggestions */
+        .error-suggestions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+
+        .error-suggestion-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--biz-radius-lg);
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: 2px solid transparent;
+        }
+
+        .error-suggestion-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-suggestion-primary {
+            background: linear-gradient(135deg, var(--biz-primary), var(--biz-secondary));
+            color: white;
+            box-shadow: var(--biz-shadow-primary);
+        }
+
+        .error-suggestion-primary:hover {
+            box-shadow: 0 6px 20px rgba(var(--biz-primary-rgb), 0.35);
+            color: white;
+        }
+
+        .error-suggestion-outline {
+            border-color: #e5e7eb;
+            color: #4b5563;
+            background: white;
+        }
+
+        .error-suggestion-outline:hover {
+            border-color: var(--biz-primary);
+            color: var(--biz-primary);
+        }
+
+        /* Trace Box */
+        .error-trace {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--biz-radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: start;
+        }
+
+        .error-trace-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-trace-value {
+            font-family: 'Courier New', 'SF Mono', monospace;
+            font-size: 0.8rem;
+            color: #4b5563;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .error-trace-exception {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: var(--biz-radius-md);
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Decorative Elements */
+        .error-decoration {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .error-decoration-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--biz-primary);
+            top: -100px;
+            right: -100px;
+        }
+
+        .error-decoration-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--biz-secondary);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Dark Mode */
+        [data-bs-theme="dark"] .error-title {
+            color: #f3f4f6;
+        }
+
+        [data-bs-theme="dark"] .error-message {
+            color: #9ca3af;
+        }
+
+        [data-bs-theme="dark"] .error-description {
+            color: #6b7280;
+        }
+
+        [data-bs-theme="dark"] .error-trace {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-bs-theme="dark"] .error-trace-value {
+            color: #d1d5db;
+        }
+
+        [data-bs-theme="dark"] .error-suggestion-outline {
+            background: #1e293b;
+            border-color: #334155;
+            color: #d1d5db;
+        }
+
+        /* Responsive */
+        @@media (max-width: 480px) {
+            .error-icon-wrap {
+                width: 90px;
+                height: 90px;
+                font-size: 2.5rem;
+            }
+
+            .error-suggestions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .error-suggestion-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+}
+
+<div class="error-master">
+    <div class="error-decoration error-decoration-1"></div>
+    <div class="error-decoration error-decoration-2"></div>
+
+    <div class="error-container">
+        @RenderBody()
+    </div>
+</div>

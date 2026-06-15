@@ -1,0 +1,427 @@
+﻿@using AppointmentBooking.Application.ViewModels.Appointment
+@using AppointmentBooking.Web.Resources.Views.Appointments
+@inject IStringLocalizer<AppointmentResource> Localizer
+
+@model AppointmentListViewModel
+@{
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    ViewData["Title"] = labels?.GetValueOrDefault("appointment", Localizer["PageTitle_Appointments"].Value);
+
+}
+
+@* Page Header *@
+<div class="d-flex flex-wrap justify-content-between align-items-center m-4 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-calendar-week text-primary me-2"></i>
+            @labels?.GetValueOrDefault("appointment", Localizer["PageTitle_Appointments"].Value)
+        </h2>
+        <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Calendar" class="btn btn-outline-primary">
+            <i class="bi bi-calendar3"></i>
+            <span class="d-none d-md-inline">@Localizer["Button_ViewCalendar"]</span>
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            @ViewsSharedLocalizer["Button_NewBooking"]
+        </a>
+    </div>
+</div>
+
+@* Filters Card *@
+<div class="card shadow-sm border-0 m-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="row g-3 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label text-muted small fw-bold">@ViewsSharedLocalizer["TableHeader_Date"]</label>
+                <input type="date" name="date" value="@(Model.SelectedDate?.ToString("yyyy-MM-dd"))"
+                       class="form-control" onblur="this.form.submit()" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label text-muted small fw-bold">@ViewsSharedLocalizer["TableHeader_Status"]</label>
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">@Localizer["Label_AllStatuses"]</option>
+                    @foreach (var item in Model.StatusList)
+                    {
+                        <option value="@item.Value" selected="@(Model.SelectedStatus == item.Value)">@item.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label text-muted small fw-bold">@labels?.GetValueOrDefault("service",
+                                                                                                                                                                                                        ViewsSharedLocalizer["TableHeader_Service"].Value)</label>
+                    <select name="serviceId" class="form-select" onchange="this.form.submit()">
+                        <option value="">@Localizer["Label_All"]</option>
+                        @foreach (var item in ViewBag.Services as List<SelectListItem> ?? [])
+                        {
+                            <option value="@item.Value" selected="@(Model.SelectedServiceId?.ToString() == item.Value)">
+                                @item.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label text-muted small fw-bold">@ViewsSharedLocalizer["TableHeader_Customer"]</label>
+                        <select name="customerId" class="form-select" onchange="this.form.submit()">
+                            <option value="">@Localizer["Label_All"]</option>
+                            @foreach (var item in ViewBag.Customers as List<SelectListItem> ?? [])
+                            {
+                                <option value="@item.Value" selected="@(Model.SelectedCustomerId?.ToString() == item.Value)">
+                                    @item.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">@Localizer["Label_Search"]</label>
+                            <div class="input-group">
+                                <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control"
+                                       placeholder="@Localizer["Placeholder_Search"]" />
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <a asp-action="Index" class="btn btn-outline-secondary w-100" title="@Localizer["Button_Reset"]">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @* Appointments Table *@
+            <div class="card shadow-sm border-0  m-2">
+                <div class="table-responsive">
+                    <table class="app-table mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">@Localizer["TableHeader_ID"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Customer"]</th>
+                                <th>@labels?.GetValueOrDefault("serviceItem", ViewsSharedLocalizer["TableHeader_Service"].Value)
+                                </th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Date"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Time"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Status"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Price"]</th>
+                                <th style="width: 180px;">@Localizer["TableHeader_Actions"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appointment in Model.Appointments)
+                            {
+                                var statusClass = appointment.Status.GetCssClass();
+                                var statusText = appointment.Status.GetLocalizedName();
+
+                                var isToday = appointment.AppointmentDate.Date == DateTime.Today;
+                                var isPast = appointment.AppointmentDate.Date < DateTime.Today;
+
+                                <tr
+                                    class="@(isToday ? "table-primary bg-opacity-10" : "") @(isPast && appointment.Status != BookingStatus.Completed ? "text-muted" : "")">
+                                    <td class="fw-bold text-muted">#@appointment.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white"
+                                                 style="width:32px;height:32px;font-size:0.8rem;font-weight:700;
+                                                background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));">
+                                                @appointment.Customer?.FullName[0]
+                                            </div>
+                                            <div>
+                                                <span class="fw-medium d-block">@appointment.Customer?.FullName</span>
+                                                <small class="text-muted" dir="ltr">@appointment.Customer?.PhoneNumber</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!string.IsNullOrEmpty(appointment.Service?.Color))
+                                            {
+                                                <span class="d-inline-block rounded-circle"
+                                                      style="width: 10px; height: 10px; background: @appointment.Service.Color;"></span>
+                                            }
+                                            <span>@appointment.Service?.Name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="@(isToday ? "fw-bold text-primary" : "")">
+                                            @appointment.AppointmentDate.ToString("yyyy/MM/dd")
+                                            @if (isToday)
+                                            {
+                                                <span class="badge bg-primary ms-1">@Localizer["Badge_Today"]</span>
+                                            }
+                                        </span>
+                                    </td>
+                                    <td dir="ltr" class="text-center fw-medium">
+                                        @appointment.StartTime.FormatTime()
+                                        <small class="text-muted d-block">@appointment.EndTime.FormatTime()</small>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-@statusClass">
+                                            @statusText
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold">
+                                        @(appointment.FinalPrice?.ToCurrency() ?? appointment.TotalPrice?.ToCurrency() ?? "-")
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            @* Status Actions *@
+                                            @if (appointment.Status == BookingStatus.Confirmed)
+                                            {
+                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="InProgress"
+                                                      method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary"
+                                                            title="@Localizer["Button_Start"]">
+                                                        <i class="bi bi-play-fill"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else if (appointment.Status == BookingStatus.InProgress)
+                                            {
+                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Completed"
+                                                      method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-success"
+                                                            title="@Localizer["Button_Complete"]">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            <a asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-icon btn-ghost"
+                                               title="@Localizer["Button_View"]">
+                                                <i class="bi bi-eye text-info"></i>
+                                            </a>
+                                            @if (appointment.AppointmentDate > DateTime.Today)
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-sm btn-icon btn-ghost"
+                                                   title="@ViewsSharedLocalizer["Button_Edit"]">
+                                                    <i class="bi bi-pencil text-primary"></i>
+                                                </a>
+                                            }
+
+                                            @if (appointment.Status != BookingStatus.Cancelled)
+                                            {
+                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Cancelled"
+                                                      method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-icon btn-ghost"
+                                                            title="@ViewsSharedLocalizer["Button_Cancel"]">
+                                                        <i class="bi bi-x-lg text-warning"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @if (appointment.Status != BookingStatus.Completed)
+                                            {
+                                                <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="d-inline"
+                                                      onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"]');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-icon btn-ghost"
+                                                            title="@ViewsSharedLocalizer["Button_Delete"]">
+                                                        <i class="bi bi-trash text-danger"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @* Pagination Section *@
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4 mt-4">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0 gap-1 flex-wrap">
+                            @* Previous Button *@
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)"
+                                   asp-route-pageSize="@Model.PageSize" asp-route-date="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-status="@Model.SelectedStatus" asp-route-serviceId="@Model.SelectedServiceId"
+                                   asp-route-customerId="@Model.SelectedCustomerId" asp-route-search="@Model.SearchTerm">
+                                    <i class="bi bi-chevron-right"></i>
+                                    <span class="d-none d-md-inline">@Localizer["Pagination_Previous"]</span>
+                                </a>
+                            </li>
+                            @* Page Numbers *@
+                            @{
+                                int startPage = Math.Max(1, Model.PageNumber - 2);
+                                int endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                                if (startPage > 1)
+                                {
+                                    <li class="page-item d-none d-sm-block">
+                                        <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="1"
+                                           asp-route-pageSize="@Model.PageSize" asp-route-date="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
+                                           asp-route-status="@Model.SelectedStatus" asp-route-serviceId="@Model.SelectedServiceId"
+                                           asp-route-customerId="@Model.SelectedCustomerId" asp-route-search="@Model.SearchTerm">1</a>
+                                    </li>
+                                    @if (startPage > 2)
+                                    {
+                                        <li class="page-item disabled d-none d-sm-block"><span class="page-link rounded">...</span></li>
+                                    }
+                                }
+                                @for (int i = startPage; i <= endPage; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                        <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@i"
+                                           asp-route-pageSize="@Model.PageSize" asp-route-date="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
+                                           asp-route-status="@Model.SelectedStatus" asp-route-serviceId="@Model.SelectedServiceId"
+                                           asp-route-customerId="@Model.SelectedCustomerId" asp-route-search="@Model.SearchTerm">@i</a>
+                                    </li>
+                                }
+                                if (endPage < Model.TotalPages)
+                                {
+                                    @if (endPage < Model.TotalPages - 1)
+                                    {
+                                        <li class="page-item disabled d-none d-sm-block"><span class="page-link rounded">...</span></li>
+                                    }
+                                    <li class="page-item d-none d-sm-block">
+                                        <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@Model.TotalPages"
+                                           asp-route-pageSize="@Model.PageSize" asp-route-date="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
+                                           asp-route-status="@Model.SelectedStatus" asp-route-serviceId="@Model.SelectedServiceId"
+                                           asp-route-customerId="@Model.SelectedCustomerId"
+                                           asp-route-search="@Model.SearchTerm">@Model.TotalPages</a>
+                                    </li>
+                                }
+                            }
+                            @* Next Button *@
+                            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link rounded" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)"
+                                   asp-route-pageSize="@Model.PageSize" asp-route-date="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-status="@Model.SelectedStatus" asp-route-serviceId="@Model.SelectedServiceId"
+                                   asp-route-customerId="@Model.SelectedCustomerId" asp-route-search="@Model.SearchTerm">
+                                    <span class="d-none d-md-inline">@Localizer["Pagination_Next"]</span>
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    @* Info and Page Size selector *@
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                        <small class="text-muted">
+                            @Localizer["Pagination_Showing"] @(((Model.PageNumber - 1) * Model.PageSize) + 1) -
+                            @Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)
+                            @Localizer["Pagination_Of"] <strong>@Model.TotalCount</strong> @Localizer["Pagination_Booking"]
+                        </small>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="text-muted small mb-0">@Localizer["Pagination_ShowLabel"]</label>
+                            <select class="form-select form-select-sm w-auto" onchange="window.location.href=this.value"
+                                    style="min-width: 70px;">
+                                @foreach (var size in new[] { 10, 25, 50, 100 })
+                                {
+                                    <option value="@Url.Action("Index", new
+                                            {
+                                                pageSize = size,
+                                                pageNumber = 1,
+                                                date = Model.SelectedDate?.ToString("yyyy-MM-dd"),
+                                                status = Model.SelectedStatus,
+                                                serviceId = Model.SelectedServiceId,
+                                                customerId = Model.SelectedCustomerId,
+                                                search = Model.SearchTerm
+                                            })" selected="@(Model.PageSize == size)">
+                                        @size
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!Model.Appointments.Any())
+            {
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="bi bi-calendar-x display-1 text-muted"></i>
+                    </div>
+                    <h5 class="text-muted">@Localizer["EmptyState_NoAppointments"]</h5>
+                    <p class="text-muted">@Localizer["EmptyState_StartAdding"]</p>
+                    <a asp-action="Create" class="btn btn-primary mt-2">
+                        <i class="bi bi-plus-lg"></i> @ViewsSharedLocalizer["Button_NewBooking"]
+                    </a>
+                </div>
+            }
+
+
+    
+            @section Styles {
+                <style>
+                    .app-table td {
+                        vertical-align: middle;
+                        padding: 0.875rem 0.75rem;
+                    }
+
+                    .app-table tbody tr {
+                        transition: all var(--transition-fast);
+                    }
+
+                    .app-table tbody tr:hover {
+                        background: var(--gray-50);
+                    }
+
+                    .btn-sm {
+                        padding: 0.25rem 0.5rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* Pagination Styling */
+                    .page-link {
+                        color: var(--brand-primary, #0d6efd);
+                        border: 1px solid #e9ecef;
+                        transition: all var(--transition-fast);
+                        min-width: 40px;
+                        text-align: center;
+                    }
+
+                    .page-link:hover {
+                        background-color: var(--brand-primary, #0d6efd);
+                        border-color: var(--brand-primary, #0d6efd);
+                        color: white;
+                    }
+
+                    .page-item.active .page-link {
+                        background-color: var(--brand-primary, #0d6efd);
+                        border-color: var(--brand-primary, #0d6efd);
+                        color: white;
+                        box-shadow: 0 2px 5px rgba(var(--brand-primary-rgb, 13, 110, 253), 0.3);
+                    }
+
+                    .page-item.disabled .page-link {
+                        color: #adb5bd;
+                        pointer-events: none;
+                        background-color: #f8f9fa;
+                    }
+
+                    [data-bs-theme="dark"] .page-item.disabled .page-link {
+                        color: #adb5bd;
+                        background-color: #5c757c4e;
+                    }
+
+                    /* Responsive pagination */
+                    @@media (max-width: 576px) {
+                        .page-link span:not(.d-none) {
+                            display: none !important;
+                        }
+
+                        .page-link i {
+                            margin: 0;
+                        }
+
+                        .page-link {
+                            min-width: 35px;
+                            padding: 0.375rem 0.5rem;
+                        }
+                    }
+                </style>
+            }

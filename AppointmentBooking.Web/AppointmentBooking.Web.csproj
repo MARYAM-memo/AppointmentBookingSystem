@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>82353969-2245-4864-bdf4-c9795e5a5e43</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Extensions/" />
+    <Folder Include="Views/Appointments/" />
+    <Folder Include="Views/BusinessProfile/" />
+    <Folder Include="Views/Customers/" />
+    <Folder Include="Views/Dashboard/" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Mapster" Version="10.0.7" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AppointmentBooking.Application/AppointmentBooking.Application.csproj" />
+    <ProjectReference Include="../AppointmentBooking.Core/AppointmentBooking.Core.csproj" />
+    <ProjectReference Include="../AppointmentBooking.Infrastructure/AppointmentBooking.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

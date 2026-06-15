@@ -1,0 +1,381 @@
+﻿@using AppointmentBooking.Web.Resources.Views.BusinessProfile
+@inject IStringLocalizer<BusinessProfileResource> Localizer
+
+@model BusinessProfileViewModel
+@{
+    ViewData["Title"] = Localizer["PageTitle_Settings"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="settings-page">
+    <div class="container">
+        <div class="settings-header">
+            <h1 class="settings-title">
+                <i class="bi bi-palette-fill"></i>
+                @Localizer["PageTitle_Customization"]
+            </h1>
+            <p class="text-muted">@Localizer["PageSubtitle"]</p>
+        </div>
+
+        <form asp-controller="BusinessProfile" method="post" id="profileForm">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <!-- Left Column - Forms -->
+                <div class="col-lg-8">
+                    <!-- Identity Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-shop"></i>
+                            <h5>@Localizer["Section_Identity"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_BusinessName"]</label>
+                                    <input asp-for="BusinessName" id="BusinessName"
+                                           class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_BusinessName"]" />
+                                    <span asp-validation-for="BusinessName" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_BusinessType"]</label>
+                                    <select asp-for="BusinessType" class="form-select form-control-biz">
+                                        <option value="General">@Localizer["BusinessType_General"]</option>
+                                        <option value="Salon">@Localizer["BusinessType_Salon"]</option>
+                                        <option value="Clinic">@Localizer["BusinessType_Clinic"]</option>
+                                        <option value="Consultant">@Localizer["BusinessType_Consultant"]</option>
+                                        <option value="Spa">@Localizer["BusinessType_Spa"]</option>
+                                        <option value="Gym">@Localizer["BusinessType_Gym"]</option>
+                                        <option value="Restaurant">@Localizer["BusinessType_Restaurant"]</option>
+                                        <option value="Other">@Localizer["BusinessType_Other"]</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-biz">@Localizer["Label_Tagline"]</label>
+                                    <input asp-for="Tagline" id="Tagline" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_Tagline"]" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_LogoUrl"]</label>
+                                    <input asp-for="LogoUrl" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_LogoUrl"]" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_FaviconUrl"]</label>
+                                    <input asp-for="FaviconUrl" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_FaviconUrl"]" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colors Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-palette"></i>
+                            <h5>@Localizer["Section_Colors"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_PrimaryColor"]</label>
+                                    <div class="color-input-group">
+                                        <input type="color" asp-for="Colors.Primary" class="color-picker"
+                                               id="primaryColor" />
+                                        <input type="text" asp-for="Colors.Primary"
+                                               class="form-control form-control-biz" id="primaryColorText" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_SecondaryColor"]</label>
+                                    <div class="color-input-group">
+                                        <input type="color" asp-for="Colors.Secondary" class="color-picker"
+                                               id="secondaryColor" />
+                                        <input type="text" asp-for="Colors.Secondary"
+                                               class="form-control form-control-biz" id="secondaryColorText" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_AccentColor"]</label>
+                                    <div class="color-input-group">
+                                        <input type="color" asp-for="Colors.Accent" class="color-picker"
+                                               id="accentColor" />
+                                        <input type="text" asp-for="Colors.Accent" class="form-control form-control-biz"
+                                               id="accentColorText" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_DarkModeColor"]</label>
+                                    <div class="color-input-group">
+                                        <input type="color" asp-for="Colors.DarkModePrimary" class="color-picker"
+                                               id="darkModeColor" />
+                                        <input type="text" asp-for="Colors.DarkModePrimary"
+                                               class="form-control form-control-biz" id="darkModeColorText"
+                                               placeholder="@Localizer["Placeholder_DarkModeColor"]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Localization Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-globe"></i>
+                            <h5>@Localizer["Section_Localization"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_Currency"]</label>
+                                    <input asp-for="Localization.Currency" class="form-control form-control-biz"
+                                           placeholder="@PriceExtension.CurrentCurrency" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_Language"]</label>
+                                    <select asp-for="Localization.Language" class="form-select form-control-biz">
+                                        <option value="ar">@Localizer["Language_Arabic"]</option>
+                                        <option value="en">@Localizer["Language_English"]</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_Direction"]</label>
+                                    <select asp-for="Localization.Direction" class="form-select form-control-biz">
+                                        <option value="rtl">@Localizer["Direction_RTL"]</option>
+                                        <option value="ltr">@Localizer["Direction_LTR"]</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-biz">@Localizer["Label_TimeZone"]</label>
+                                    <select asp-for="Localization.TimeZone"
+                                            class="form-select form-control-biz timezone-select">
+                                        <option value="UTC">@Localizer["TimeZone_UTC"]</option>
+                                        <option value="Africa/Cairo">@Localizer["TimeZone_Cairo"]</option>
+                                        <option value="Asia/Riyadh">@Localizer["TimeZone_Riyadh"]</option>
+                                        <option value="Asia/Dubai">@Localizer["TimeZone_Dubai"]</option>
+                                        <option value="Europe/Istanbul">@Localizer["TimeZone_Istanbul"]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Working Hours Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-clock"></i>
+                            <h5>@Localizer["Section_WorkingHours"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_WorkingHoursStart"]</label>
+                                    <input type="time" asp-for="WorkingHoursStart"
+                                           class="form-control form-control-biz" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_WorkingHoursEnd"]</label>
+                                    <input type="time" asp-for="WorkingHoursEnd"
+                                           class="form-control form-control-biz" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_SlotDuration"]</label>
+                                    <input type="number" asp-for="SlotDurationMinutes"
+                                           class="form-control form-control-biz" min="5" max="240" step="5" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-person-lines-fill"></i>
+                            <h5>@Localizer["Section_Contact"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_Phone"]</label>
+                                    <input asp-for="Contact.Phone" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_Phone"]" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_Email"]</label>
+                                    <input asp-for="Contact.Email" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_Email"]" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-biz">@Localizer["Label_Address"]</label>
+                                    <input asp-for="Contact.Address" class="form-control form-control-biz"
+                                           placeholder="@Localizer["Placeholder_Address"]" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Labels Section -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <i class="bi bi-tags"></i>
+                            <h5>@Localizer["Section_CustomLabels"]</h5>
+                        </div>
+                        <div class="settings-card-body">
+                            <div id="labelsContainer">
+                                @foreach (var label in Model.CustomLabels)
+                                {
+                                    <div class="label-item">
+                                        <span class="label-key">@label.Key</span>
+                                        <input type="text" name="CustomLabels[@label.Key]" value="@label.Value"
+                                               class="form-control form-control-biz" />
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                onclick="removeLabel(this)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addLabel()">
+                                <i class="bi bi-plus-lg"></i> @Localizer["Button_AddLabel"]
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="action-bar">
+                        <button type="submit" asp-action="ResetToDefaults" class="btn btn-primary"> <i
+                            class="bi bi-arrow-counterclockwise"></i> @Localizer["Button_ResetDefaults"]</button>
+
+                            <a href="@Url.Action("Export")" class="btn btn-outline-primary">
+                                <i class="bi bi-download"></i> @Localizer["Button_Export"]
+                            </a>
+                            <button type="submit" asp-action="Edit" class="btn btn-biz-primary">
+                                <i class="bi bi-check-lg"></i> @ViewsSharedLocalizer["Button_SaveChanges"]
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Live Preview -->
+                    <div class="col-lg-4">
+                        <div class="live-preview">
+                            <h6 class="fw-bold mb-3"><i class="bi bi-eye"></i> @Localizer["LivePreview_Title"]</h6>
+
+                            <!-- Preview Navbar -->
+                            <div class="preview-navbar" id="previewNavbar">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-calendar-check-fill"></i>
+                                    <span id="previewBusinessName">@Model.BusinessName</span>
+                                </div>
+                            </div>
+
+                            <!-- Preview Card -->
+                            <div class="preview-card">
+                                <h6 class="fw-bold mb-2" id="previewTitle">@Model.BusinessName</h6>
+                                <p class="text-muted small mb-3" id="previewTagline">@(Model.Tagline ??
+                                                                                                        Localizer["LivePreview_TaglinePlaceholder"])</p>
+                                    <button class="preview-btn btn-sm m-2"
+                                            id="previewPrimaryBtn">@Localizer["LivePreview_PrimaryButton"]</button>
+                                    <button class="preview-btn preview-btn-accent btn-sm m-2"
+                                            id="previewAccentBtn">@Localizer["LivePreview_AccentButton"]</button>
+                                </div>
+
+                                    <!-- Color Values -->
+                                    <div class="mt-3">
+                                        <div class="small text-muted mb-2">@Localizer["LivePreview_SelectedColors"]</div>
+                                        <div class="d-flex gap-2">
+                                            <div class="color-preview" id="previewPrimary"
+                                                 style="background: @Model.Colors.Primary;"
+                                                 title="@Localizer["LivePreview_Primary"]"></div>
+                                            <div class="color-preview" id="previewSecondary"
+                                                 style="background: @Model.Colors.Secondary;"
+                                                 title="@Localizer["LivePreview_Secondary"]"></div>
+                                            <div class="color-preview" id="previewAccent" style="background: @Model.Colors.Accent;"
+                                                 title="@Localizer["LivePreview_Accent"]"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @section Scripts {
+                <partial name="_ValidationScriptsPartial" />
+                <script>
+                    // Live Preview Updates
+                    const primaryColor = document.getElementById('primaryColor');
+                    const secondaryColor = document.getElementById('secondaryColor');
+                    const accentColor = document.getElementById('accentColor');
+                    const businessName = document.getElementById('BusinessName');
+                    const tagline = document.getElementById('Tagline');
+
+                    function updatePreview() {
+                        const p = primaryColor.value;
+                        const s = secondaryColor.value;
+                        const a = accentColor.value;
+
+                        // Update CSS variables for preview
+                        const preview = document.querySelector('.live-preview');
+                        preview.style.setProperty('--preview-primary', p);
+                        preview.style.setProperty('--preview-secondary', s);
+                        preview.style.setProperty('--preview-accent', a);
+
+                        // Update color previews
+                        document.getElementById('previewPrimary').style.background = p;
+                        document.getElementById('previewSecondary').style.background = s;
+                        document.getElementById('previewAccent').style.background = a;
+
+                        // Update text
+                        document.getElementById('previewBusinessName').textContent = businessName?.value || '@Html.Raw(Localizer["LivePreview_BusinessName"])';
+                        document.getElementById('previewTitle').textContent = businessName?.value || '@Html.Raw(Localizer["LivePreview_BusinessName"])';
+                        document.getElementById('previewTagline').textContent = tagline?.value || '@Html.Raw(Localizer["LivePreview_TaglinePlaceholder"])';
+                    }
+
+                    // Sync color picker with text input
+                    function syncColor(picker, text) {
+                        picker.addEventListener('input', () => {
+                            text.value = picker.value;
+                            updatePreview();
+                        });
+                        text.addEventListener('input', () => {
+                            if (/^#[0-9A-F]{6}$/i.test(text.value)) {
+                                picker.value = text.value;
+                                updatePreview();
+                            }
+                        });
+                    }
+
+                    syncColor(primaryColor, document.getElementById('primaryColorText'));
+                    syncColor(secondaryColor, document.getElementById('secondaryColorText'));
+                    syncColor(accentColor, document.getElementById('accentColorText'));
+
+                    businessName?.addEventListener('input', updatePreview);
+                    tagline?.addEventListener('input', updatePreview);
+
+                    // Custom Labels
+                    function addLabel() {
+                        const key = prompt('@Localizer["Prompt_LabelKey"]');
+                        if (!key) return;
+                        const container = document.getElementById('labelsContainer');
+                        const div = document.createElement('div');
+                        div.className = 'label-item';
+                        div.innerHTML = `
+                            <span class="label-key">${key}</span>
+                            <input type="text" name="CustomLabels[${key}]" class="form-control form-control-biz" placeholder="@Localizer["Placeholder_LabelValue"]" />
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeLabel(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        `;
+                        container.appendChild(div);
+                    }
+
+                    function removeLabel(btn) {
+                        btn.closest('.label-item').remove();
+                    }
+
+                    // Initial preview
+                    updatePreview();
+                </script>
+            }

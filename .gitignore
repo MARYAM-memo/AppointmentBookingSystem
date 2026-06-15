@@ -1,0 +1,94 @@
+# ============================================
+# .NET Build Artifacts
+# ============================================
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+*.runtimeconfig.json
+*.deps.json
+*.staticwebassets*.json
+*.Up2Date
+*.FileListAbsolute.txt
+*.CoreCompileInputs.cache
+*.AssemblyReference.cache
+*.GenerateResource.cache
+*.genruntimeconfig.cache
+*.resources.dll
+*.resources.cs
+
+# ============================================
+# Secrets & Sensitive Data
+# ============================================
+appsettings.Development.json
+appsettings.Production.json
+secrets.json
+*.pfx
+*.key
+*.pem
+.env
+.env.*
+launchSettings.json
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+
+# ============================================
+# IDE
+# ============================================
+.vs/
+.vscode/
+.idea/
+*.sln.iml
+*.csproj.lscache
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Dependencies
+# ============================================
+node_modules/
+packages/
+
+# ============================================
+# Test Results
+# ============================================
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# ============================================
+# Publish
+# ============================================
+publish/
+out/
+wwwroot/dist/
+
+# ============================================
+# Database
+# ============================================
+*.mdf
+*.ldf
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# Misc
+# ============================================
+temp/
+tmp/
+*.tmp

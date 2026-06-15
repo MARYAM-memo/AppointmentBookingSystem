@@ -1,0 +1,572 @@
+@using AppointmentBooking.Application.ViewModels.Appointment
+@using AppointmentBooking.Web.Resources.Views.Appointments
+@inject IStringLocalizer<AppointmentResource> Localizer
+
+@model AppointmentViewModel
+@{
+    ViewData["Title"] = $"{Localizer["Booking_Title"]} #{Model.Id}";
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+
+    var statusClass = Model.Status.GetCssClass();
+
+    var statusText = Model.Status.GetLocalizedName();
+
+    var theme = await ProfileService.GetCurrentViewModelAsync();
+    var culture = theme.GetCultureInfo();
+}
+
+@* Page Header *@
+<div class="d-flex align-items-center gap-3 m-4">
+    <a asp-action="Index" class="btn btn-icon btn-ghost">
+        <i class="bi bi-arrow-right"></i>
+    </a>
+    <div class="flex-grow-1">
+        <h2 class="fw-bold mb-0">@Localizer["Booking_Title"] #@Model.Id</h2>
+        <p class="text-muted mb-0">@Localizer["Booking_Details"]</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.Status == BookingStatus.Confirmed)
+        {
+            <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="InProgress" method="post"
+                  class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-play-fill"></i> @Localizer["Button_Start"]
+                </button>
+            </form>
+        }
+        else if (Model.Status == BookingStatus.InProgress)
+        {
+            <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Completed" method="post"
+                  class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg"></i> @Localizer["Button_Complete"]
+                </button>
+            </form>
+        }
+
+        @if (Model.AppointmentDate > DateTime.Today)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id"
+               class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> @ViewsSharedLocalizer["Button_Edit"]
+            </a>
+        }
+    </div>
+</div>
+
+<div class="row g-4 m-4">
+    @* Status Banner *@
+    <div class="col-12">
+        <div class="alert alert-@statusClass d-flex align-items-center gap-3 mb-0">
+            <div class="status-icon-large bg-@statusClass bg-opacity-25 text-@statusClass">
+                <i class="bi bi-@(Model.Status.GetCssIcon())"></i>
+            </div>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">@Localizer["Alert_Booking"] @statusText</h5>
+                <p class="mb-0">
+                    @Model.AppointmentDate.ToString("yyyy/MM/dd", culture) |
+                    @Model.StartTime.FormatTime() - @Model.EndTime.FormatTime()
+                </p>
+            </div>
+            <div class="ms-auto">
+                <span class="badge bg-light text-@statusClass fs-6 px-3 py-2">@statusText</span>
+            </div>
+        </div>
+    </div>
+
+    @* Customer Card *@
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-person-circle text-primary me-2"></i>
+                    @Localizer["Customer_Data"]
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="customer-avatar-large mx-auto mb-3" style="width: 100px; height: 100px; border-radius: 50%;
+                    background: linear-gradient(135deg, var(--biz-primary), var(--biz-secondary));
+                    color: white; display: flex; align-items: center; justify-content: center;
+                    font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
+                    @Model.Customer?.FullName[0]
+                </div>
+                <h4 class="fw-bold mb-1">@Model.Customer?.FullName</h4>
+                <p class="text-muted mb-3">@Localizer["Customer_CustomerSince"]
+                    @Model.Customer?.CreatedAt.ToString("yyyy/MM/dd")</p>
+
+                    <div class="d-flex flex-column gap-2">
+                        <a href="tel:@Model.Customer?.PhoneNumber" class="btn btn-outline-success w-100">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span dir="ltr">@Model.Customer?.PhoneNumber</span>
+                        </a>
+                        @if (!string.IsNullOrEmpty(Model.Customer?.Email))
+                        {
+                            <a href="mailto:@Model.Customer?.Email" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-envelope-fill"></i> @Model.Customer?.Email
+                            </a>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <div class="row g-2 text-center">
+                        <div class="col-6">
+                            <h5 class="fw-bold text-primary mb-0">@Model.Customer?.TotalAppointments</h5>
+                            <small class="text-muted">@Localizer["Customer_TotalAppointments"]</small>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="fw-bold text-success mb-0">
+                                @(Model.Customer?.LastAppointmentDate?.ToString("yyyy/MM/dd") ?? "-")
+                            </h5>
+                            <small class="text-muted">@Localizer["Customer_LastVisit"]</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Service & Booking Details *@
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-stars text-primary me-2"></i>
+                        @Localizer["Service_Details"] @labels.GetValueOrDefault("serviceItem",
+                        Localizer["Service_Details"].Value)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="service-icon-large mx-auto mb-3" style="width: 80px; height: 80px; border-radius: var(--border-radius-lg);
+                            background: @(Model.Service?.Color ?? "var(--biz-primary)");
+                            color: white; display: flex; align-items: center; justify-content: center;
+                            font-size: 2.5rem;">
+                            <i class="bi @(Model.Service?.Icon ?? "bi-stars")"></i>
+                        </div>
+                        <h4 class="fw-bold mb-1">@Model.Service?.Name</h4>
+                        @if (!string.IsNullOrEmpty(Model.Service?.Category))
+                        {
+                            <span class="badge bg-light text-dark">@Model.Service?.Category</span>
+                        }
+                    </div>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-clock me-2"></i>@Localizer["Service_Duration"]</span>
+                            <span class="fw-bold">@Model.Service?.Duration.FormatTime()</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted"><i
+                                class="bi bi-hourglass-split me-2"></i>@Localizer["Service_TotalDuration"]</span>
+                                <span class="fw-bold">@Model.Service?.TotalDuration.FormatTime()</span>
+                            </li>
+                            <li class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted"><i class="bi bi-people me-2"></i>@Localizer["Service_Capacity"]</span>
+                                <span class="fw-bold">@Model.Service?.MaxCapacity @Localizer["Service_Persons"]</span>
+                            </li>
+                            <li class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted"><i
+                                    class="bi bi-currency-exchange me-2"></i>@ViewsSharedLocalizer["Label_BasePrice"]</span>
+                                    <span class="fw-bold">@Model.Service?.Price.ToCurrency()</span>
+                                </li>
+                                @if (Model.Service?.PricePerAdditionalHour != null)
+                                {
+                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                        <span class="text-muted"><i
+                                            class="bi bi-plus-circle me-2"></i>@Localizer["Service_ExtraHourPrice"]</span>
+                                            <span class="fw-bold">@Model.Service?.PricePerAdditionalHour.Value.ToCurrency()</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Pricing & Audit Card *@
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-cash-stack text-success me-2"></i>
+                                    @Localizer["Financial_Details"]
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="pricing-breakdown mb-4">
+                                    <div class="d-flex justify-content-between py-2">
+                                        <span class="text-muted">@ViewsSharedLocalizer["Label_BasePrice"]</span>
+                                        <span class="fw-medium">@Model.TotalPrice?.ToCurrency()</span>
+                                    </div>
+                                    @if (Model.DiscountAmount > 0)
+                                    {
+                                        <div class="d-flex justify-content-between py-2 text-success">
+                                            <span><i class="bi bi-tag-fill me-1"></i> @Localizer["Financial_Discount"]</span>
+                                            <span class="fw-medium">- @Model.DiscountAmount?.ToCurrency()</span>
+                                        </div>
+                                    }
+                                    <hr />
+                                    <div class="d-flex justify-content-between py-2">
+                                        <span class="fw-bold fs-5">@Localizer["Financial_FinalPrice"]</span>
+                                        <span class="fw-bold fs-5 text-success">@Model.FinalPrice?.ToCurrency()</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.Currency))
+                                    {
+                                        <div class="text-center">
+                                            <small class="text-muted">@Model.Currency</small>
+                                        </div>
+                                    }
+                                </div>
+
+                                <hr />
+
+                                <h6 class="fw-bold text-muted mb-3">@Localizer["System_Info"]</h6>
+                                <ul class="list-unstyled mb-0 small">
+                                    <li class="d-flex justify-content-between py-1">
+                                        <span class="text-muted">@Localizer["System_CreatedAt"]</span>
+                                        <span>@Model.CreatedAt.ToString("yyyy/MM/dd")</span>
+                                    </li>
+                                    @if (Model.UpdatedAt.HasValue)
+                                    {
+                                        <li class="d-flex justify-content-between py-1">
+                                            <span class="text-muted">@Localizer["System_UpdatedAt"]</span>
+                                            <span>@Model.UpdatedAt.Value.ToString("yyyy/MM/dd")</span>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.CreatedByUserId))
+                                    {
+                                        <li class="d-flex justify-content-between py-1">
+                                            <span class="text-muted">@Localizer["System_CreatedBy"]</span>
+                                            <span>@Model.CreatedByUserId</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Notes Section *@
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header py-3">
+                                    <h5 class="mb-0 fw-bold">
+                                        <i class="bi bi-stickies text-warning me-2"></i>
+                                        @ViewsSharedLocalizer["Label_Notes"]
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-0">@Model.Notes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @* Required Documents *@
+                    @if (Model.Service?.RequiredDocuments?.Any() == true)
+                    {
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header py-3">
+                                    <h5 class="mb-0 fw-bold">
+                                        <i class="bi bi-file-text text-info me-2"></i>
+                                        @Localizer["Documents_Title"]
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        @foreach (var doc in Model.Service.RequiredDocuments)
+                                        {
+                                            <span class="badge bg-light text-dark border px-3 py-2">
+                                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                @doc
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @* Timeline / Status History *@
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-clock-history text-primary me-2"></i>
+                                    @Localizer["Timeline_Title"]
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="appointment-timeline">
+                                    <div class="timeline-step completed">
+                                        <div class="step-dot">
+                                            <i class="bi bi-check-lg"></i>
+                                        </div>
+                                        <div class="step-content">
+                                            <h6 class="fw-bold mb-0">@Localizer["Timeline_Created"]</h6>
+                                            <small class="text-muted">@Model.CreatedAt.ToString("yyyy/MM/dd")</small>
+                                        </div>
+                                    </div>
+
+                                    @if (Model.Status >= BookingStatus.Confirmed)
+                                    {
+                                        <div class="timeline-step completed">
+                                            <div class="step-dot">
+                                                <i class="bi bi-check-lg"></i>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-0">@Localizer["Timeline_Confirmed"]</h6>
+                                                <small class="text-muted">@Localizer["Timeline_ConfirmedMessage"]</small>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (Model.Status >= BookingStatus.InProgress)
+                                    {
+                                        <div class="timeline-step completed">
+                                            <div class="step-dot">
+                                                <i class="bi bi-check-lg"></i>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-0">@Localizer["Timeline_InProgress"]</h6>
+                                                <small class="text-muted">@Localizer["Timeline_InProgressMessage"]</small>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (Model.Status == BookingStatus.Confirmed)
+                                    {
+                                        <div class="timeline-step pending">
+                                            <div class="step-dot">
+                                                <i class="bi bi-hourglass"></i>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-0">@Localizer["Timeline_Pending"]</h6>
+                                                <small class="text-muted">@Localizer["Timeline_PendingMessage"]</small>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (Model.Status == BookingStatus.Completed)
+                                    {
+                                        <div class="timeline-step completed">
+                                            <div class="step-dot">
+                                                <i class="bi bi-check-lg"></i>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-0">@Localizer["Timeline_Completed"]</h6>
+                                                <small class="text-muted">@Localizer["Timeline_CompletedMessage"]</small>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (Model.Status == BookingStatus.Cancelled)
+                                    {
+                                        <div class="timeline-step cancelled">
+                                            <div class="step-dot">
+                                                <i class="bi bi-x-lg"></i>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-0">@Localizer["Timeline_Cancelled"]</h6>
+                                                <small class="text-muted">@Localizer["Timeline_CancelledMessage"]</small>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Quick Actions Footer *@
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0 bg-light">
+                            <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                <div>
+                                    <h6 class="fw-bold mb-1">@Localizer["QuickActions_Title"]</h6>
+                                    <p class="text-muted mb-0 small">@Localizer["QuickActions_Description"]</p>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    @if (Model.Status == BookingStatus.Confirmed)
+                                    {
+                                        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="InProgress" method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-play-fill"></i> @Localizer["Button_StartService"]
+                                            </button>
+                                        </form>
+                                        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Cancelled" method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-warning">
+                                                <i class="bi bi-x-lg"></i> @ViewsSharedLocalizer["Button_Cancel"]
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (Model.Status == BookingStatus.InProgress)
+                                    {
+                                        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Completed" method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="bi bi-check-lg"></i> @Localizer["Button_Complete"]
+                                            </button>
+                                        </form>
+                                        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Cancelled" method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-warning">
+                                                <i class="bi bi-x-lg"></i> @ViewsSharedLocalizer["Button_Cancel"]
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (Model.Status == BookingStatus.Pending)
+                                    {
+                                        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Confirmed" method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-circle"></i> @Localizer["Button_Confirm"]
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @if (Model.AppointmentDate > DateTime.Today)
+                                    {
+                                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> @ViewsSharedLocalizer["Button_Edit"]
+                                        </a>
+                                    }
+
+                                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"]');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i> @ViewsSharedLocalizer["Button_Delete"]
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @section Styles {
+                    <style>
+                        .status-icon-large {
+                            width: 64px;
+                            height: 64px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 2rem;
+                            flex-shrink: 0;
+                        }
+
+                        .card-header {
+                            background-color: white
+                        }
+
+                        [data-bs-theme="dark"] .card-header {
+                            background-color: rgba(0, 0, 0, 0.2)
+                        }
+
+                        [data-bs-theme="dark"] .card-body {
+                            background-color: #1e293b
+                        }
+
+                        .customer-avatar-large,
+                        .service-icon-large {
+                            transition: transform var(--transition-base);
+                        }
+
+                        .customer-avatar-large:hover,
+                        .service-icon-large:hover {
+                            transform: scale(1.05);
+                        }
+
+                        .pricing-breakdown {
+                            background: var(--gray-50);
+                            padding: 1.5rem;
+                            border-radius: var(--border-radius);
+                        }
+
+                        /* Timeline */
+                        .appointment-timeline {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0;
+                            position: relative;
+                        }
+
+                        .timeline-step {
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 1rem;
+                            padding: 1rem 0;
+                            position: relative;
+                        }
+
+                        .timeline-step:not(:last-child)::before {
+                            content: '';
+                            position: absolute;
+                            right: 20px;
+                            top: 50px;
+                            width: 2px;
+                            height: calc(100% - 30px);
+                            background: var(--gray-200);
+                        }
+
+                        .timeline-step.completed::before {
+                            background: var(--success);
+                        }
+
+                        .step-dot {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            background: var(--gray-200);
+                            color: var(--gray-500);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 1.2rem;
+                            flex-shrink: 0;
+                            z-index: 1;
+                        }
+
+                        .timeline-step.completed .step-dot {
+                            background: var(--success);
+                            color: white;
+                        }
+
+                        .timeline-step.pending .step-dot {
+                            background: var(--info);
+                            color: white;
+                            animation: pulse 2s infinite;
+                        }
+
+                        .timeline-step.cancelled .step-dot {
+                            background: var(--danger);
+                            color: white;
+                        }
+
+                        .step-content {
+                            padding-top: 0.5rem;
+                        }
+
+                        @@keyframes pulse {
+
+                            0%,
+                            100% {
+                                opacity: 1;
+                            }
+
+                            50% {
+                                opacity: 0.7;
+                            }
+                        }
+                    </style>
+                }

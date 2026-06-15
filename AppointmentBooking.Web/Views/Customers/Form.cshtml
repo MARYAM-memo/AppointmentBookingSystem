@@ -1,0 +1,137 @@
+﻿@using AppointmentBooking.Web.Resources.Views.Customers
+@using AppointmentBooking.Application.ViewModels.Customer
+@inject IStringLocalizer<CustomerResource> Localizer
+
+@model CustomerRequestViewModel
+@{
+    var isEdit = ViewBag.IsEdit as bool? ?? false;
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    ViewData["Title"] = (isEdit ? ViewsSharedLocalizer["Button_Edit"] : Localizer["PageTitle_CustomerAdd"]) + " " +
+Localizer["PageTitle_Customer"];
+}
+
+@* Page Header *@
+<div class="d-flex align-items-center gap-3 m-4">
+    <a asp-action="Index" class="btn btn-icon btn-ghost">
+        <i class="bi bi-arrow-right"></i>
+    </a>
+    <div>
+        <h2 class="fw-bold mb-0">@ViewData["Title"]</h2>
+        <p class="text-muted mb-0">@(isEdit ? Localizer["Form_UpdateData"] : Localizer["Form_AddNew"])</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                @* Avatar Preview *@
+                <div class="text-center mb-4">
+                    <div class="customer-form-avatar mx-auto mb-3" id="avatarPreview" style="width: 100px; height: 100px; border-radius: 50%;
+                        background: linear-gradient(135deg, var(--biz-primary), var(--biz-secondary));
+                        color: white; display: flex; align-items: center; justify-content: center;
+                        font-size: 2.5rem; font-weight: 700;">
+                        @(Model.FullName.Length > 0 ? Model.FullName[0].ToString() : "؟")
+                    </div>
+                    <h5 class="fw-bold mb-1" id="namePreview">@Html.Raw(Model.FullName ??
+                                                                        Localizer["Preview_DefaultName"])</h5>
+                        <p class="text-muted mb-0" id="phonePreview">@Html.Raw(Model.PhoneNumber ??
+                                                                                Localizer["Preview_DefaultPhone"])</p>
+                        </div>
+
+                        <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            @if (isEdit)
+                            {
+                                <input type="hidden" asp-for="Id" />
+                            }
+
+                            <div class="row g-3">
+                                @* Full Name *@
+                                <div class="col-md-6">
+                                    <label asp-for="FullName" class="form-label fw-bold">@Localizer["Label_FullName"]</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </span>
+                                        <input asp-for="FullName" class="form-control" id="fullNameInput"
+                                               placeholder="@Localizer["Placeholder_FullName"]" />
+                                    </div>
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+
+                                @* Phone *@
+                                <div class="col-md-6">
+                                    <label asp-for="PhoneNumber"
+                                           class="form-label fw-bold">@Localizer["Label_PhoneNumber"]</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="bi bi-telephone text-muted"></i>
+                                        </span>
+                                        <input asp-for="PhoneNumber" class="form-control" id="phoneInput"
+                                               placeholder="@Localizer["Placeholder_PhoneNumber"]" dir="ltr" />
+                                    </div>
+                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                </div>
+
+                                @* Email *@
+                                <div class="col-12">
+                                    <label asp-for="Email" class="form-label fw-bold">@Localizer["Label_Email"]</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="bi bi-envelope text-muted"></i>
+                                        </span>
+                                        <input asp-for="Email" class="form-control"
+                                               placeholder="@Localizer["Placeholder_Email"]" dir="ltr" />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                @* Notes *@
+                                <div class="col-12">
+                                    <label asp-for="Notes"
+                                           class="form-label fw-bold">@ViewsSharedLocalizer["Label_Notes"]</label>
+                                    <textarea asp-for="Notes" class="form-control" rows="3"
+                                              placeholder="@Localizer["Placeholder_Notes"]"></textarea>
+                                    <div class="form-text">@Localizer["FormText_Notes"]</div>
+                                </div>
+                            </div>
+
+                            @* Submit *@
+                            <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-primary flex-grow-1 fw-bold">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    @(isEdit ? ViewsSharedLocalizer["Button_SaveChanges"] : Localizer["Button_AddCustomer"])
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-lg"></i> @ViewsSharedLocalizer["Button_Cancel"]
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @section Scripts {
+            <partial name="_ValidationScriptsPartial" />
+            <script>
+                const fullNameInput = document.getElementById('fullNameInput');
+                const phoneInput = document.getElementById('phoneInput');
+                const avatarPreview = document.getElementById('avatarPreview');
+                const namePreview = document.getElementById('namePreview');
+                const phonePreview = document.getElementById('phonePreview');
+
+                function updatePreview() {
+                    const name = fullNameInput.value.trim();
+                    const phone = phoneInput.value.trim();
+
+                    namePreview.textContent = name || '@Html.Raw(Localizer["Preview_DefaultName"])';
+                    phonePreview.textContent = phone || '@Html.Raw(Localizer["Preview_DefaultPhone"])';
+                    avatarPreview.textContent = name.length > 0 ? name[0] : '??';
+                }
+
+                fullNameInput.addEventListener('input', updatePreview);
+                phoneInput.addEventListener('input', updatePreview);
+            </script>
+        }

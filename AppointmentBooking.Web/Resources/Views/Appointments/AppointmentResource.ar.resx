@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Calendar_Title" xml:space="preserve">
+  <value>تقويم الحجوزات</value>
+  <comment/>
+</data>
+  <data name="Button_List" xml:space="preserve">
+  <value>عرض القائمة</value>
+  <comment/>
+</data>
+
+  <data name="Button_PreviousMonth" xml:space="preserve">
+  <value>الشهر السابق</value>
+  <comment/>
+</data>
+  <data name="Button_NextMonth" xml:space="preserve">
+  <value>الشهر القادم</value>
+  <comment/>
+</data>
+  <data name="Button_Today" xml:space="preserve">
+  <value>اليوم</value>
+  <comment/>
+</data>
+  <data name="Button_Filter" xml:space="preserve">
+  <value>تصفية</value>
+  <comment/>
+</data>
+  <data name="Label_BookingStatus" xml:space="preserve">
+  <value>حالة الحجز</value>
+  <comment/>
+</data>
+  <data name="Status_All" xml:space="preserve">
+  <value>الكل</value>
+  <comment/>
+</data>
+  <data name="Status_Confirmed" xml:space="preserve">
+  <value>مؤكد</value>
+  <comment/>
+</data>
+  <data name="Status_InProgress" xml:space="preserve">
+  <value>قيد التنفيذ</value>
+  <comment/>
+</data>
+  <data name="Status_Completed" xml:space="preserve">
+  <value>مكتمل</value>
+  <comment/>
+</data>
+  <data name="Status_Cancelled" xml:space="preserve">
+  <value>ملغي</value>
+  <comment/>
+</data>
+  <data name="Day_Monday" xml:space="preserve">
+  <value>الإثنين</value>
+  <comment/>
+</data>
+  <data name="Day_Tuesday" xml:space="preserve">
+  <value>الثلاثاء</value>
+  <comment/>
+</data>
+  <data name="Day_Wednesday" xml:space="preserve">
+  <value>الأربعاء</value>
+  <comment/>
+</data>
+  <data name="Day_Thursday" xml:space="preserve">
+  <value>الخميس</value>
+  <comment/>
+</data>
+  <data name="Day_Friday" xml:space="preserve">
+  <value>الجمعة</value>
+  <comment/>
+</data>
+  <data name="Day_Saturday" xml:space="preserve">
+  <value>السبت</value>
+  <comment/>
+</data>
+  <data name="Day_Sunday" xml:space="preserve">
+  <value>الأحد</value>
+  <comment/>
+</data>
+  <data name="Tooltip_AddBooking" xml:space="preserve">
+  <value>إضافة حجز جديد</value>
+  <comment/>
+</data>
+  <data name="Legend_Confirmed" xml:space="preserve">
+  <value>مؤكد</value>
+  <comment/>
+</data>
+  <data name="Legend_InProgress" xml:space="preserve">
+  <value>قيد التنفيذ</value>
+  <comment/>
+</data>
+  <data name="Legend_Completed" xml:space="preserve">
+  <value>مكتمل</value>
+  <comment/>
+</data>
+  <data name="Legend_Cancelled" xml:space="preserve">
+  <value>ملغي</value>
+  <comment/>
+</data>
+  <data name="Legend_Today" xml:space="preserve">
+  <value>اليوم</value>
+  <comment/>
+</data>
+  <data name="DropdownHeader_TodayAppointments" xml:space="preserve">
+  <value>حجوزات اليوم</value>
+  <comment/>
+</data>
+  <data name="Booking_Title" xml:space="preserve">
+  <value>حجز</value>
+  <comment/>
+</data>
+  <data name="Pagination_Booking" xml:space="preserve">
+  <value>حجز</value>
+  <comment/>
+</data>
+  <data name="Booking_Details" xml:space="preserve">
+  <value>تفاصيل الحجز والعميل</value>
+  <comment/>
+</data>
+  <data name="Button_Start" xml:space="preserve">
+  <value>بدء</value>
+  <comment/>
+</data>
+  <data name="Button_Complete" xml:space="preserve">
+  <value>إكمال</value>
+  <comment/>
+</data>
+  <data name="Alert_Booking" xml:space="preserve">
+  <value>الحجز</value>
+  <comment/>
+</data>
+  <data name="Customer_Data" xml:space="preserve">
+  <value>بيانات العميل</value>
+  <comment/>
+</data>
+  <data name="Customer_CustomerSince" xml:space="preserve">
+  <value>عميل منذ</value>
+  <comment/>
+</data>
+  <data name="Customer_TotalAppointments" xml:space="preserve">
+  <value>إجمالي حجوزات</value>
+  <comment/>
+</data>
+  <data name="Customer_LastVisit" xml:space="preserve">
+  <value>آخر زيارة</value>
+  <comment/>
+</data>
+  <data name="Service_Details" xml:space="preserve">
+  <value>تفاصيل</value>
+  <comment/>
+</data>
+  <data name="Service_Duration" xml:space="preserve">
+  <value>مدة الخدمة</value>
+  <comment/>
+</data>
+  <data name="Service_TotalDuration" xml:space="preserve">
+  <value>المدة الكلية</value>
+  <comment/>
+</data>
+  <data name="Service_Capacity" xml:space="preserve">
+  <value>السعة</value>
+  <comment/>
+</data>
+  <data name="Service_Persons" xml:space="preserve">
+  <value>أشخاص</value>
+  <comment/>
+</data>
+  <data name="Service_ExtraHourPrice" xml:space="preserve">
+  <value>سعر الساعة الإضافية</value>
+  <comment/>
+</data>
+  <data name="Financial_Details" xml:space="preserve">
+  <value>التفاصيل المالية</value>
+  <comment/>
+</data>
+  <data name="Financial_Discount" xml:space="preserve">
+  <value>الخصم</value>
+  <comment/>
+</data>
+  <data name="Financial_FinalPrice" xml:space="preserve">
+  <value>السعر النهائي</value>
+  <comment/>
+</data>
+  <data name="System_Info" xml:space="preserve">
+  <value>معلومات النظام</value>
+  <comment/>
+</data>
+  <data name="System_CreatedAt" xml:space="preserve">
+  <value>تاريخ الإنشاء</value>
+  <comment/>
+</data>
+  <data name="System_UpdatedAt" xml:space="preserve">
+  <value>آخر تحديث</value>
+  <comment/>
+</data>
+  <data name="System_CreatedBy" xml:space="preserve">
+  <value>تم الإنشاء بواسطة</value>
+  <comment/>
+</data>
+  <data name="Documents_Title" xml:space="preserve">
+  <value>المستندات المطلوبة لهذه الخدمة</value>
+  <comment/>
+</data>
+  <data name="Timeline_Title" xml:space="preserve">
+  <value>تسلسل الحجز</value>
+  <comment/>
+</data>
+  <data name="Timeline_Created" xml:space="preserve">
+  <value>تم إنشاء الحجز</value>
+  <comment/>
+</data>
+  <data name="Timeline_Confirmed" xml:space="preserve">
+  <value>تم التأكيد</value>
+  <comment/>
+</data>
+  <data name="Timeline_ConfirmedMessage" xml:space="preserve">
+  <value>الحجز مؤكد ومُجدول</value>
+  <comment/>
+</data>
+  <data name="Timeline_InProgress" xml:space="preserve">
+  <value>جاري التنفيذ</value>
+  <comment/>
+</data>
+  <data name="Timeline_InProgressMessage" xml:space="preserve">
+  <value>الخدمة قيد التنفيذ حالياً</value>
+  <comment/>
+</data>
+  <data name="Timeline_Pending" xml:space="preserve">
+  <value>في الانتظار</value>
+  <comment/>
+</data>
+  <data name="Timeline_PendingMessage" xml:space="preserve">
+  <value>بانتظار بدء الخدمة</value>
+  <comment/>
+</data>
+  <data name="Timeline_Completed" xml:space="preserve">
+  <value>مكتمل</value>
+  <comment/>
+</data>
+  <data name="Timeline_CompletedMessage" xml:space="preserve">
+  <value>تم إنجاز الخدمة بنجاح</value>
+  <comment/>
+</data>
+  <data name="Timeline_Cancelled" xml:space="preserve">
+  <value>ملغي</value>
+  <comment/>
+</data>
+  <data name="Timeline_CancelledMessage" xml:space="preserve">
+  <value>تم إلغاء الحجز</value>
+  <comment/>
+</data>
+  <data name="QuickActions_Title" xml:space="preserve">
+  <value>إجراءات سريعة</value>
+  <comment/>
+</data>
+  <data name="QuickActions_Description" xml:space="preserve">
+  <value>تنفيذ إجراء على هذا الحجز</value>
+  <comment/>
+</data>
+  <data name="Button_StartService" xml:space="preserve">
+  <value>بدء الخدمة</value>
+  <comment/>
+</data>
+  <data name="Button_Confirm" xml:space="preserve">
+  <value>تأكيد</value>
+  <comment/>
+</data>
+
+  <data name="Delete_ConfirmMessage" xml:space="preserve">
+  <value>هل أنت متأكد من حذف هذا الحجز؟</value>
+  <comment/>
+</data>
+  <data name="Booking_Add" xml:space="preserve">
+  <value>إضافة</value>
+  <comment/>
+</data>
+  <data name="Booking_UpdateData" xml:space="preserve">
+  <value>تحديث بيانات الحجز</value>
+  <comment/>
+</data>
+  <data name="Booking_CreateNew" xml:space="preserve">
+  <value>إنشاء حجز جديد</value>
+  <comment/>
+</data>
+  <data name="Placeholder_SelectCustomer" xml:space="preserve">
+  <value>اختر العميل...</value>
+  <comment/>
+</data>
+  <data name="Link_NewCustomer" xml:space="preserve">
+  <value>عميل جديد</value>
+  <comment/>
+</data>
+  <data name="Label_SelectService" xml:space="preserve">
+  <value>حدد الخدمة</value>
+  <comment/>
+</data>
+  <data name="Placeholder_SelectService" xml:space="preserve">
+  <value>اختر الخدمة...</value>
+  <comment/>
+</data>
+  <data name="Label_AppointmentDate" xml:space="preserve">
+  <value>تاريخ الحجز</value>
+  <comment/>
+</data>
+
+  <data name="Label_SelectTime" xml:space="preserve">
+  <value>اختر الوقت</value>
+  <comment/>
+</data>
+  <data name="Message_SelectServiceAndDate" xml:space="preserve">
+  <value>اختر الخدمة والتاريخ لعرض الأوقات المتاحة</value>
+  <comment/>
+</data>
+  <data name="Message_SelectDateFirst" xml:space="preserve">
+  <value>يرجى اختيار تاريخ الحجز</value>
+  <comment/>
+</data>
+  <data name="Message_SelectServiceFirst" xml:space="preserve">
+  <value>اختر الخدمة أولاً</value>
+  <comment/>
+</data>
+  <data name="Message_LoadingSlots" xml:space="preserve">
+  <value>جاري تحميل الأوقات المتاحة...</value>
+  <comment/>
+</data>
+  <data name="Message_NoSlotsAvailable" xml:space="preserve">
+  <value>لا توجد أوقات متاحة لهذا اليوم</value>
+  <comment/>
+</data>
+  <data name="Message_TryDifferentDate" xml:space="preserve">
+  <value>جرب تاريخ آخر أو خدمة مختلفة</value>
+  <comment/>
+</data>
+  <data name="Slot_Available" xml:space="preserve">
+  <value>متاح</value>
+  <comment/>
+</data>
+  <data name="Slot_Booked" xml:space="preserve">
+  <value>محجوز</value>
+  <comment/>
+</data>
+  <data name="Slot_Selected" xml:space="preserve">
+  <value>تم إختياره</value>
+  <comment/>
+</data>
+  <data name="Slot_Past" xml:space="preserve">
+  <value>وقت سابق</value>
+  <comment/>
+</data>
+  <data name="Slot_Current" xml:space="preserve">
+  <value>حجزك الحالي</value>
+  <comment/>
+</data>
+  <data name="Slot_Full" xml:space="preserve">
+  <value>ممتلئ</value>
+  <comment/>
+</data>
+  <data name="Message_SelectedTime" xml:space="preserve">
+  <value>الوقت المحدد:</value>
+  <comment/>
+</data>
+  <data name="Label_Discount" xml:space="preserve">
+  <value>الخصم</value>
+  <comment/>
+</data>
+  <data name="Label_FinalPrice" xml:space="preserve">
+  <value>السعر النهائي</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Notes" xml:space="preserve">
+  <value>ملاحظات خاصة بالحجز...</value>
+  <comment/>
+</data>
+
+  <data name="Button_CreateBooking" xml:space="preserve">
+  <value>إنشاء الحجز</value>
+  <comment/>
+</data>
+
+  <data name="ServicePreview_ServiceName" xml:space="preserve">
+  <value>اسم الخدمة</value>
+  <comment/>
+</data>
+  <data name="QuickInfo_Title" xml:space="preserve">
+  <value>معلومات سريعة</value>
+  <comment/>
+</data>
+  <data name="QuickInfo_Step1" xml:space="preserve">
+  <value>اختر العميل أولاً</value>
+  <comment/>
+</data>
+  <data name="QuickInfo_Step2" xml:space="preserve">
+  <value>اختر الخدمة المناسبة</value>
+  <comment/>
+</data>
+  <data name="QuickInfo_Step3" xml:space="preserve">
+  <value>حدد التاريخ لعرض الأوقات المتاحة</value>
+  <comment/>
+</data>
+  <data name="QuickInfo_Step4" xml:space="preserve">
+  <value>اختر وقت مناسب من القائمة</value>
+  <comment/>
+</data>
+  <data name="Validation_DiscountExceedsTotal" xml:space="preserve">
+  <value>قيمة الخصم لا يمكن أن تتجاوز السعر الإجمالي</value>
+  <comment/>
+</data>
+  <data name="Message_WeekendBooking" xml:space="preserve">
+  <value>لا يمكن الحجز يوم</value>
+  <comment/>
+</data>
+  <data name="Message_WeekendClosed" xml:space="preserve">
+  <value>الأعمال متوقفة يومي الجمعة والسبت</value>
+  <comment/>
+</data>
+  <data name="Button_ChooseAnotherDate" xml:space="preserve">
+  <value>اختر تاريخ آخر</value>
+  <comment/>
+</data>
+  <data name="Message_ConflictWarning" xml:space="preserve">
+  <value>تم حجز هذا الوقت للتو!</value>
+  <comment/>
+</data>
+  <data name="Message_UpdatingSlots" xml:space="preserve">
+  <value>جاري تحديث الأوقات المتاحة...</value>
+  <comment/>
+</data>
+  <data name="Message_Updating" xml:space="preserve">
+  <value>جاري التحديث...</value>
+  <comment/>
+</data>
+  <data name="Message_SlotsUpdated" xml:space="preserve">
+  <value>تم تحديث الأوقات!</value>
+  <comment/>
+</data>
+  <data name="Message_SomeSlotsChanged" xml:space="preserve">
+  <value>بعض الأوقات تغيرت.</value>
+  <comment/>
+</data>
+  <data name="Warning_Weekend" xml:space="preserve">
+  <value>تنبيه:</value>
+  <comment/>
+</data>
+  <data name="Message_WeekendHoliday" xml:space="preserve">
+  <value>هو يوم عطلة رسمية، لا يمكن الحجز فيه.</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Appointments" xml:space="preserve">
+  <value>الحجوزات</value>
+  <comment/>
+</data>
+  <data name="PageSubtitle" xml:space="preserve">
+  <value>إدارة و متابعة جميع الحجوزات</value>
+  <comment/>
+</data>
+  <data name="Button_ViewCalendar" xml:space="preserve">
+  <value>عرض التقويم</value>
+  <comment/>
+</data>
+  <data name="Label_AllStatuses" xml:space="preserve">
+  <value>كل الحالات</value>
+  <comment/>
+</data>
+  <data name="Label_All" xml:space="preserve">
+  <value>الكل</value>
+  <comment/>
+</data>
+  <data name="Label_Search" xml:space="preserve">
+  <value>بحث</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Search" xml:space="preserve">
+  <value>بحث...</value>
+  <comment/>
+</data>
+  <data name="Button_Reset" xml:space="preserve">
+  <value>إعادة تعيين</value>
+  <comment/>
+</data>
+  <data name="TableHeader_ID" xml:space="preserve">
+  <value>#</value>
+  <comment/>
+</data>
+  <data name="TableHeader_Actions" xml:space="preserve">
+  <value>إجراءات</value>
+  <comment/>
+</data>
+  <data name="Badge_Today" xml:space="preserve">
+  <value>اليوم</value>
+  <comment/>
+</data>
+  <data name="Button_View" xml:space="preserve">
+  <value>عرض</value>
+  <comment/>
+</data>
+  <data name="Pagination_Previous" xml:space="preserve">
+  <value>السابق</value>
+  <comment/>
+</data>
+  <data name="Pagination_Next" xml:space="preserve">
+  <value>التالي</value>
+  <comment/>
+</data>
+  <data name="Pagination_Showing" xml:space="preserve">
+  <value>عرض</value>
+  <comment/>
+</data>
+  <data name="Pagination_Of" xml:space="preserve">
+  <value>من أصل</value>
+  <comment/>
+</data>
+  <data name="Pagination_ShowLabel" xml:space="preserve">
+  <value>عرض:</value>
+  <comment/>
+</data>
+  <data name="EmptyState_NoAppointments" xml:space="preserve">
+  <value>لا توجد حجوزات</value>
+  <comment/>
+</data>
+  <data name="EmptyState_StartAdding" xml:space="preserve">
+  <value>ابدأ بإضافة حجز جديد</value>
+  <comment/>
+</data>
+</root>

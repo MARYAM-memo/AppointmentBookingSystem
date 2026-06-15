@@ -1,0 +1,234 @@
+﻿@using AppointmentBooking.Application.ViewModels.Dashboard
+@using AppointmentBooking.Web.Resources.Views.Dashboard
+@inject IStringLocalizer<DashboardResource> Localizer
+
+@model DashboardViewModel
+@{
+    ViewData["Title"] = Localizer["PageTitle_Dashboard"];
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+}
+
+<div class="d-flex justify-content-between align-items-center m-4">
+    <div>
+        <h2 class="fw-bold mb-1">@Localizer["PageTitle_Dashboard"]</h2>
+        <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary" onclick="window.print()">
+            <i class="bi bi-printer"></i>
+            <span class="d-none d-md-inline">@Localizer["Button_Print"]</span>
+        </button>
+        <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            @ViewsSharedLocalizer["Button_NewBooking"]
+        </a>
+    </div>
+</div>
+
+@* Stats Cards*@
+<div class="row g-4 m-3">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <i class="bi bi-calendar-check-fill"></i>
+            </div>
+            <div class="stat-value" id="todayAppointments">@Model.TodayAppointments.Count</div>
+            <div class="stat-label">@Localizer["Stat_TodayAppointments"]</div>
+            <div class="stat-change up">
+                <i class="bi bi-arrow-up-right"></i>
+                <span>+@Methods.RoundBy2(Model.AppointmentsGrowth)% @Localizer["Stat_YesterdayComparison"]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card success">
+            <div class="stat-icon">
+                <i class="bi bi-currency-exchange"></i>
+            </div>
+            <div class="stat-value" id="todayRevenue">@string.Format("{0:N0}", Model.TodayRevenue)</div>
+            <div class="stat-label">@Localizer["Stat_TodayRevenue"]</div>
+            <div class="stat-change up">
+                <i class="bi bi-arrow-up-right"></i>
+                <span>+@Methods.RoundBy2(Model.RevenueGrowth)% @Localizer["Stat_YesterdayComparison"]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card warning">
+            <div class="stat-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-value" id="totalCustomers">@string.Format("{0:N0}", Model.TotalCustomers)</div>
+            <div class="stat-label">@labels.GetValueOrDefault("customer", Localizer["Stat_TotalCustomers"].Value)</div>
+            <div class="stat-change up">
+                <i class="bi bi-arrow-up-right"></i>
+                <span>+@Model.NewCustomersThisMonth @Localizer["Stat_NewThisMonth"]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card danger">
+            <div class="stat-icon">
+                <i class="bi bi-x-octagon-fill"></i>
+            </div>
+            <div class="stat-value" id="cancelledAppointments">@string.Format("{0:N0}", Model.CancelledAppointments)</div>
+            <div class="stat-label">@Localizer["Stat_CancelledAppointments"]</div>
+            <div class="stat-change @(Model.CancellationRate < 10 ? "up" : "down")">
+                <i class="bi bi-arrow-@(Model.CancellationRate < 10 ? "up" : "down")-right"></i>
+                <span>@Methods.RoundBy2(Model.CancellationRate)% @Localizer["Stat_CancellationRate"]</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Tables Row*@
+<div class="row g-4 m-3">
+    @* Today's Timeline *@
+    <div class="col-lg-5">
+        <div class="chart-card h-100">
+            <div class="chart-header">
+                <h5 class="chart-title mb-0">
+                    <i class="bi bi-clock-history text-primary me-2"></i>
+                    @Localizer["Section_TodaySchedule"]
+                </h5>
+                <span class="badge bg-primary">@Model.TodayAppointments.Count @Localizer["Section_TodayBooking"]</span>
+            </div>
+            <div class="timeline" id="todayTimeline">
+                @if (Model.TodayAppointments?.Any() == true)
+                {
+                    @foreach (var apt in Model.TodayAppointments.Take(10))
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-dot @(apt.Status.ToString().ToLower())"></div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">@apt.CustomerName</h6>
+                                        <small class="text-muted">@apt.ServiceName</small>
+                                    </div>
+                                    <span class="status-badge status-@apt.Status.ToString().ToLower()">
+                                        @apt.StatusArabic
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>
+                                        @apt.StartTime.FormatTime() - @apt.EndTime.FormatTime()
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-calendar-x display-4"></i>
+                        <p class="mt-2">@Localizer["EmptyState_NoAppointmentsToday"]</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Recent Appointments Table *@
+    <div class="col-lg-7">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5 class="chart-title mb-0">
+                    <i class="bi bi-list-check text-primary me-2"></i>
+                    @Localizer["Section_RecentAppointments"]
+                </h5>
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                    @Localizer["Button_ViewAll"]
+                </a>
+            </div>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th>@ViewsSharedLocalizer["TableHeader_Customer"]</th>
+                            <th>@labels.GetValueOrDefault("serviceItem",
+                                                                                                                                                                                                ViewsSharedLocalizer["TableHeader_Service"].Value)</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Date"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Time"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Status"]</th>
+                                <th>@ViewsSharedLocalizer["TableHeader_Price"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appointment in Model.RecentAppointments?.Take(10) ??[])
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar">
+                                                @(appointment.CustomerName.Length > 0 ? appointment.CustomerName[0].ToString() : "?")
+                                            </div>
+                                            <span class="fw-medium">@appointment.CustomerName</span>
+                                        </div>
+                                    </td>
+                                    <td>@appointment.ServiceName</td>
+                                    <td>@appointment.AppointmentDate.ToString("yyyy/MM/dd")</td>
+                                    <td>@appointment.StartTime.FormatTime()</td>
+                                    <td>
+                                        <span class="status-badge status-@appointment.Status.ToString().ToLower()">
+                                            @appointment.StatusArabic
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold">@appointment.FinalPrice?.ToCurrency()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Top Services Row *@
+    <div class="row g-4 m-2">
+        <div class="col-12">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title mb-0">
+                        <i class="bi bi-trophy-fill text-warning me-2"></i>
+                        @Localizer["Section_TopServices"]
+                    </h5>
+                </div>
+                <div class="p-3" id="topServices">
+                    <div class="row g-3">
+                        @foreach (var service in Model.TopServices ?? [])
+                        {
+                            <div class="col-md-6 col-lg-4">
+                                <div class="d-flex align-items-center gap-3 p-2 rounded hover-bg">
+                                    <div class="flex-shrink-0">
+                                        <div class="stat-icon"
+                                             style="width: 40px; height: 40px; font-size: 1.2rem; margin-bottom: 0;">
+                                            <i class="bi @(service.Icon ?? "bi-stars")"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">@service.Name</h6>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 style="width: @Methods.RoundBy2(service.Percentage)%;">
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <span class="fw-bold">@service.BookingCount</span>
+                                        <small class="text-muted d-block">@Localizer["Label_Booking"]</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

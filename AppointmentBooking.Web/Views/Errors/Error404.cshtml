@@ -1,0 +1,52 @@
+﻿@using AppointmentBooking.Web.Resources.Views.Errors
+@inject IStringLocalizer<ErrorsResource> Localizer
+
+@model ErrorPageViewModel
+@{
+    Layout = "~/Views/Errors/_ErrorMaster.cshtml";
+}
+
+<div class="error-icon-wrap error-icon-404">
+    <i class="bi @Model.Icon"></i>
+</div>
+
+<div class="error-code error-code-404">@Model.StatusCode</div>
+<h1 class="error-title">@Model.Title</h1>
+<p class="error-message">@Model.Message</p>
+<p class="error-description">@Model.Description</p>
+
+<!-- Search Box -->
+<div class="mb-4 mx-auto" style="max-width: 400px;">
+    <form asp-controller="Services" asp-action="Index" method="get">
+        <div class="input-group input-group-lg">
+            <input type="text" name="search" class="form-control biz-form-control"
+                   placeholder="@Localizer["Error_SearchPlaceholder"]"
+                   style="border-radius: 0 var(--biz-radius-lg) var(--biz-radius-lg) 0;" />
+            <button class="btn btn-biz-primary" type="submit"
+                    style="border-radius: var(--biz-radius-lg) 0 0 var(--biz-radius-lg);">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="error-suggestions">
+    @foreach (var suggestion in Model.Suggestions)
+    {
+        <a href="@suggestion.Url"
+           class="error-suggestion-btn @(suggestion == Model.Suggestions.First() ? "error-suggestion-primary" : "error-suggestion-outline")">
+            <i class="bi @suggestion.Icon"></i>
+            @suggestion.Text
+        </a>
+    }
+</div>
+
+<div class="error-trace">
+    <div class="error-trace-label">@Localizer["Error_RequestPath"]</div>
+    <div class="error-trace-value">@Model.RequestPath</div>
+</div>
+
+<div class="error-trace">
+    <div class="error-trace-label">@Localizer["Error_TrackingId"]</div>
+    <div class="error-trace-value">@Model.TraceId</div>
+</div>

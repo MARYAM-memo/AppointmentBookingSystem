@@ -1,0 +1,339 @@
+﻿@using AppointmentBooking.Application.ViewModels.Service
+@using AppointmentBooking.Web.Resources.Views.Services
+
+@inject IStringLocalizer<ServicesResource> Localizer
+    
+@model ServiceListViewModel
+@{
+    var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
+    ViewData["Title"] = labels.GetValueOrDefault("service", Localizer["PageTitle_Services"].Value);
+}
+
+@* Page Header *@
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 m-3">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-stars text-primary me-2"></i>
+            @labels.GetValueOrDefault("service", Localizer["PageTitle_Services"].Value)
+        </h2>
+        <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        @Localizer["Button_AddNew"]
+    </a>
+</div>
+ 
+@* Filters Card *@
+<div class="card shadow-sm border-0 mb-4 m-3">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label text-muted small fw-bold">@Localizer["Label_Search"]</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control border-start-0"
+                           placeholder="@Localizer["Placeholder_Search"]" />
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <label class="form-label text-muted small fw-bold">@Localizer["Label_Category"]</label>
+                <select name="category" class="form-select" onchange="this.form.submit()">
+                    <option value="">@Localizer["Label_AllCategories"]</option>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat" selected="@(Model.SelectedCategory == cat)">@cat</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" name="includeInactive" value="true"
+                    @(Model.ShowInactive ? "checked" : "") onchange="this.form.submit()" id="includeInactive" />
+                    <label class="form-check-label fw-bold" for="includeInactive">
+                        @Localizer["Label_ShowInactive"]
+                    </label>
+                </div>
+            </div>
+            
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-funnel"></i> @Localizer["Button_Filter"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Services Grid *@
+<div class="row g-4 m-3">
+    @foreach (var service in Model?.Services ?? [])
+    {
+        <div class="col-xl-4 col-md-6">
+            <div class="card service-card h-100 border-0 shadow-sm @(service.IsActive ? "" : "opacity-75")"
+                 style="--service-color: @(service.Color ?? "var(--brand-primary)")">
+                
+                @* Card Header with Image Or Color Strip *@
+                <div class="service-card-header position-relative"
+                     style="@(!string.IsNullOrEmpty(service.ImageUrl) ? $"background-image: linear-gradient(135deg, {service.Color ?? "var(--brand-primary)"}, rgba(0,0,0,0.6)), url('{service.ImageUrl}'); background-size: cover; background-position: center;"
+                                                  : $"background: linear-gradient(135deg, {service.Color ?? "var(--brand-primary)"}, {service.Color ?? "var(--brand-primary)"} 100%);")">
+            
+                    <div class="d-flex justify-content-between align-items-start w-100 p-3">
+                        <div class="service-icon" style="@(!string.IsNullOrEmpty(service.ImageUrl) 
+                            ? "background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);"
+                            : "")">
+                            <i class="bi @(service.Icon ?? "bi-stars")" style="color: white;"></i>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-link text-light p-1" data-bs-toggle="dropdown"
+                                    style="font-size: 1.3rem;">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" asp-action="Details" asp-route-id="@service.Id">
+                                        <i class="bi bi-eye text-info"></i> @Localizer["Button_ViewDetails"]
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-action="Edit" asp-route-id="@service.Id">
+                                        <i class="bi bi-pencil text-primary"></i> @ViewsSharedLocalizer["Button_Edit"]
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form asp-action="ToggleStatus" asp-route-id="@service.Id" method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-toggle-@(service.IsActive ? "on" : "off") text-warning"></i>
+                                            @(service.IsActive ? Localizer["Button_Deactivate"] : Localizer["Button_Activate"])
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form asp-action="TogglePopular" asp-route-id="@service.Id" method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-star@(service.IsPopular ? "-fill" : "") text-warning"></i>
+                                            @(service.IsPopular ? Localizer["Button_RemoveFeatured"] : Localizer["Button_MakeFeatured"])
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form asp-action="Delete" asp-route-id="@service.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"] @service.Name؟');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-trash"></i> @ViewsSharedLocalizer["Button_Delete"]
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    @if (service.IsPopular)
+                    {
+                        <span class="badge bg-warning position-absolute top-0 start-0 p-2">
+                            <i class="bi bi-star-fill me-1"></i> @Localizer["Badge_Featured"]
+                        </span>
+                    }
+                </div>
+
+                @* Card Body *@
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-1">@service.Name</h5>
+                    
+                    @* العنوان والفئة *@
+                    @if (!string.IsNullOrEmpty(service.Category))
+                    {
+                        <span class="badge bg-light text-dark mb-2">@service.Category</span>
+                    }
+                    
+                    @* الوصف *@
+                    <p class="card-text text-muted small" style="min-height: 3em;">
+                        @(service.Description?.Length > 90
+                            ? service.Description[..90] + "..."
+                            : service.Description)
+                    </p>
+
+                    <!-- السعر بشكل بارز -->
+                    <div class="service-meta row g-2 mb-1">
+                        <div class="col-7">
+                            <div class="meta-item"> <span class="price-modern">
+                                <i class="bi bi-currency-exchange text-success"></i>
+                                @service.Price.ToString("N0") <small>@ViewBag.Currency</small>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="meta-item"> @if (service.PricePerAdditionalHour.HasValue)
+                            {
+                                <span
+                                    class="badge text-light ms-3 p-2" style="background: linear-gradient(135deg, @(service.Color ?? "var(--brand-primary)"), @(service.Color ?? "var(--brand-primary)") 100%);"">+@service.PricePerAdditionalHour.Value.ToString("N0")/ @Localizer["Badge_ExtraHour"]</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Service Meta *@
+                    <div class="service-meta row g-2 mb-1">
+                        <div class="col-8">
+                            <div class="meta-item">
+                                <i class="bi bi-clock text-primary"></i>
+                                <span>@service.Duration.FormatTime() @Localizer["Label_Minutes"]</span>
+                            </div>
+                        </div>
+                        @if (service.MaxCapacity > 1)
+                        {
+                            <div class="col-3">
+                                <div class="meta-item">
+                                    <i class="bi bi-people text-info"></i>
+                                    <span>@service.MaxCapacity @Localizer["Label_Persons"]</span>
+                                </div>
+                            </div>
+                        }
+                        @if (service.BufferBefore != null || service.BufferAfter != null)
+                        {
+                            <div class="col-3">
+                                <div class="meta-item">
+                                    <i class="bi bi-hourglass-split text-warning"></i>
+                                    <span>+@(service.TotalDuration.TotalMinutes) @Localizer["Label_Minutes"]</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @* Status Badges *@
+                    <div class="d-flex gap-2 flex-wrap">
+                        @if (!service.IsActive)
+                        {
+                            <span class="badge bg-secondary">@Localizer["Badge_Inactive"]</span>
+                        }
+                            
+                    </div>
+                </div>
+
+                <hr class="my-1">
+                @* Card Footer *@
+                <div class="card-footer bg-transparent border-top-0 pt-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar-check me-1"></i>
+                            @(service.AppointmentsCount) @Localizer["Label_Booking"]
+                        </small>
+                        <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-outline-primary m-2">
+                            <i class="bi bi-pencil"></i> @ViewsSharedLocalizer["Button_Edit"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+@if (!(Model?.Services ?? []).Any())
+{
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">@Localizer["EmptyState_NoServices"]</h5>
+        <p class="text-muted">@Localizer["EmptyState_StartAdding"]</p>
+        <a asp-action="Create" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-lg"></i> @Localizer["Button_AddNewEmpty"]
+        </a>
+    </div>
+}
+
+@section Styles {
+    <style>
+        /* Badge popular modern */
+        .badge-popular-modern {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ffc107;
+            color: #1e1e2a;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            z-index: 3;
+        }
+
+        /* Meta items row */
+        .meta-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-top: 1px solid #eef2f6;
+            border-bottom: 1px solid #eef2f6;
+            padding: 12px 0;
+            margin: 12px 0;
+        }
+
+        .meta-item-modern {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            background: #f8f9fc;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+
+        .meta-item-modern i {
+            font-size: 1rem;
+        }
+
+        /* Price highlight */
+        .price-modern {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .price-modern small {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #5b6e8c;
+        }
+
+        /* Buttons */
+        .btn-outline-modern {
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .btn-outline-modern:hover {
+            background: var(--service-color, #0d6efd);
+            border-color: var(--service-color, #0d6efd);
+            color: white !important;
+        }
+    </style>
+}

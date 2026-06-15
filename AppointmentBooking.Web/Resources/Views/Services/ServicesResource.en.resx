@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+
+  <data name="Badge_Booking" xml:space="preserve">
+  <value>Booking</value>
+  <comment/>
+</data>
+  <data name="Section_DurationAndPricing" xml:space="preserve">
+  <value>Duration &amp; Pricing</value>
+  <comment/>
+</data>
+  <data name="Label_ServiceDuration" xml:space="preserve">
+  <value>Service Duration</value>
+  <comment/>
+</data>
+  <data name="Label_TotalDuration" xml:space="preserve">
+  <value>Total Duration</value>
+  <comment/>
+</data>
+
+  <data name="Label_MaxCapacity" xml:space="preserve">
+  <value>Max Capacity</value>
+  <comment/>
+</data>
+  <data name="Label_DisplayOrder" xml:space="preserve">
+  <value>Display Order</value>
+  <comment/>
+</data>
+  <data name="Section_RequiredDocuments" xml:space="preserve">
+  <value>Required Documents</value>
+  <comment/>
+</data>
+  <data name="Section_Statistics" xml:space="preserve">
+  <value>Statistics</value>
+  <comment/>
+</data>
+  <data name="Label_TotalAppointments" xml:space="preserve">
+  <value>Total Appointments</value>
+  <comment/>
+</data>
+  <data name="Label_AddedDate" xml:space="preserve">
+  <value>Added Date</value>
+  <comment/>
+</data>
+  <data name="Label_LastUpdated" xml:space="preserve">
+  <value>Last Updated</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Add" xml:space="preserve">
+  <value>Add</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Edit" xml:space="preserve">
+  <value>Edit</value>
+  <comment/>
+</data>
+  <data name="Service_Item" xml:space="preserve">
+  <value>Service</value>
+  <comment/>
+</data>
+  <data name="Form_UpdateData" xml:space="preserve">
+  <value>Update Data</value>
+  <comment/>
+</data>
+  <data name="Form_AddNew" xml:space="preserve">
+  <value>Add New</value>
+  <comment/>
+</data>
+  <data name="Section_BasicInfo" xml:space="preserve">
+  <value>Basic Information</value>
+  <comment/>
+</data>
+  <data name="Label_ServiceName" xml:space="preserve">
+  <value>Service Name</value>
+  <comment/>
+</data>
+  <data name="Placeholder_ServiceName" xml:space="preserve">
+  <value>Example: Full Car Wash</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Category" xml:space="preserve">
+  <value>Category</value>
+  <comment/>
+</data>
+  <data name="Category_Wash" xml:space="preserve">
+  <value>Wash</value>
+  <comment/>
+</data>
+  <data name="Category_Polish" xml:space="preserve">
+  <value>Polish</value>
+  <comment/>
+</data>
+  <data name="Category_Maintenance" xml:space="preserve">
+  <value>Maintenance</value>
+  <comment/>
+</data>
+  <data name="Category_Beauty" xml:space="preserve">
+  <value>Beauty</value>
+  <comment/>
+</data>
+  <data name="Label_SubCategory" xml:space="preserve">
+  <value>Sub Category</value>
+  <comment/>
+</data>
+  <data name="Placeholder_SubCategory" xml:space="preserve">
+  <value>Interior/Exterior</value>
+  <comment/>
+</data>
+  <data name="Label_Description" xml:space="preserve">
+  <value>Description</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Description" xml:space="preserve">
+  <value>Detailed service description...</value>
+  <comment/>
+</data>
+  <data name="Section_PricingAndDuration" xml:space="preserve">
+  <value>Pricing &amp; Duration</value>
+  <comment/>
+</data>
+  <data name="Label_DurationMinutes" xml:space="preserve">
+  <value>Duration (Minutes)</value>
+  <comment/>
+</data>
+  <data name="Label_MinutesUnit" xml:space="preserve">
+  <value>minutes</value>
+  <comment/>
+</data>
+  <data name="Label_ExtraHourPrice" xml:space="preserve">
+  <value>Extra Hour Price</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Optional" xml:space="preserve">
+  <value>Optional</value>
+  <comment/>
+</data>
+  <data name="Label_BufferBefore" xml:space="preserve">
+  <value>Buffer Before (Minutes)</value>
+  <comment/>
+</data>
+  <data name="FormText_BufferBefore" xml:space="preserve">
+  <value>Setup time before service</value>
+  <comment/>
+</data>
+  <data name="Label_BufferAfter" xml:space="preserve">
+  <value>Buffer After (Minutes)</value>
+  <comment/>
+</data>
+  <data name="FormText_BufferAfter" xml:space="preserve">
+  <value>Cleanup time after service</value>
+  <comment/>
+</data>
+  <data name="FormText_MaxCapacity" xml:space="preserve">
+  <value>Number of people at the same time</value>
+  <comment/>
+</data>
+  <data name="Label_Documents" xml:space="preserve">
+  <value>Documents</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Documents" xml:space="preserve">
+  <value>Write each document on a separate line or separate them with commas...</value>
+  <comment/>
+</data>
+  <data name="FormText_Documents" xml:space="preserve">
+  <value>Example: Driver's license, ID card, Car registration</value>
+  <comment/>
+</data>
+  <data name="Section_Settings" xml:space="preserve">
+  <value>Settings</value>
+  <comment/>
+</data>
+  <data name="Label_Icon" xml:space="preserve">
+  <value>Icon (Bootstrap Icon)</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Icon" xml:space="preserve">
+  <value>bi-stars</value>
+  <comment/>
+</data>
+  <data name="Link_IconsList" xml:space="preserve">
+  <value>Icon List</value>
+  <comment/>
+</data>
+  <data name="Label_ServiceColor" xml:space="preserve">
+  <value>Service Primary Color</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Color" xml:space="preserve">
+  <value>#2c6e7c</value>
+  <comment/>
+</data>
+  <data name="Label_ImageUrl" xml:space="preserve">
+  <value>Image URL</value>
+  <comment/>
+</data>
+  <data name="Placeholder_ImageUrl" xml:space="preserve">
+  <value>https://...</value>
+  <comment/>
+</data>
+  <data name="FormText_DisplayOrder" xml:space="preserve">
+  <value>Lower number = appears first</value>
+  <comment/>
+</data>
+  <data name="Label_IsActive" xml:space="preserve">
+  <value>Active</value>
+  <comment/>
+</data>
+  <data name="Label_IsPopular" xml:space="preserve">
+  <value>Featured Service</value>
+  <comment/>
+</data>
+  <data name="SubmitCard_Title" xml:space="preserve">
+  <value>Ready to save?</value>
+  <comment/>
+</data>
+  <data name="Button_CreateService" xml:space="preserve">
+  <value>Create Service</value>
+  <comment/>
+</data>
+  <data name="Preview_Title" xml:space="preserve">
+  <value>Live Preview</value>
+  <comment/>
+</data>
+  <data name="Preview_DefaultName" xml:space="preserve">
+  <value>Service Name</value>
+  <comment/>
+</data>
+  <data name="PageTitle_Services" xml:space="preserve">
+  <value>Services</value>
+  <comment/>
+</data>
+  <data name="PageSubtitle" xml:space="preserve">
+  <value>Manage services and their pricing</value>
+  <comment/>
+</data>
+  <data name="Button_AddNew" xml:space="preserve">
+  <value>Add New Service</value>
+  <comment/>
+</data>
+  <data name="Label_Search" xml:space="preserve">
+  <value>Search</value>
+  <comment/>
+</data>
+  <data name="Placeholder_Search" xml:space="preserve">
+  <value>Search by name or category...</value>
+  <comment/>
+</data>
+  <data name="Label_Category" xml:space="preserve">
+  <value>Category</value>
+  <comment/>
+</data>
+  <data name="Label_AllCategories" xml:space="preserve">
+  <value>All Categories</value>
+  <comment/>
+</data>
+  <data name="Label_ShowInactive" xml:space="preserve">
+  <value>Show Inactive</value>
+  <comment/>
+</data>
+  <data name="Button_Filter" xml:space="preserve">
+  <value>Filter</value>
+  <comment/>
+</data>
+  <data name="Button_ViewDetails" xml:space="preserve">
+  <value>View Details</value>
+  <comment/>
+</data>
+  <data name="Button_Deactivate" xml:space="preserve">
+  <value>Deactivate</value>
+  <comment/>
+</data>
+  <data name="Button_Activate" xml:space="preserve">
+  <value>Activate</value>
+  <comment/>
+</data>
+  <data name="Button_RemoveFeatured" xml:space="preserve">
+  <value>Remove Featured</value>
+  <comment/>
+</data>
+  <data name="Button_MakeFeatured" xml:space="preserve">
+  <value>Make Featured</value>
+  <comment/>
+</data>
+  <data name="Badge_Featured" xml:space="preserve">
+  <value>Featured</value>
+  <comment/>
+</data>
+  <data name="Badge_ExtraHour" xml:space="preserve">
+  <value>Extra hour</value>
+  <comment/>
+</data>
+  <data name="Label_PerHour" xml:space="preserve">
+  <value>/hour</value>
+  <comment/>
+</data>
+  <data name="Label_Minutes" xml:space="preserve">
+  <value>minutes</value>
+  <comment/>
+</data>
+  <data name="Label_Persons" xml:space="preserve">
+  <value>persons</value>
+  <comment/>
+</data>
+  <data name="Label_Booking" xml:space="preserve">
+  <value>appointment</value>
+  <comment/>
+</data>
+  <data name="Badge_Inactive" xml:space="preserve">
+  <value>Inactive</value>
+  <comment/>
+</data>
+  <data name="EmptyState_NoServices" xml:space="preserve">
+  <value>No services found</value>
+  <comment/>
+</data>
+  <data name="EmptyState_StartAdding" xml:space="preserve">
+  <value>Start by adding a new service</value>
+  <comment/>
+</data>
+  <data name="Button_AddNewEmpty" xml:space="preserve">
+  <value>Add New</value>
+  <comment/>
+</data>
+  <data name="Delete_ConfirmMessage" xml:space="preserve">
+  <value>Are you sure you want to delete</value>
+  <comment/>
+</data>
+</root>
