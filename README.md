@@ -84,7 +84,7 @@ Customer (1) ──→ (Many) Appointments
 ### Installation:
 1. **Clone Repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MARYAM-memo/AppointmentBookingSystem.git
    cd AppointmentBookingSystem
    ```
 
@@ -92,12 +92,19 @@ Customer (1) ──→ (Many) Appointments
    ```bash
    dotnet restore
    ```
-
+3. **Setup User Secrets** (⚠️ Important!)
+   ```bash
+   cd AppointmentBooking.Web
+   dotnet user-secrets init
+   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=appointment_booking;Username=your_user;Password=your_password;..."
+   dotnet user-secrets set "AdminSettings:Email" "admin@system.com"
+   dotnet user-secrets set "AdminSettings:Password" "Admin@123"
+   ```
 3. **Setup Database**
    ```bash
    # Update connection string in appsettings.json
    # Then run migrations
-   dotnet ef database update
+   dotnet ef database update -p ../AppointmentBooking.Infrastructure -s .
    ```
 
 4. **Run Application**
