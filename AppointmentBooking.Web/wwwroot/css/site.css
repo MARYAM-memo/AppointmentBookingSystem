@@ -578,7 +578,7 @@ main {
   left: 0;
   right: 0;
   height: 40px;
-  background: white;
+  /* background: white; */
   border-radius: 50% 50% 0 0;
 }
 
@@ -736,7 +736,7 @@ main {
 
 .auth-remember span {
   font-size: 0.875rem;
-  color: #4b5563;
+  color: #506685;
   font-weight: 500;
 }
 
@@ -828,7 +828,7 @@ main {
 }
 
 .auth-footer-link {
-  color: var(--biz-primary);
+  color: var(--biz-accent);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
