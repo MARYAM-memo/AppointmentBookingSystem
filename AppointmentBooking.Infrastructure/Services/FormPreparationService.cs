@@ -9,28 +9,46 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using AppointmentBooking.Application.Settings;
+using Microsoft.Extensions.Options;
 
 namespace AppointmentBooking.Infrastructure.Services;
 
-public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryCache, IMapper mapper) : IFormPreparationService
+public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryCache, IMapper mapper, IOptions<LocalizationSettings> localizationSettings) : IFormPreparationService
 {
       private readonly IUnitOfWork _unitOfWork = unitOfWork;
       private readonly IMemoryCache _memoryCache = memoryCache;
       private readonly IMapper _mapper = mapper;
       private static readonly SemaphoreSlim _cacheSemaphore = new(1, 1);
+      private readonly LocalizationSettings _localizationSettings = localizationSettings.Value;
 
       private readonly string _cacheKey = Constants.Keys.CacheFormSelectList;
       private static readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(30);
 
-      public async Task<FormDataCacheDTO> GetCachedFormDataAsync()
+      private string GetCacheKey(string? currency = null)
       {
-            if (_memoryCache.TryGetValue(_cacheKey, out FormDataCacheDTO? cachedData) && cachedData is not null)
+            return string.IsNullOrEmpty(currency)
+                ? _cacheKey
+                : $"{_cacheKey}_{currency}";
+      }
+
+      public async Task<FormDataCacheDTO> GetCachedFormDataAsync(string? currency = null)
+      {
+            // Use default currency if not provided
+            if (string.IsNullOrEmpty(currency))
+            {
+                  currency = _localizationSettings.DefaultCurrency;
+            }
+
+            var cacheKey = GetCacheKey(currency);
+
+            if (_memoryCache.TryGetValue(cacheKey, out FormDataCacheDTO? cachedData) && cachedData is not null)
                   return cachedData;
 
             await _cacheSemaphore.WaitAsync();
             try
             {
-                  if (_memoryCache.TryGetValue(_cacheKey, out cachedData) && cachedData is not null)
+                  if (_memoryCache.TryGetValue(cacheKey, out cachedData) && cachedData is not null)
                         return cachedData;
 
                   var activeServices = await GetActiveServicesAsync();
@@ -41,7 +59,7 @@ public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryC
                         ServicesList = [.. activeServices.Select(s => new SelectListItem
                         {
                               Value = s.Id.ToString(),
-                              Text = $"{s.Name} ({s.Duration:hh\\:mm} - {s.Price.ToCurrency()})"
+                              Text = $"{s.Name} ({s.Duration:hh\\:mm} - {s.Price.ToCurrency(currency)})"
                         })],
 
                         CustomersList = [.. activeCustomers.Select(c => new SelectListItem
@@ -64,7 +82,7 @@ public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryC
                         ExpiryTime = DateTime.UtcNow.Add(_cacheDuration)
                   };
 
-                  _memoryCache.Set(_cacheKey, formData, _cacheDuration);
+                  _memoryCache.Set(cacheKey, formData, _cacheDuration);
                   return formData;
             }
             finally
@@ -73,8 +91,25 @@ public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryC
             }
       }
 
-      public async Task InvalidateCacheAsync()
+      public async Task InvalidateCacheAsync(string? currency = null)
       {
+            if (string.IsNullOrEmpty(currency))
+            {
+                  // Remove all currency-specific caches
+                  _memoryCache.Remove(_cacheKey);
+
+                  // Remove any currency-specific caches (if you know the currencies)
+                  foreach (var cur in _localizationSettings.GetSupportedCurrencies())
+                  {
+                        _memoryCache.Remove($"{_cacheKey}_{cur}");
+                  }
+            }
+            else
+            {
+                  _memoryCache.Remove($"{_cacheKey}_{currency}");
+            }
+
+            // Also remove the default cache
             _memoryCache.Remove(_cacheKey);
       }
 
@@ -89,9 +124,9 @@ public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryC
             };
       }
 
-      public async Task PopulateViewBagForFormAsync(Controller controller, AppointmentRequestViewModel? model = null, bool isEditMode = false)
+      public async Task PopulateViewBagForFormAsync(Controller controller, AppointmentRequestViewModel? model = null, bool isEditMode = false, string? currency = null)
       {
-            var formData = await GetCachedFormDataAsync();
+            var formData = await GetCachedFormDataAsync(currency);
 
             controller.ViewBag.Services = formData.ServicesList;
             controller.ViewBag.Customers = formData.CustomersList;
@@ -100,9 +135,9 @@ public class FormPreparationService(IUnitOfWork unitOfWork, IMemoryCache memoryC
             controller.ViewBag.IsEdit = isEditMode;
       }
 
-      public async Task PopulateViewBagForListAsync(Controller controller)
+      public async Task PopulateViewBagForListAsync(Controller controller, string? currency = null)
       {
-            var formData = await GetCachedFormDataAsync();
+            var formData = await GetCachedFormDataAsync(currency);
 
             controller.ViewBag.Services = formData.ServicesList;
             controller.ViewBag.Customers = formData.CustomersList;

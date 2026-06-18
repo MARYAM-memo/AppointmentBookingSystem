@@ -27,7 +27,6 @@ using Microsoft.Extensions.Options;
 
 namespace AppointmentBooking.Web.Extensions
 {
-
       public static class DatabaseExtensions
       {
             /// <summary>
@@ -51,12 +50,20 @@ namespace AppointmentBooking.Web.Extensions
             /// </summary>
             public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
             {
+                  services.Configure<IdentitySettings>(configuration.GetSection("Identity"));
                   services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                   {
                         configuration.GetSection("Identity").Bind(options);
+
+                        options.Password.RequireDigit = false;
+                        options.Password.RequiredLength = 0;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequireLowercase = false;
                   })
                   .AddEntityFrameworkStores<DatabaseContext>()
-                  .AddDefaultTokenProviders();
+                  .AddDefaultTokenProviders()
+                  .AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>(); ;
 
                   services.ConfigureApplicationCookie(options =>
                   {
@@ -82,6 +89,7 @@ namespace AppointmentBooking.Web.Extensions
                   {
                         config.DisableDataAnnotationsValidation = true;
                   }); */
+                  services.AddFluentValidationAutoValidation();
                   services.AddFluentValidationClientsideAdapters();
 
                   services.AddValidatorsFromAssemblyContaining<LoginValidation>();
@@ -122,8 +130,6 @@ namespace AppointmentBooking.Web.Extensions
                   // Register Settings
                   services.Configure<LocalizationSettings>(configuration.GetSection("LocalizationSettings"));
                   services.Configure<RateLimitingSettings>(configuration.GetSection("RateLimiting"));
-
-                  services.AddHttpContextAccessor();
 
                   // Localization services
                   services.AddApplicationLocalization();

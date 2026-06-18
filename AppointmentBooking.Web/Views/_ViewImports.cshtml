@@ -1,21 +1,23 @@
 ﻿@using AppointmentBooking.Application.Extensions
 @using AppointmentBooking.Application.Interfaces
+@using AppointmentBooking.Application.Shared
 @using AppointmentBooking.Application.ViewModels.Account
 @using AppointmentBooking.Application.ViewModels.BusinessProfile
 @using AppointmentBooking.Application.ViewModels.General
 @using AppointmentBooking.Core.Interfaces
 @using AppointmentBooking.Core.Models
 @using AppointmentBooking.Infrastructure.Identity
-@using AppointmentBooking.Application.Shared
 @using AppointmentBooking.Web
 @using AppointmentBooking.Web.Extensions
 @using AppointmentBooking.Web.Resources.Shared
+@using AppointmentBooking.Web.Resources.Validations
 @using AppointmentBooking.Web.Resources.Views
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Localization
 
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 @inject IStringLocalizer<ViewsSharedResource> ViewsSharedLocalizer
+@inject IStringLocalizer<ValidationsSharedResource> ValidationLocalizer
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IBusinessProfileService ProfileService

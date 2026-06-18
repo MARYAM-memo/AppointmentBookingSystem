@@ -2,17 +2,18 @@ using AppointmentBooking.Application.ViewModels.Service;
 using AppointmentBooking.Core.Models;
 using AppointmentBooking.Application.Shared;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AppointmentBooking.Application.Interfaces;
 
 namespace AppointmentBooking.Web.Controllers
 {
     [Authorize]
-    public class ServicesController(IValidator<ServiceRequestViewModel> validator) : BaseController
+    public class ServicesController(IValidator<ServiceRequestViewModel> validator, IFormPreparationService formPreparation) : BaseController
     {
         readonly IValidator<ServiceRequestViewModel> _validator = validator;
+        private readonly IFormPreparationService _formPreparation = formPreparation;
         public async Task<ActionResult> Index(string? searchTerm, string? category, bool? includeInactive)
         {
             await SetViewBagDataAsync();
@@ -38,11 +39,7 @@ namespace AppointmentBooking.Web.Controllers
             }
 
             var serviceList = services.OrderBy(s => s.DisplayOrder).ThenBy(s => s.Name).ToList();
-            for (int i = 0; i < serviceList.Count; i++)
-            {
-                var srv = serviceList[i];
-                Console.WriteLine($"{i}: {srv?.Appointments?.Count}");
-            }
+
             var model = new ServiceListViewModel
             {
                 Services = Mapper.Map<IEnumerable<ServiceResponseViewModel>>(serviceList),
@@ -68,6 +65,7 @@ namespace AppointmentBooking.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = Constants.AdminRole)]
         public async Task<IActionResult> Create()
         {
             await SetCustomLabelsAsync();
@@ -77,6 +75,7 @@ namespace AppointmentBooking.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Constants.AdminRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ServiceRequestViewModel model)
         {
@@ -103,12 +102,16 @@ namespace AppointmentBooking.Web.Controllers
                     UnitOfWork.Services.Add(service);
                     await UnitOfWork.SaveChangesAsync();
 
+                    // Invalidate cache because services list changed
+                    await _formPreparation.InvalidateCacheAsync();
+
                     SuccessMessage(string.Format(Localizer["Service_CreateSuccess"], model.Name));
                     return RedirectToAction(nameof(Index));
                 }
             );
         }
 
+        [Authorize(Roles = Constants.AdminRole)]
         public async Task<IActionResult> Edit(int id)
         {
             var service = await UnitOfWork.Services.FindByIdAsync(id);
@@ -129,6 +132,7 @@ namespace AppointmentBooking.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Constants.AdminRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ServiceRequestViewModel model)
         {
@@ -158,6 +162,8 @@ namespace AppointmentBooking.Web.Controllers
                     service.RequiredDocuments = ParseRequiredDocuments(model.RequiredDocuments);
                     UnitOfWork.Services.Update(service);
                     await UnitOfWork.SaveChangesAsync();
+                    // Invalidate cache because services list changed
+                    await _formPreparation.InvalidateCacheAsync();
                     SuccessMessage(string.Format(Localizer["Service_UpdateSuccess"], model.Name));
                     return RedirectToAction(nameof(Index));
                 }
@@ -165,6 +171,7 @@ namespace AppointmentBooking.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Constants.AdminRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleStatus(int id)
         {
@@ -177,11 +184,13 @@ namespace AppointmentBooking.Web.Controllers
             await UnitOfWork.SaveChangesAsync();
 
             var action = service.IsActive ? Localizer["Service_ToggleStatus_Activate"] : Localizer["Service_ToggleStatus_Deactivate"];
+            await _formPreparation.InvalidateCacheAsync();
             SuccessMessage(string.Format(Localizer["Service_ToggleStatus_Success"], action));
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
+        [Authorize(Roles = Constants.AdminRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TogglePopular(int id)
         {
@@ -198,6 +207,7 @@ namespace AppointmentBooking.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Constants.AdminRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
@@ -210,7 +220,7 @@ namespace AppointmentBooking.Web.Controllers
             service.IsActive = false;
 
             await UnitOfWork.SaveChangesAsync();
-
+            await _formPreparation.InvalidateCacheAsync();
             SuccessMessage(Localizer["Service_DeleteSuccess"]);
             return RedirectToAction(nameof(Index));
         }

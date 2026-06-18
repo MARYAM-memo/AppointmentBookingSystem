@@ -57,9 +57,6 @@ public class BusinessProfileConfiguration : IEntityTypeConfiguration<BusinessPro
 
             localization.Property(l => l.Direction)
                 .HasMaxLength(10);
-
-            localization.Property(l => l.TimeZone)
-                .HasMaxLength(50);
         });
 
         builder.OwnsOne(b => b.Contact, contact =>

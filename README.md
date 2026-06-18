@@ -1,6 +1,66 @@
 # 📅 Appointment Booking System
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/license-Commercial-red.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Professional appointment booking and scheduling platform built with **ASP.NET Core** and **PostgreSQL**.
+
+## 📑 Table of Contents
+
+- [🎯 Overview](#-overview)
+  - [Key Features](#key-features)
+- [🏗️ Architecture](#-architecture)
+  - [Technologies](#technologies)
+- [📊 Database Schema](#-database-schema)
+  - [Core Tables](#core-tables)
+  - [Key Relationships](#key-relationships)
+- [🚀 Quick Start](#-quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Default Credentials](#default-credentials)
+- [📝 Features Deep Dive](#-features-deep-dive)
+  - [1. Appointment Management](#1-appointment-management)
+  - [2. Availability System](#2-availability-system)
+  - [3. Customer Management](#3-customer-management)
+  - [4. Service Management](#4-service-management)
+  - [5. Business Profile](#5-business-profile)
+  - [6. Security Features](#6-security-features)
+  - [7. Localization](#7-localization)
+- [🎨 Customization](#-customization)
+  - [Changing Colors](#changing-colors)
+  - [Custom Labels](#custom-labels)
+  - [Working Hours](#working-hours)
+  - [Localization](#localization)
+- [🔐 Security](#-security)
+  - [Implemented](#implemented)
+  - [Best Practices](#best-practices)
+- [🔐 Authorization Policies](#-authorization-policies)
+  - [User Roles](#user-roles)
+  - [Access Control Matrix](#access-control-matrix)
+  - [User Permissions](#user-permissions)
+  - [Admin Permissions](#admin-permissions)
+- [📊 Performance](#-performance)
+  - [Optimizations](#optimizations)
+  - [Scalability](#scalability)
+- [🧪 Testing](#-testing)
+  - [Test Coverage](#test-coverage)
+  - [Running Tests](#running-tests)
+- [🌍 Localization](#-localization)
+  - [Supported Languages](#supported-languages)
+  - [To Add New Language](#to-add-new-language)
+- [📦 Deployment](#-deployment)
+  - [Pre-deployment Checklist](#pre-deployment-checklist)
+  - [Docker Support](#docker-support)
+  - [Environment Variables](#environment-variables)
+- [🐛 Troubleshooting](#-troubleshooting)
+  - [Common Issues](#common-issues)
+- [📄 License](#-license)
+- [🤝 Support](#-support)
+- [📈 Version History](#-version-history)
+- [📖 Additional Resources](#-additional-resources)
 
 ## 🎯 Overview
 
@@ -14,6 +74,7 @@ A production-ready appointment booking system designed for service-based busines
 - ✅ **Business Profile** - Customizable branding (colors, logo, custom labels)
 - ✅ **Localization** - Arabic and English with RTL support
 - ✅ **Theme Support** - Light/Dark mode toggle
+- ✅ **Multi-Currency Support** - Currency selection at application level
 - ✅ **Rate Limiting** - Protect against abuse with adaptive rate limits
 - ✅ **Dashboard** - Real-time statistics and analytics
 - ✅ **Authentication** - Secure user registration and login
@@ -219,6 +280,39 @@ Switch between Arabic and English from navbar language button.
 - Security headers validation
 
 ---
+
+## 🔐 Authorization Policies
+
+### User Roles:
+- **Admin**: Full access to all features
+- **User**: Limited access (view-only for most features)
+
+### Access Control Matrix:
+
+| Controller | User (View Only) | Admin (Full) |
+|------------|------------------|--------------|
+| Dashboard  | ✅ View          | ✅ Full      |
+| Appointments | ✅ View        | ✅ Full      |
+| Services   | ✅ View          | ✅ Full      |
+| Customers  | ❌ No Access     | ✅ Full      |
+| Settings   | ❌ No Access     | ✅ Full      |
+| Profile    | ✅ View          | ✅ Full      |
+
+### User Permissions:
+- ✅ Can view appointments list
+- ✅ Can view appointment details
+- ✅ Can view services
+- ✅ Can view service details
+- ✅ Can view dashboard statistics
+- ❌ Cannot create, edit, or delete appointments
+- ❌ Cannot manage customers
+- ❌ Cannot access settings
+
+### Admin Permissions:
+- ✅ Full CRUD on all entities
+- ✅ Business profile management
+- ✅ User management
+- ✅ System configuration
 
 ## 📊 Performance
 

@@ -80,6 +80,10 @@ try
     // =================Run==========
     app.Run();
 }
+catch (HostAbortedException)
+{
+    // Ignore EF Design-Time host shutdown
+}
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");

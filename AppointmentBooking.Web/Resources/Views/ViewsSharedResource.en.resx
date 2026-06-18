@@ -279,4 +279,19 @@
   <data name="Label_Booking" xml:space="preserve">
   <value>Appointments</value>
 </data>
+  <data name="Minute" xml:space="preserve">
+  <value>Minute</value>
+</data>
+  <data name="Hour" xml:space="preserve">
+  <value>Hour</value>
+</data>
+  <data name="Hours" xml:space="preserve">
+  <value>Hours</value>
+</data>
+  <data name="H" xml:space="preserve">
+  <value>h</value>
+</data>
+  <data name="M" xml:space="preserve">
+  <value>m</value>
+</data>
 </root>

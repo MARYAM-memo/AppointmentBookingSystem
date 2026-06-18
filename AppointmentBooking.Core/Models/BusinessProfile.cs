@@ -54,7 +54,6 @@ public class LocalizationConfig
       public string Currency { get; set; } = string.Empty;
       public string Language { get; set; } = string.Empty;
       public string Direction { get; set; } = string.Empty;
-      public string TimeZone { get; set; } = string.Empty;
 }
 
 public class ContactInfo

@@ -23,13 +23,7 @@ public class RegisterValidation : AbstractValidator<RegisterViewModel>
 
         // Password verification (with strong criteria)
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage(localizer["Password_Required"])
-            .MinimumLength(6).WithMessage(localizer["Password_MinLength"])
-            .MaximumLength(50).WithMessage(localizer["Password_MaxLength"])
-            .Matches(@"[A-Z]").WithMessage(localizer["Password_RequireUpper"])
-            .Matches(@"[a-z]").WithMessage(localizer["Password_RequireLower"])
-            .Matches(@"[0-9]").WithMessage(localizer["Password_RequireDigit"])
-            .Matches(@"[!@#$%^&*(),.?"":{}|<>]").WithMessage(localizer["Password_RequireSpecial"]);
+            .NotEmpty().WithMessage(localizer["Password_Required"]);
 
         // Checking for a match in the password confirmation
         RuleFor(x => x.ConfirmPassword)

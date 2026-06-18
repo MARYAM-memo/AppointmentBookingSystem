@@ -5,7 +5,8 @@
 @model CustomerListViewModel
 @{
     var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
-    ViewData["Title"] = labels.GetValueOrDefault("customer", Localizer["PageTitle_Customers"].Value);
+        var title = labels.GetLabel("customer", Localizer["PageTitle_Customers"]);
+    ViewData["Title"] = title;
 }
 
 @* Page Header *@
@@ -13,7 +14,7 @@
     <div>
         <h2 class="fw-bold mb-1">
             <i class="bi bi-people-fill text-primary m-2"></i>
-            @labels.GetValueOrDefault("customer", Localizer["PageTitle_Customers"].Value)
+            @title
         </h2>
         <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
     </div>
@@ -282,8 +283,7 @@
             <small class="text-muted">
                 @Localizer["Pagination_Showing"] @(((Model.PageNumber - 1) * Model.PageSize) + 1) -
                 @Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)
-                @Localizer["Pagination_Of"] <strong>@Model.TotalCount</strong> @labels.GetValueOrDefault("customer",
-                Localizer["PageTitle_Customers"].Value)
+                @Localizer["Pagination_Of"] <strong>@Model.TotalCount</strong> @title
             </small>
 
             <div class="d-flex align-items-center gap-2">

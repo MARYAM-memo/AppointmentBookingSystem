@@ -8,6 +8,7 @@ using FluentValidation.AspNetCore;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using AppointmentBooking.Application.Extensions;
 
 namespace AppointmentBooking.Web.Controllers;
 
@@ -67,7 +68,7 @@ public abstract class BaseController : Controller
             ViewBag.PrimaryColor = profile?.Colors?.Primary;
             ViewBag.SecondaryColor = profile?.Colors?.Secondary;
             ViewBag.AccentColor = profile?.Colors?.Accent;
-            ViewBag.Currency = profile?.Localization?.Currency ?? Constants.DefaultCurrency;
+            ViewBag.Currency = profile?.Localization?.Currency ?? PriceExtension.CurrentCurrency ?? Constants.DefaultCurrency;
       }
 
       /// <summary>
@@ -88,12 +89,8 @@ public abstract class BaseController : Controller
       /// <summary>
       /// Validates model using FluentValidator and returns view with errors if invalid
       /// </summary>
-      protected async Task<IActionResult> ValidateAndExecuteAsync<TModel, TValidator>(
-              TModel model,
-              string viewName,
-              Func<Task<IActionResult>> onSuccess,
-              Func<Task<IActionResult>>? onFailure = null)
-              where TValidator : IValidator<TModel>
+      protected async Task<IActionResult> ValidateAndExecuteAsync<TModel, TValidator>(TModel model, string viewName, Func<Task<IActionResult>> onSuccess, Func<Task<IActionResult>>? onFailure = null)
+            where TValidator : IValidator<TModel>
       {
             var validator = HttpContext.RequestServices.GetRequiredService<TValidator>();
             var validationResult = await validator.ValidateAsync(model);
@@ -105,7 +102,6 @@ public abstract class BaseController : Controller
                   // custom error messages
                   foreach (var error in validationResult.Errors)
                   {
-                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                         WarningMessage(error.ErrorMessage);
                   }
 

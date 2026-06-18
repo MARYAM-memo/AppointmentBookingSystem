@@ -91,10 +91,6 @@
                             <span class="info-value">@(Model.Localization.Direction == "rtl" ?
                                                                                                 Localizer["Direction_RTL"].Value : Localizer["Direction_LTR"].Value)</span>
                             </div>
-                            <div class="info-item">
-                                <span class="info-label">@Localizer["Label_TimeZone"]</span>
-                                <span class="info-value">@Model.Localization.TimeZone</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,7 +163,7 @@
                 </div>
             </div>
 
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole(Constants.AdminRole))
             {
                 <div class="text-center mt-4">
                     <a asp-action="Edit" class="btn btn-biz-primary btn-lg">

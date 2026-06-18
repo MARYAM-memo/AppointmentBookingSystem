@@ -254,28 +254,12 @@
   <value>من اليسار لليمين (LTR)</value>
   <comment/>
 </data>
-  <data name="Label_TimeZone" xml:space="preserve">
-  <value>المنطقة الزمنية</value>
+  <data name="Language_ChangeHint" xml:space="preserve">
+  <value>اختيار اللغة يغير اتجاه الصفحة تلقائياً</value>
   <comment/>
 </data>
-  <data name="TimeZone_UTC" xml:space="preserve">
-  <value>UTC</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Cairo" xml:space="preserve">
-  <value>القاهرة (EET)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Riyadh" xml:space="preserve">
-  <value>الرياض (AST)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Dubai" xml:space="preserve">
-  <value>دبي (GST)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Istanbul" xml:space="preserve">
-  <value>إسطنبول (TRT)</value>
+  <data name="Auto_syncs" xml:space="preserve">
+  <value>يتغير تلقائياً مع اللغة</value>
   <comment/>
 </data>
   <data name="Label_WorkingHoursStart" xml:space="preserve">

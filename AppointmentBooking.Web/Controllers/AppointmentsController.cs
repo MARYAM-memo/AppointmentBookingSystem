@@ -30,22 +30,34 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
     public async Task<IActionResult> Index(AppointmentFiltersDTO filters)
     {
         await SetCustomLabelsAsync();
-        await _formPreparation.PopulateViewBagForListAsync(this);
+
+        // Get current currency from profile
+        var profile = await GetCurrentProfileAsync();
+        var currency = profile?.Localization?.Currency ?? PriceExtension.CurrentCurrency;
+
+        await _formPreparation.PopulateViewBagForListAsync(this, currency: currency);
 
         var viewModel = await _viewModelService.BuildListViewModelAsync(filters);
         return View(viewModel);
     }
 
+    [Authorize(Roles = Constants.AdminRole)]
     public async Task<IActionResult> Create(int? customerId, int? serviceId, DateTime? date)
     {
-        await SetCustomLabelsAsync();
-        await _formPreparation.PopulateViewBagForFormAsync(this, isEdit: false);
+        await SetViewBagDataAsync();
+
+        // Get current currency from profile
+        var profile = await GetCurrentProfileAsync();
+        var currency = profile?.Localization?.Currency ?? PriceExtension.CurrentCurrency;
+
+        await _formPreparation.PopulateViewBagForFormAsync(this, isEdit: false, currency: currency);
 
         var model = _formPreparation.CreateInitialRequest(customerId, serviceId, date);
         return View("Form", model);
     }
 
     [HttpPost]
+    [Authorize(Roles = Constants.AdminRole)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AppointmentRequestViewModel model)
     {
@@ -72,7 +84,8 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
             }
         );
     }
-
+    
+    [Authorize(Roles = Constants.AdminRole)]
     public async Task<IActionResult> Edit(int id)
     {
         var appointment = await UnitOfWork.Appointments.FindFirstOrDefaultAsync(
@@ -82,14 +95,20 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
 
         if (appointment == null) return NotFoundAppointment();
 
-        await SetCustomLabelsAsync();
-        await _formPreparation.PopulateViewBagForFormAsync(this, isEdit: true);
+        await SetViewBagDataAsync();
+
+        // Get current currency from profile
+        var profile = await GetCurrentProfileAsync();
+        var currency = profile?.Localization?.Currency ?? PriceExtension.CurrentCurrency;
+
+        await _formPreparation.PopulateViewBagForFormAsync(this, isEdit: true, currency: currency);
 
         var model = Mapper.Map<AppointmentRequestViewModel>(appointment);
         return View("Form", model);
     }
 
     [HttpPost]
+    [Authorize(Roles = Constants.AdminRole)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, AppointmentRequestViewModel model)
     {
@@ -156,6 +175,7 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
     }
 
     [HttpPost]
+    [Authorize(Roles = Constants.AdminRole)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, BookingStatus status)
     {
@@ -174,6 +194,7 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
     }
 
     [HttpPost]
+    [Authorize(Roles = Constants.AdminRole)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
@@ -201,7 +222,9 @@ public class AppointmentsController(IAvailabilityService availabilityService, IV
     /// </summary>
     private async Task<IActionResult> HandleInvalidModelAsync(AppointmentRequestViewModel model, bool isEdit)
     {
-        await _formPreparation.PopulateViewBagForFormAsync(this, model, isEdit);
+        var profile = await GetCurrentProfileAsync();
+        var currency = profile?.Localization?.Currency ?? PriceExtension.CurrentCurrency;
+        await _formPreparation.PopulateViewBagForFormAsync(this, model, isEdit, currency);
         await SetCustomLabelsAsync();
         return View("Form", model);
     }

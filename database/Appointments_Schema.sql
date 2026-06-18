@@ -133,7 +133,6 @@ CREATE TABLE public."BusinessProfiles" (
     "Localization_Currency" character varying(10) NOT NULL,
     "Localization_Language" character varying(10) NOT NULL,
     "Localization_Direction" character varying(10) NOT NULL,
-    "Localization_TimeZone" character varying(50) NOT NULL,
     "WorkingHoursStart" interval NOT NULL,
     "WorkingHoursEnd" interval NOT NULL,
     "SlotDurationMinutes" integer NOT NULL,
@@ -268,7 +267,7 @@ INSERT INTO public."Users" ("Id", "FullName", "DateOfBirth", "Gender", "PreferDa
 INSERT INTO public."UserRoles" ("UserId", "RoleId") VALUES 
 ('11240251-b0b6-4d56-ad0c-832b2bea0ad6', 'a8f97219-0c5a-457a-97fb-cd091bd0cf6e');
 
-INSERT INTO public."BusinessProfiles" ("Id", "BusinessName", "BusinessType", "Colors_Primary", "Colors_Secondary", "Colors_Accent", "Localization_Currency", "Localization_Language", "Localization_Direction", "Localization_TimeZone", "WorkingHoursStart", "WorkingHoursEnd", "SlotDurationMinutes", "CustomLabels", "CreatedAt") VALUES 
-(1, 'نظام حجز المواعيد', 'شامل', '#2c6e7c', '#3a9e8f', '#f39c12', 'ج.م', 'ar', 'rtl', 'UTC', '09:00:00', '22:00:00', 30, '{"service": "الخدمات", "customer": "العملاء", "appointment": "الحجوزات", "serviceItem": "الخدمة"}', '2026-06-07');
+INSERT INTO public."BusinessProfiles" ("Id", "BusinessName", "BusinessType", "Colors_Primary", "Colors_Secondary", "Colors_Accent", "Localization_Currency", "Localization_Language", "Localization_Direction", "WorkingHoursStart", "WorkingHoursEnd", "SlotDurationMinutes", "CustomLabels", "CreatedAt") VALUES 
+(1, 'نظام حجز المواعيد', 'شامل', '#2c6e7c', '#3a9e8f', '#f39c12', 'ج.م', 'ar', 'rtl', '09:00:00', '22:00:00', 30, '{"service": "الخدمات", "customer": "العملاء", "appointment": "الحجوزات", "serviceItem": "الخدمة"}', '2026-06-07');
 
 SELECT setval('public."BusinessProfiles_Id_seq"', 1, true);

@@ -4,7 +4,7 @@ public static class Constants
 {
       public static string AdminEmail => "admin@system.com";
       public static string AdminPhone => "01234567890";
-      public static string AdminRole => "Admin";
+      public const string AdminRole = "Admin";
       public static string UserRole => "User";
 
       public static string BusinessName => "نظام حجز المواعيد";
@@ -17,7 +17,6 @@ public static class Constants
       public static string DefaultLanguage => "ar";
       public static string DefaultCulture => "ar-EG";
       public static string DefaultDirection => "rtl";
-      public static string DefaultTimeZone => "UTC";
       public static string DefaultPrimaryColor => "#2c6e7c";
       public static string DefaultSecondaryColor => "#3a9e8f";
       public static string DefaultAccentColor => "#f39c12";

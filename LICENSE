@@ -53,11 +53,20 @@ THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
 
 IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT DAMAGES. TOTAL LIABILITY SHALL NOT EXCEED THE LICENSE FEE PAID.
 
-## 7. SUPPORT
+## 7. SUPPORT & UPDATES
 
-- **6 months support** included with license
-- Support includes: email assistance, bug fixes, documentation
-- **Excludes:** custom development, third-party integrations
+### Included Support (6 months):
+- ✅ Email support
+- ✅ Bug fixes and patches
+- ✅ Documentation updates
+- ✅ Security patches
+- ❌ Custom development
+- ❌ Third-party integrations
+
+### Updates Policy:
+- **Minor updates** (1.0.x): Bug fixes, security patches - Free
+- **Major updates** (1.x.0): New features, breaking changes - Paid upgrade
+- **Version support**: Each major version supported for 12 months
 
 ## 8. TERMINATION
 

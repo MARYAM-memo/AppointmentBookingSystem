@@ -6,7 +6,6 @@
 @model AppointmentRequestViewModel
 @{
       var isEdit = ViewBag.IsEdit as bool? ?? false;
-      var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
       ViewData["Title"] = (isEdit ? ViewsSharedLocalizer["Button_Edit"] : Localizer["Booking_Add"]) + " " +
 Localizer["Booking_Title"];
 
@@ -245,113 +244,7 @@ Localizer["Booking_Title"];
                         </div>
                   </div>
             </div>
-            @*
-            @section Styles {
-                  <style>
-                        .slots-grid {
-                              display: grid;
-                              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                              gap: 0.75rem;
-                        }
 
-                        .slot-btn {
-                              padding: 0.75rem;
-                              border: 2px solid rgba(var(--biz-primary-rgb, 13, 110, 253), 0.2);
-                              border-radius: var(--border-radius);
-                              background: var(--brand-card-bg, white);
-                              cursor: pointer;
-                              transition: all 0.15s ease;
-                              text-align: center;
-                              font-size: 0.9rem;
-                              color: var(--brand, #212529);
-                        }
-
-                        .slot-btn:hover:not(:disabled) {
-                              border-color: var(--biz-primary);
-                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.08);
-                              transform: translateY(-2px);
-                        }
-
-                        .slot-btn.selected {
-                              border-color: var(--biz-primary, #ff0040aa);
-                              background: var(--biz-primary, #ff004041);
-                              box-shadow: 0 0 0 3px rgba(var(--biz-primary-rgb, 13, 110, 253), 0.3);
-                              transform: scale(1.02);
-                              color: var(--brand, #212529);
-                        }
-
-                        .slot-btn.selected.disabled {
-                              opacity: 0.7;
-                              text-decoration: none;
-                              border-color: var(--biz-primary, #ff0040aa);
-                              background: rgba(255, 0, 64, 0.2);
-                        }
-
-                        .slot-btn:disabled {
-                              opacity: 0.5;
-                              cursor: not-allowed;
-                              background: var(--gray-100);
-                              text-decoration: line-through;
-                        }
-
-                        .slot-btn .slot-time {
-                              font-weight: 600;
-                              display: block;
-                        }
-
-                        .slot-btn .slot-status {
-                              font-size: 0.75rem;
-                              opacity: 0.8;
-                        }
-
-                        .service-preview-icon {
-                              width: 80px;
-                              height: 80px;
-                              border-radius: 50%;
-                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.1);
-                              display: flex;
-                              align-items: center;
-                              justify-content: center;
-                              margin: 0 auto;
-                              transition: all 0.25s ease;
-                              color: var(--biz-primary);
-                        }
-
-                        .slot-btn.current-appointment {
-                              border-color: var(--biz-primary);
-                              background: rgba(var(--biz-primary-rgb), 0.15);
-                              font-weight: bold;
-                        }
-
-                        .slot-btn.current-appointment::after {
-                              content: ' (Current)';
-                              font-size: 0.7rem;
-                              display: block;
-                        }
-
-                        /* Dark mode support */
-                        [data-bs-theme="dark"] .slot-btn {
-                              background: rgba(0, 0, 0, 0.2);
-                              border-color: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.3);
-                              color: var(--brand, #a8b4c0);
-                        }
-
-                        [data-bs-theme="dark"] .slot-btn:hover:not(:disabled) {
-                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.15);
-                        }
-
-                        [data-bs-theme="dark"] .service-preview-icon {
-                              background: rgba(var(--biz-primary-rgb, 13, 110, 253), 0.15);
-                        }
-
-                        [data-bs-theme="dark"] .slot-btn.selected {
-                              border-color: var(--biz-primary, #5d0017aa);
-                              background: var(--biz-primary, #70001c41);
-                              color: var(--brand, #a8b4c0);
-                        }
-                  </style>
-            }
- *@
             @section Styles {
                   <style>
                         /* ========== Slots Grid ========== */
@@ -631,7 +524,7 @@ Localizer["Booking_Title"];
 
                               if (minutes === undefined || minutes === null) {
                                     console.warn('formatDuration: minutes is null/undefined');
-                                    return '0 دقيقة';
+                                    return '0 @Html.Raw(@ViewsSharedLocalizer["Minute"])';
                               }
 
                               let duration = minutes;
@@ -639,19 +532,19 @@ Localizer["Booking_Title"];
                                     duration = parseInt(minutes, 10);
                                     if (isNaN(duration)) {
                                           console.warn('formatDuration: failed to parse string:', minutes);
-                                          return '0 دقيقة';
+                                          return '0 @Html.Raw(@ViewsSharedLocalizer["Minute"])';
                                     }
                               }
 
                               if (duration <= 0 || isNaN(duration)) {
                                     console.warn('formatDuration: invalid number:', duration);
-                                    return '0 دقيقة';
+                                    return '0 @Html.Raw(@ViewsSharedLocalizer["Minute"])';
                               }
                               const h = Math.floor(duration / 60);
                               const m = duration % 60;
-                              if (h > 0 && m > 0) return `${h} س ${m} د`;
-                              if (h > 0) return `${h} ساعة${h > 1 ? 'ات' : ''}`;
-                              return `${m} دقيقة`;
+                              if (h > 0 && m > 0) return `${h} @Html.Raw(@ViewsSharedLocalizer["H"]) ${m} @Html.Raw(@ViewsSharedLocalizer["M"])`;
+                              if (h > 0) return `${h} ${h > 1 ? '@Html.Raw(@ViewsSharedLocalizer["Hours"])' : '@Html.Raw(@ViewsSharedLocalizer["Hour"])'}`;
+                              return `${m} @Html.Raw(@ViewsSharedLocalizer["Minute"])`;
                         }
 
                         function isWeekend(dateString) {
@@ -668,7 +561,25 @@ Localizer["Booking_Title"];
 
                               const date = new Date(dateString);
                               const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-                              return days[date.getDay()];
+                              const daysEN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+                              let currentLang = 'ar';
+                              if (window.LanguageManager && typeof window.LanguageManager.getCurrentLanguage === 'function') {
+                                   try {
+                                       currentLang = window.LanguageManager.getCurrentLanguage();
+                                   } catch (e) {
+                                       // If getCurrentLanguage fails, fallback to html lang
+                                       currentLang = document.documentElement.lang || 'ar';
+                                   }
+                              } else {
+                                  currentLang = document.documentElement.lang || 'ar';
+                              }
+
+                              if (currentLang === 'ar') {
+                                  return days[date.getDay()];
+                              } else {
+                                  return daysEN[date.getDay()];
+                              }
                         }
 
                         function onDateChange() {
@@ -678,27 +589,27 @@ Localizer["Booking_Title"];
 
                               if (!date) {
                                     container.innerHTML = `
-                                                                                          <div class="text-center py-4 text-muted" id="slotsPlaceholder">
-                                                                                              <i class="bi bi-calendar text-muted display-4"></i>
-                                                                                              <p class="mt-2">@Localizer["Message_SelectDateFirst"]</p>
-                                                                                          </div>`;
+                                    <div class="text-center py-4 text-muted" id="slotsPlaceholder">
+                                        <i class="bi bi-calendar text-muted display-4"></i>
+                                        <p class="mt-2">@Localizer["Message_SelectDateFirst"]</p>
+                                    </div>`;
                                     return;
                               }
 
                               if (isWeekend(date)) {
                                     const dayName = getDayName(date);
                                     container.innerHTML = `
-                                                                                          <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3">
-                                                                                              <i class="bi bi-calendar-x display-4"></i>
-                                                                                              <p class="mt-2 fw-bold mb-1">@Localizer["Message_WeekendBooking"] ${dayName}</p>
-                                                                                              <small class="text-muted">@Localizer["Message_WeekendClosed"]</small>
-                                                                                              <div class="mt-3">
-                                                                                                  <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                                                                          onclick="document.getElementById('AppointmentDate').value = ''; onDateChange();">
-                                                                                                      <i class="bi bi-arrow-repeat"></i> @Localizer["Button_ChooseAnotherDate"]
-                                                                                                  </button>
-                                                                                              </div>
-                                                                                          </div>`;
+                                          <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3">
+                                              <i class="bi bi-calendar-x display-4"></i>
+                                              <p class="mt-2 fw-bold mb-1">@Localizer["Message_WeekendBooking"] ${dayName}</p>
+                                              <small class="text-muted">@Localizer["Message_WeekendClosed"]</small>
+                                              <div class="mt-3">
+                                                  <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                          onclick="document.getElementById('AppointmentDate').value = ''; onDateChange();">
+                                                      <i class="bi bi-arrow-repeat"></i> @Localizer["Button_ChooseAnotherDate"]
+                                                  </button>
+                                              </div>
+                                          </div>`;
 
                                     document.getElementById('submitBtn').disabled = true;
                                     document.getElementById('startTimeInput').value = '';
@@ -708,20 +619,20 @@ Localizer["Booking_Title"];
 
                               if (!serviceId) {
                                     container.innerHTML = `
-                                                      <div class="text-center py-4 text-muted" id="slotsPlaceholder">
-                                                          <i class="bi bi-stars display-4"></i>
-                                                          <p class="mt-2">@Localizer["Message_SelectServiceFirst"]</p>
-                                                      </div>`;
+                                     <div class="text-center py-4 text-muted" id="slotsPlaceholder">
+                                         <i class="bi bi-stars display-4"></i>
+                                         <p class="mt-2">@Localizer["Message_SelectServiceFirst"]</p>
+                                     </div>`;
                                     return;
                               }
 
                               container.innerHTML = `
-                                                      <div class="text-center py-4">
-                                                          <div class="spinner-border text-primary" role="status">
-                                                              <span class="visually-hidden">@Localizer["Message_LoadingSlots"]</span>
-                                                          </div>
-                                                          <p class="mt-2 text-muted">@Localizer["Message_LoadingSlots"]</p>
-                                                      </div>`;
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">@Localizer["Message_LoadingSlots"]</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">@Localizer["Message_LoadingSlots"]</p>
+                                    </div>`;
 
                               const isEdit = '@isEdit' === 'True';
                               const appointmentId = isEdit ? '@Model.Id' : '';
@@ -742,10 +653,10 @@ Localizer["Booking_Title"];
                                     .catch(err => {
                                           console.error('Error loading slots:', err);
                                           container.innerHTML = `
-                                                                  <div class="alert alert-danger mb-0">
-                                                                      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                      @Localizer["Message_LoadingSlots"] @Localizer["Message_TryDifferentDate"]
-                                                                  </div>`;
+                                           <div class="alert alert-danger mb-0">
+                                               <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                               @Localizer["Message_LoadingSlots"] @Localizer["Message_TryDifferentDate"]
+                                           </div>`;
                                     });
 
                               updateSubmitState();
@@ -759,11 +670,11 @@ Localizer["Booking_Title"];
 
                               if (!slots || slots.length === 0) {
                                     container.innerHTML = `
-                                                         <div class="text-center py-4 text-muted">
-                                                             <i class="bi bi-calendar-x display-4"></i>
-                                                             <p class="mt-2">@Localizer["Message_NoSlotsAvailable"]</p>
-                                                             <small class="text-muted">@Localizer["Message_TryDifferentDate"]</small>
-                                                         </div>`;
+                                       <div class="text-center py-4 text-muted">
+                                           <i class="bi bi-calendar-x display-4"></i>
+                                           <p class="mt-2">@Localizer["Message_NoSlotsAvailable"]</p>
+                                           <small class="text-muted">@Localizer["Message_TryDifferentDate"]</small>
+                                       </div>`;
                                     return;
                               }
 
@@ -822,15 +733,15 @@ Localizer["Booking_Title"];
                                           : '';
                                     const disabledAttr = slot.isClickable ? '' : 'disabled';
                                     return `
-                                                          <button type="button" 
-                                                               class="${slot.btnClass}" 
-                                                                ${clickHandler}
-                                                                ${disabledAttr}
-                                                                  data-start="${slot.startTime}">
-                                                              <span class="slot-time">${slot.displayText}</span>
-                                                              <span class="slot-status">${slot.statusText}</span>
-                                                          </button>
-                                                      `;
+                                              <button type="button" 
+                                                   class="${slot.btnClass}" 
+                                                    ${clickHandler}
+                                                    ${disabledAttr}
+                                                      data-start="${slot.startTime}">
+                                                  <span class="slot-time">${slot.displayText}</span>
+                                                  <span class="slot-status">${slot.statusText}</span>
+                                              </button>
+                                          `;
                               }).join('');
 
                               // Auto-select current appointment or existing slot
@@ -935,17 +846,17 @@ Localizer["Booking_Title"];
                               const container = document.getElementById('slotsContainer');
 
                               container.innerHTML = `
-                                                                                            <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3 border border-warning">
-                                                                                                <i class="bi bi-exclamation-triangle-fill display-4 text-warning"></i>
-                                                                                                <p class="mt-2 fw-bold mb-1 text-warning">⚠️ @Localizer["Message_ConflictWarning"]</p>
-                                                                                                <small class="text-muted">@Localizer["Message_UpdatingSlots"]</small>
-                                                                                                <div class="mt-2">
-                                                                                                    <div class="spinner-border spinner-border-sm text-warning" role="status">
-                                                                                                        <span class="visually-hidden">@Localizer["Message_Updating"]</span>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        `;
+                                      <div class="text-center py-4 text-warning bg-warning bg-opacity-10 rounded-3 border border-warning">
+                                          <i class="bi bi-exclamation-triangle-fill display-4 text-warning"></i>
+                                          <p class="mt-2 fw-bold mb-1 text-warning">⚠️ @Localizer["Message_ConflictWarning"]</p>
+                                          <small class="text-muted">@Localizer["Message_UpdatingSlots"]</small>
+                                          <div class="mt-2">
+                                              <div class="spinner-border spinner-border-sm text-warning" role="status">
+                                                  <span class="visually-hidden">@Localizer["Message_Updating"]</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  `;
 
                               // Clear selected time
                               document.getElementById('startTimeInput').value = '';
@@ -1043,10 +954,10 @@ Localizer["Booking_Title"];
                                           indicator.id = 'slotsUpdatedIndicator';
                                           indicator.className = 'alert alert-info alert-dismissible fade show mb-2';
                                           indicator.innerHTML = `
-                                                                                                    <i class="bi bi-arrow-repeat me-2"></i>
-                                                                                                    <strong>@Localizer["Message_SlotsUpdated"]</strong> @Localizer["Message_SomeSlotsChanged"] 
-                                                                                                    <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-                                                                                                `;
+                                              <i class="bi bi-arrow-repeat me-2"></i>
+                                              <strong>@Localizer["Message_SlotsUpdated"]</strong> @Localizer["Message_SomeSlotsChanged"] 
+                                              <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+                                          `;
 
                                           container.insertBefore(indicator, container.firstChild);
 
@@ -1087,9 +998,9 @@ Localizer["Booking_Title"];
                                                 warning.id = 'weekendWarning';
                                                 warning.className = 'alert alert-warning mt-2';
                                                 warning.innerHTML = `
-                                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                                    <strong>@Localizer["Warning_Weekend"]</strong> @Localizer["Message_WeekendBooking"] ${dayName} @Localizer["Message_WeekendHoliday"]
-                                                                                                `;
+                                               <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                               <strong>@Localizer["Warning_Weekend"]</strong> @Localizer["Message_WeekendBooking"] ${dayName} @Localizer["Message_WeekendHoliday"]
+                                           `;
                                                 dateInput.parentNode.insertBefore(warning, dateInput.nextSibling);
                                           }
                                     } else {

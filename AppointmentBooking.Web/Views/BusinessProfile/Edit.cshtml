@@ -127,10 +127,15 @@
                         </div>
                         <div class="settings-card-body">
                             <div class="row g-3">
+                                
                                 <div class="col-md-6">
                                     <label class="form-label-biz">@Localizer["Label_Currency"]</label>
-                                    <input asp-for="Localization.Currency" class="form-control form-control-biz"
-                                           placeholder="@PriceExtension.CurrentCurrency" />
+                                    <select asp-for="Localization.Currency" class="form-select form-control-biz">
+                                        @foreach (var currency in ViewBag.SupportedCurrencies)
+                                        {
+                                            <option value="@currency">@currency</option>
+                                        }
+                                    </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-biz">@Localizer["Label_Language"]</label>
@@ -138,24 +143,27 @@
                                         <option value="ar">@Localizer["Language_Arabic"]</option>
                                         <option value="en">@Localizer["Language_English"]</option>
                                     </select>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="bi bi-info-circle"></i>
+                                        @Localizer["Language_ChangeHint"]
+                                    </small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-biz">@Localizer["Label_Direction"]</label>
-                                    <select asp-for="Localization.Direction" class="form-select form-control-biz">
-                                        <option value="rtl">@Localizer["Direction_RTL"]</option>
-                                        <option value="ltr">@Localizer["Direction_LTR"]</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label-biz">@Localizer["Label_TimeZone"]</label>
-                                    <select asp-for="Localization.TimeZone"
-                                            class="form-select form-control-biz timezone-select">
-                                        <option value="UTC">@Localizer["TimeZone_UTC"]</option>
-                                        <option value="Africa/Cairo">@Localizer["TimeZone_Cairo"]</option>
-                                        <option value="Asia/Riyadh">@Localizer["TimeZone_Riyadh"]</option>
-                                        <option value="Asia/Dubai">@Localizer["TimeZone_Dubai"]</option>
-                                        <option value="Europe/Istanbul">@Localizer["TimeZone_Istanbul"]</option>
-                                    </select>
+                                    <div class="direction-select-wrapper">
+                                        <select asp-for="Localization.Direction" class="form-select form-control-biz"
+                                                id="directionSelect">
+                                            <option value="rtl">@Localizer["Direction_RTL"]</option>
+                                            <option value="ltr">@Localizer["Direction_LTR"]</option>
+                                        </select>
+                                    </div>
+                                    <small class="text-muted d-block mt-1" id="directionHint">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                        <span data-lang-ar="يتغير تلقائياً مع اللغة"
+                                              data-lang-en="Auto-syncs with language">
+                                            @Localizer["Auto_syncs"]
+                                        </span>
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -301,9 +309,9 @@
                 </div>
             </div>
 
-            @section Scripts {
-                <partial name="_ValidationScriptsPartial" />
-                <script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
                     // Live Preview Updates
                     const primaryColor = document.getElementById('primaryColor');
                     const secondaryColor = document.getElementById('secondaryColor');
@@ -377,5 +385,87 @@
 
                     // Initial preview
                     updatePreview();
-                </script>
+    </script>
+
+<script>
+    (function () {
+        const languageSelect = document.querySelector('select[name="Localization.Language"]');
+        const directionSelect = document.querySelector('select[name="Localization.Direction"]');
+
+        if (languageSelect && directionSelect) {
+            function updateDirectionBasedOnLanguage() {
+                const selectedLang = languageSelect.value;
+                const currentDir = directionSelect.value;
+
+                let suggestedDir = '';
+                if (selectedLang === 'ar') {
+                    suggestedDir = 'rtl';
+                } else if (selectedLang === 'en') {
+                    suggestedDir = 'ltr';
+                }
+
+                if (suggestedDir && currentDir !== suggestedDir) {
+                    directionSelect.value = suggestedDir;
+
+                    const langName = selectedLang === 'ar' ? 'العربية' : 'English';
+                    const dirName = suggestedDir === 'rtl' ? 'من اليمين لليسار (RTL)' : 'من الشمال لليمين (LTR)';
+
+                    directionSelect.style.borderColor = '#2c6e7c';
+                    directionSelect.style.backgroundColor = '#f0f9ff';
+                    setTimeout(() => {
+                        directionSelect.style.borderColor = '';
+                        directionSelect.style.backgroundColor = '';
+                    }, 2000);
+                }
             }
+
+            languageSelect.addEventListener('change', function () {
+                updateDirectionBasedOnLanguage();
+            });
+
+            directionSelect.addEventListener('change', function () {
+                const selectedLang = languageSelect.value;
+                const selectedDir = directionSelect.value;
+
+                let expectedDir = '';
+                if (selectedLang === 'ar') expectedDir = 'rtl';
+                else if (selectedLang === 'en') expectedDir = 'ltr';
+
+                if (selectedDir !== expectedDir) {
+                    const isRtl = selectedLang === 'ar';
+                    
+                    const warningMsg = isRtl
+                        ? '⚠️ اللغة العربية تتطلب اتجاه RTL (من اليمين لليسار).\n\nهل تريد تغيير اللغة إلى الإنجليزية بدلاً من ذلك؟\n(سيتم تغيير الاتجاه تلقائياً)'
+                        : '⚠️ English language requires LTR (Left to Right) direction.\n\nWould you like to change language to Arabic instead?\n(Direction will be updated automatically)';
+                    
+                    if (confirm(warningMsg)) {
+                        const newLang = isRtl ? 'en' : 'ar';
+                        
+                        languageSelect.value = newLang;
+                        
+                        const newDir = newLang === 'ar' ? 'rtl' : 'ltr';
+                        directionSelect.value = newDir;
+                        
+                        updateDirectionBasedOnLanguage();
+                        
+                        const successMsg = isRtl 
+                            ? '✅ تم تغيير اللغة إلى الإنجليزية والاتجاه إلى LTR' 
+                            : '✅ تم تغيير اللغة إلى العربية والاتجاه إلى RTL';
+                        alert(successMsg);
+                    } else {
+                       directionSelect.value = expectedDir;
+                        
+                        const secondMsg = isRtl
+                            ? '❌ لم يتم تغيير الاتجاه.\n\nملاحظة: إذا أردت استخدام اتجاه LTR، يجب تغيير اللغة إلى الإنجليزية.'
+                            : '❌ Direction was not changed.\n\nNote: If you want to use RTL direction, you should change language to Arabic.';
+                        
+                        alert(secondMsg);
+                    }
+                }
+            });
+
+            updateDirectionBasedOnLanguage();
+        }
+    })();
+</script>
+}

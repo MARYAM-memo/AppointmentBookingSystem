@@ -58,7 +58,6 @@ public static class SeedData
                         Currency = businessSettingsSection["Currency"] ?? Constants.DefaultCurrency,
                         Language = businessSettingsSection["Language"] ?? Constants.DefaultLanguage,
                         Direction = businessSettingsSection["Direction"] ?? Constants.DefaultDirection,
-                        TimeZone = businessSettingsSection["TimeZone"] ?? Constants.DefaultTimeZone,
                   },
                   Colors = new()
                   {

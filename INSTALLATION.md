@@ -97,6 +97,7 @@ postgres=# \q
 ### Step 4: Configure User Secrets (Development)
 
 ⚠️ *Important:* Never store sensitive data (passwords, connection strings) in appsettings.json. Use User Secrets for development.
+⚠️ *Important:* Admin has full system access. Change password immediately after first login.
 
 ```bash
 # Navigate to Web project
@@ -117,6 +118,11 @@ dotnet user-secrets set "AdminSettings:Role" "Admin"
 # Verify secrets are set
 dotnet user-secrets list
 ```
+
+**User Account Creation:**
+- New users are created with *User* role by default
+- Only admins can promote users to Admin role
+- User accounts have view-only access
 
 **Connection String Parameters:**
 - `Host` - PostgreSQL server hostname (e.g., `localhost`)
@@ -162,6 +168,7 @@ Your `appsettings.json` should look like this (no sensitive data):
     "Password": {
       "RequireDigit": true,
       "RequiredLength": 6,
+      "RequiredMaxLength": 50,
       "RequireNonAlphanumeric": true,
       "RequireUppercase": true,
       "RequireLowercase": true
@@ -174,7 +181,6 @@ Your `appsettings.json` should look like this (no sensitive data):
       "Currency": "ج.م",
       "Language": "ar",
       "Direction": "rtl",
-      "TimeZone": "UTC",
       "WorkingHoursStart": "09:00:00",
       "WorkingHoursEnd": "22:00:00",
       "SlotDurationMinutes": 30,
@@ -193,10 +199,26 @@ Your `appsettings.json` should look like this (no sensitive data):
   },
   "RateLimiting": {
     "Policies": {
-      "strict": { "permitLimit": 10, "windowMinutes": 1, "queueLimit": 2 },
-      "default": { "permitLimit": 50, "windowMinutes": 1, "queueLimit": 5 },
-      "light": { "permitLimit": 100, "windowMinutes": 1, "queueLimit": 10 },
-      "auth": { "permitLimit": 5, "windowMinutes": 1, "queueLimit": 1 }
+      "strict": {
+        "permitLimit": 10,
+        "windowMinutes": 1,
+        "queueLimit": 2
+      },
+      "default": {
+        "permitLimit": 50,
+        "windowMinutes": 1,
+        "queueLimit": 5
+      },
+      "light": {
+        "permitLimit": 100,
+        "windowMinutes": 1,
+        "queueLimit": 10
+      },
+      "auth": {
+        "permitLimit": 5,
+        "windowMinutes": 1,
+        "queueLimit": 1
+      }
     }
   },
   "LocalizationSettings": {
@@ -206,7 +228,19 @@ Your `appsettings.json` should look like this (no sensitive data):
     },
     "DefaultCulture": "ar-EG",
     "DefaultLanguage": "ar",
-    "AvailableLanguages": ["ar", "en"]
+    "AvailableLanguages": [
+      "ar",
+      "en"
+    ],
+    "SupportedCurrencies": [
+      "ج.م",
+      "EGP",
+      "USD",
+      "SAR",
+      "AED",
+      "EUR"
+    ],
+    "DefaultCurrency": "ج.م"
   },
   "Serilog": {
     "MinimumLevel": {
@@ -234,7 +268,11 @@ Your `appsettings.json` should look like this (no sensitive data):
         }
       }
     ],
-    "Enrich": ["FromLogContext", "WithMachineName", "WithThreadId"],
+    "Enrich": [
+      "FromLogContext",
+      "WithMachineName",
+      "WithThreadId"
+    ],
     "Properties": {
       "Application": "AppointmentBookingSystem",
       "Environment": "Development"

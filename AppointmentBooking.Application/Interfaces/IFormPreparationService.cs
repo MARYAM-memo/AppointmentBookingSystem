@@ -9,12 +9,12 @@ public interface IFormPreparationService
       /// <summary>
       /// Retrieves cached form data (services and customers lists with their details) using memory cache with double-check locking to prevent multiple concurrent database hits.
       /// </summary>
-      Task<FormDataCacheDTO> GetCachedFormDataAsync();
+      Task<FormDataCacheDTO> GetCachedFormDataAsync(string? currency = null);
 
       /// <summary>
       /// Removes the cached form data from memory cache, forcing a fresh load on the next request.
       /// </summary>
-      Task InvalidateCacheAsync();
+      Task InvalidateCacheAsync(string? currency = null);
 
       /// <summary>
       /// Creates a new AppointmentRequestViewModel with default values (next day appointment, Pending status, and optional customer/service IDs).
@@ -24,10 +24,10 @@ public interface IFormPreparationService
       /// <summary>
       /// Populates ViewBag with cached form data (services dropdown, customers dropdown, services data, status list, and edit mode flag) for appointment forms.
       /// </summary>
-      Task PopulateViewBagForFormAsync(Controller controller, AppointmentRequestViewModel? model = null, bool isEdit = false);
+      Task PopulateViewBagForFormAsync(Controller controller, AppointmentRequestViewModel? model = null, bool isEdit = false, string? currency = null);
 
       /// <summary>
       /// Populates ViewBag with cached services and customers dropdown lists for list views.
       /// </summary>
-      Task PopulateViewBagForListAsync(Controller controller);
+      Task PopulateViewBagForListAsync(Controller controller, string? currency = null);
 }

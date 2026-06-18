@@ -71,7 +71,7 @@ public class DashboardService(IDashboardRepository dashboardRepository, ILocaliz
         var rawData = await _dashboardRepository.GetDashboardAggregateAsync();
 
         return [.. rawData.TodayAppointments
-            .Where(a => a.StartTime >= now && a.Status != BookingStatus.Cancelled)
+            .Where(a => a.StartTime >= now && a.Status != BookingStatus.Cancelled && a.Status!= BookingStatus.NoShow)
             .OrderBy(a => a.StartTime)
             .Select(a => new UpcomingAppointmentDTO
             {
@@ -138,7 +138,7 @@ public class DashboardService(IDashboardRepository dashboardRepository, ILocaliz
     private static List<TodayAppointmentDTO> MapTodayAppointments(List<Appointment> appointments, ILocalizationService localizer)
     {
         return [.. appointments
-            .Where(a => a.Status != BookingStatus.Cancelled)
+            .Where(a => a.Status != BookingStatus.Cancelled && a.Status!= BookingStatus.NoShow)
             .Select(a => new TodayAppointmentDTO
             {
                 Id = a.Id,

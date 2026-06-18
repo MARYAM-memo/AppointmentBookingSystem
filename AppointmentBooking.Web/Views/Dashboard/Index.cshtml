@@ -18,10 +18,13 @@
             <i class="bi bi-printer"></i>
             <span class="d-none d-md-inline">@Localizer["Button_Print"]</span>
         </button>
+    @if (User.IsInRole(Constants.AdminRole))
+    {     
         <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i>
             @ViewsSharedLocalizer["Button_NewBooking"]
         </a>
+    }
     </div>
 </div>
 
@@ -61,7 +64,9 @@
                 <i class="bi bi-people-fill"></i>
             </div>
             <div class="stat-value" id="totalCustomers">@string.Format("{0:N0}", Model.TotalCustomers)</div>
-            <div class="stat-label">@labels.GetValueOrDefault("customer", Localizer["Stat_TotalCustomers"].Value)</div>
+            <div class="stat-label">@labels.GetLabel("customer", Localizer["Stat_TotalCustomers"])
+                
+            </div>
             <div class="stat-change up">
                 <i class="bi bi-arrow-up-right"></i>
                 <span>+@Model.NewCustomersThisMonth @Localizer["Stat_NewThisMonth"]</span>
@@ -151,8 +156,8 @@
                     <thead>
                         <tr>
                             <th>@ViewsSharedLocalizer["TableHeader_Customer"]</th>
-                            <th>@labels.GetValueOrDefault("serviceItem",
-                                                                                                                                                                                                ViewsSharedLocalizer["TableHeader_Service"].Value)</th>
+                            <th>@labels.GetLabel("serviceItem", ViewsSharedLocalizer["TableHeader_Service"])
+                            </th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Date"]</th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Time"]</th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Status"]</th>

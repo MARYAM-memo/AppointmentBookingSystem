@@ -29,16 +29,18 @@
                 </div>
             }
 
-            <form asp-action="Register" asp-controller="Account" method="post" id="registerForm" novalidate>
+            <form asp-action="Register" asp-controller="Account" method="post" id="registerForm">
                 @Html.AntiForgeryToken()
 
                 <div class="auth-form-group">
                     <label asp-for="Name" class="auth-form-label">@Localizer["Label_FullName"]</label>
                     <div class="auth-input-wrapper">
                         <i class="bi bi-person auth-input-icon"></i>
-                        <input asp-for="Name"
+                        <input asp-for="Name" id="Name"
                                class="auth-form-control @(ViewData.ModelState["Name"]?.Errors.Count > 0 ? "is-invalid" : "")"
-                               placeholder="@Localizer["Placeholder_FullName"]" autocomplete="name" />
+                               placeholder="@Localizer["Placeholder_FullName"]" autocomplete="name" 
+                               data-val="true"
+                               data-val-required="@ValidationLocalizer["Name_Required"]" />
                     </div>
                     <span asp-validation-for="Name" class="auth-validation-msg"></span>
                 </div>
@@ -47,9 +49,10 @@
                     <label asp-for="Email" class="auth-form-label">@Localizer["Label_Email"]</label>
                     <div class="auth-input-wrapper">
                         <i class="bi bi-envelope auth-input-icon"></i>
-                        <input asp-for="Email"
+                        <input asp-for="Email" id="Email"
                                class="auth-form-control @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")"
-                               placeholder="@Localizer["Placeholder_Email"]" autocomplete="email" />
+                               placeholder="@Localizer["Placeholder_Email"]" autocomplete="email" data-val="true"
+                               data-val-required="@ValidationLocalizer["Email_Required"]" />
                     </div>
                     <span asp-validation-for="Email" class="auth-validation-msg"></span>
                 </div>
@@ -61,9 +64,11 @@
                         <input asp-for="Password" type="password"
                                class="auth-form-control @(ViewData.ModelState["Password"]?.Errors.Count > 0 ? "is-invalid" : "")"
                                placeholder="@Localizer["Placeholder_Password"]" autocomplete="new-password"
-                               id="passwordInput" />
+                               id="Password" 
+                               data-val="true"
+                               data-val-required="@ValidationLocalizer["Password_Required"]"/>
                         <button type="button" class="auth-toggle-password"
-                                onclick="togglePassword('passwordInput', this)">
+                                onclick="togglePassword('Password', this)">
                             <i class="bi bi-eye-slash"></i>
                         </button>
                     </div>
@@ -85,9 +90,10 @@
                         <input asp-for="ConfirmPassword" type="password"
                                class="auth-form-control @(ViewData.ModelState["ConfirmPassword"]?.Errors.Count > 0 ? "is-invalid" : "")"
                                placeholder="@Localizer["Placeholder_Password"]" autocomplete="new-password"
-                               id="confirmPasswordInput" />
+                               id="ConfirmPassword" data-val="true"
+                               data-val-required="@ValidationLocalizer["ConfirmPassword_Required"]" />
                         <button type="button" class="auth-toggle-password"
-                                onclick="togglePassword('confirmPasswordInput', this)">
+                                onclick="togglePassword('ConfirmPassword', this)">
                             <i class="bi bi-eye-slash"></i>
                         </button>
                     </div>
@@ -134,12 +140,12 @@
         }
 
         // Password strength checker
-        const passwordInput = document.getElementById('passwordInput');
+        const Password = document.getElementById('Password');
         const strengthContainer = document.getElementById('passwordStrength');
         const strengthFill = document.getElementById('strengthFill');
         const strengthText = document.getElementById('strengthText');
 
-        passwordInput?.addEventListener('input', function () {
+        Password?.addEventListener('input', function () {
             const password = this.value;
 
             if (password.length === 0) {
@@ -162,27 +168,27 @@
 
             if (strength <= 2) {
                 strengthFill.classList.add('strength-weak');
-                strengthText.textContent = '@Localizer["PasswordStrength_Weak"]';
+                strengthText.textContent = '@Html.Raw(@Localizer["PasswordStrength_Weak"])';
                 strengthText.style.color = '#ef4444';
             } else if (strength <= 3) {
                 strengthFill.classList.add('strength-fair');
-                strengthText.textContent = '@Localizer["PasswordStrength_Fair"]';
+                strengthText.textContent = '@Html.Raw(@Localizer["PasswordStrength_Fair"])';
                 strengthText.style.color = '#f59e0b';
             } else if (strength <= 4) {
                 strengthFill.classList.add('strength-good');
-                strengthText.textContent = '@Localizer["PasswordStrength_Good"]';
+                strengthText.textContent = '@Html.Raw(@Localizer["PasswordStrength_Good"])';
                 strengthText.style.color = '#3b82f6';
             } else {
                 strengthFill.classList.add('strength-strong');
-                strengthText.textContent = '@Localizer["PasswordStrength_Strong"]';
+                strengthText.textContent = '@Html.Raw(@Localizer["PasswordStrength_Strong"])';
                 strengthText.style.color = '#22c55e';
             }
         });
 
         // Confirm password match check
-        const confirmInput = document.getElementById('confirmPasswordInput');
+        const confirmInput = document.getElementById('ConfirmPassword');
         confirmInput?.addEventListener('input', function () {
-            if (this.value && this.value !== passwordInput.value) {
+            if (this.value && this.value !== Password.value) {
                 this.classList.add('is-invalid');
             } else {
                 this.classList.remove('is-invalid');
@@ -190,13 +196,23 @@
         });
 
         // Form submission with loading state
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
+@*         document.getElementById('registerForm').addEventListener('submit', function (e) {
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
 
             if (this.checkValidity()) {
                 btn.disabled = true;
-                btnText.innerHTML = '<span class="auth-spinner"></span> @Localizer["Button_Processing"]';
+                const password = this.value;
+                btnText.innerHTML = '<span class="auth-spinner"></span> @Html.Raw(@Localizer["Button_Processing"])';
+            }
+        }); *@
+        document.getElementById('registerForm').addEventListener('submit', function () {
+            if ($(this).valid()) {
+                const btn = document.getElementById('submitBtn');
+                const btnText = document.getElementById('btnText');
+
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="auth-spinner"></span> @Html.Raw(@Localizer["Button_Processing"])';
             }
         });
 

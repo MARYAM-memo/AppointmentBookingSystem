@@ -59,16 +59,12 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         builder.HasQueryFilter(a => !a.IsDeleted);
 
         // Indexes for performance
-        builder.HasIndex(a => new { a.AppointmentDate, a.StartTime, a.EndTime });
-        builder.HasIndex(a => a.CreatedAt);
-        builder.HasIndex(a => a.AppointmentDate);
-        builder.HasIndex(a => new { a.ServiceId, a.AppointmentDate });
         builder.HasIndex(a => a.Status).HasDatabaseName("IX_appointment_status");
         builder.HasIndex(a => a.ServiceId).IsUnique(false).HasDatabaseName("IX_appointment_service");
         builder.HasIndex(a => a.CustomerId).IsUnique(false).HasDatabaseName("IX_appointment_customer");
-        builder.HasIndex(a => new { a.AppointmentDate, a.ServiceId }).HasDatabaseName("IX_appointment_date_service");
+        builder.HasIndex(a => new { a.ServiceId, a.AppointmentDate }).HasDatabaseName("IX_Service_Date");
+        builder.HasIndex(a => new { a.AppointmentDate, a.CreatedAt }).HasDatabaseName("IX_Date_Created");
         builder.HasIndex(a => new { a.AppointmentDate, a.StartTime, a.EndTime, a.Status }).HasDatabaseName("IX_Appointments_Availability");
-        builder.HasIndex(a => new { a.ServiceId, a.AppointmentDate, a.StartTime }).IsUnique().HasDatabaseName("IX_Appointments_NoDoubleBooking").HasFilter("[IsDeleted] = 0 AND [Status] != 2"); ;
 
         // Relationships
         builder.HasOne(a => a.Service)

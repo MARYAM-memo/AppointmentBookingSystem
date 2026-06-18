@@ -109,7 +109,7 @@ namespace AppointmentBooking.Web.Controllers
 
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        ModelState.AddModelError("Password", error.Description);
                     }
 
                     return View(model);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentBooking.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Constants.AdminRole)]
     [EnableRateLimiting("default")]
     public class CustomersController(IValidator<CustomerRequestViewModel> validator) : BaseController
     {

@@ -248,6 +248,9 @@
     <value>An unexpected error occurred</value>
     <comment/>
 </data>
+<data name="ValidationError" xml:space="preserve">
+    <value>Validation error occurred</value>
+</data>
       <data name="Error_Title_400" xml:space="preserve">
     <value>Bad Request</value>
     <comment/>
@@ -484,4 +487,8 @@
     <value>ID mismatch</value>
     <comment/>
 </data>
+<data name="Warning_CurrencyNotSupported" xml:space="preserve">
+    <value>Currency {0} is not supported. Using {1}.</value>
+</data>
+
 </root>

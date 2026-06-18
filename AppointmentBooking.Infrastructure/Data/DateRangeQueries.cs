@@ -14,14 +14,14 @@ public static class DateRangeQueries
             b => b.AppointmentDate.Date >= startDate.Date &&
                  b.AppointmentDate.Date <= endDate.Date &&
                  !b.IsDeleted &&
-                 (!excludeCancelled || b.Status != BookingStatus.Cancelled),
+                 (!excludeCancelled || (b.Status != BookingStatus.Cancelled && b.Status != BookingStatus.NoShow)),
             asNoTracking: true
         );
 
         return (
             TotalCount: appointments.Count(),
             TotalRevenue: appointments.Where(b => b.FinalPrice.HasValue).Sum(b => b.FinalPrice ?? 0),
-            CancelledCount: appointments.Count(b => b.Status == BookingStatus.Cancelled)
+            CancelledCount: appointments.Count(b => b.Status == BookingStatus.Cancelled || b.Status == BookingStatus.NoShow)
         );
     }
 
@@ -35,6 +35,7 @@ public static class DateRangeQueries
                  b.AppointmentDate.Date <= endDate.Date &&
                  !b.IsDeleted &&
                  b.Status != BookingStatus.Cancelled &&
+                 b.Status != BookingStatus.NoShow &&
                  b.FinalPrice.HasValue,
             asNoTracking: true
         );

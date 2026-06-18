@@ -5,8 +5,8 @@
 @model AppointmentListViewModel
 @{
     var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
-    ViewData["Title"] = labels?.GetValueOrDefault("appointment", Localizer["PageTitle_Appointments"].Value);
-
+        var title = labels?.GetLabel("appointment", Localizer["PageTitle_Appointments"]);
+    ViewData["Title"] = title;
 }
 
 @* Page Header *@
@@ -14,7 +14,7 @@
     <div>
         <h2 class="fw-bold mb-1">
             <i class="bi bi-calendar-week text-primary me-2"></i>
-            @labels?.GetValueOrDefault("appointment", Localizer["PageTitle_Appointments"].Value)
+            @title
         </h2>
         <p class="text-muted mb-0">@Localizer["PageSubtitle"]</p>
     </div>
@@ -23,10 +23,13 @@
             <i class="bi bi-calendar3"></i>
             <span class="d-none d-md-inline">@Localizer["Button_ViewCalendar"]</span>
         </a>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i>
-            @ViewsSharedLocalizer["Button_NewBooking"]
-        </a>
+        @if (User.IsInRole(Constants.AdminRole))
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                @ViewsSharedLocalizer["Button_NewBooking"]
+            </a>
+        }
     </div>
 </div>
 
@@ -52,8 +55,8 @@
             </div>
 
             <div class="col-md-2">
-                <label class="form-label text-muted small fw-bold">@labels?.GetValueOrDefault("service",
-                                                                                                                                                                                                        ViewsSharedLocalizer["TableHeader_Service"].Value)</label>
+                <label class="form-label text-muted small fw-bold">@labels?.GetLabel("service",
+                                        ViewsSharedLocalizer["TableHeader_Service"])</label>
                     <select name="serviceId" class="form-select" onchange="this.form.submit()">
                         <option value="">@Localizer["Label_All"]</option>
                         @foreach (var item in ViewBag.Services as List<SelectListItem> ?? [])
@@ -104,7 +107,7 @@
                             <tr>
                                 <th style="width: 50px;">@Localizer["TableHeader_ID"]</th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Customer"]</th>
-                                <th>@labels?.GetValueOrDefault("serviceItem", ViewsSharedLocalizer["TableHeader_Service"].Value)
+                                <th>@labels?.GetLabel("serviceItem", ViewsSharedLocalizer["TableHeader_Service"])
                                 </th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Date"]</th>
                                 <th>@ViewsSharedLocalizer["TableHeader_Time"]</th>
@@ -171,64 +174,70 @@
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            @* Status Actions *@
-                                            @if (appointment.Status == BookingStatus.Confirmed)
+                                            @if (User.IsInRole(Constants.AdminRole))
                                             {
-                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="InProgress"
-                                                      method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-outline-primary"
-                                                            title="@Localizer["Button_Start"]">
-                                                        <i class="bi bi-play-fill"></i>
-                                                    </button>
-                                                </form>
+                                                @* Status Actions *@
+                                                @if (appointment.Status == BookingStatus.Confirmed)
+                                                {
+                                                    <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="InProgress"
+                                                          method="post" class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-outline-primary"
+                                                                title="@Localizer["Button_Start"]">
+                                                            <i class="bi bi-play-fill"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else if (appointment.Status == BookingStatus.InProgress)
+                                                {
+                                                    <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Completed"
+                                                          method="post" class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-outline-success"
+                                                                title="@Localizer["Button_Complete"]">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                }
                                             }
-                                            else if (appointment.Status == BookingStatus.InProgress)
-                                            {
-                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Completed"
-                                                      method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-outline-success"
-                                                            title="@Localizer["Button_Complete"]">
-                                                        <i class="bi bi-check-lg"></i>
-                                                    </button>
-                                                </form>
-                                            }
-
                                             <a asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-icon btn-ghost"
                                                title="@Localizer["Button_View"]">
                                                 <i class="bi bi-eye text-info"></i>
                                             </a>
-                                            @if (appointment.AppointmentDate > DateTime.Today)
+                                            @if (User.IsInRole(Constants.AdminRole))
                                             {
-                                                <a asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-sm btn-icon btn-ghost"
-                                                   title="@ViewsSharedLocalizer["Button_Edit"]">
-                                                    <i class="bi bi-pencil text-primary"></i>
-                                                </a>
-                                            }
+                                                @if (appointment.AppointmentDate > DateTime.Today)
+                                                {
+                                                    <a asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-sm btn-icon btn-ghost"
+                                                       title="@ViewsSharedLocalizer["Button_Edit"]">
+                                                        <i class="bi bi-pencil text-primary"></i>
+                                                    </a>
+                                                }
 
-                                            @if (appointment.Status != BookingStatus.Cancelled)
-                                            {
-                                                <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Cancelled"
-                                                      method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-icon btn-ghost"
-                                                            title="@ViewsSharedLocalizer["Button_Cancel"]">
-                                                        <i class="bi bi-x-lg text-warning"></i>
-                                                    </button>
-                                                </form>
-                                            }
+                                                @if (appointment.Status != BookingStatus.Cancelled && appointment.Status !=
+                            BookingStatus.NoShow)
+                                                {
+                                                    <form asp-action="UpdateStatus" asp-route-id="@appointment.Id" asp-route-status="Cancelled"
+                                                          method="post" class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-ghost"
+                                                                title="@ViewsSharedLocalizer["Button_Cancel"]">
+                                                            <i class="bi bi-x-lg text-warning"></i>
+                                                        </button>
+                                                    </form>
+                                                }
 
-                                            @if (appointment.Status != BookingStatus.Completed)
-                                            {
-                                                <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="d-inline"
-                                                      onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"]');">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-icon btn-ghost"
-                                                            title="@ViewsSharedLocalizer["Button_Delete"]">
-                                                        <i class="bi bi-trash text-danger"></i>
-                                                    </button>
-                                                </form>
+                                                @if (appointment.Status != BookingStatus.Completed)
+                                                {
+                                                    <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="d-inline"
+                                                          onsubmit="return confirm('@Localizer["Delete_ConfirmMessage"]');">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-ghost"
+                                                                title="@ViewsSharedLocalizer["Button_Delete"]">
+                                                            <i class="bi bi-trash text-danger"></i>
+                                                        </button>
+                                                    </form>
+                                                }
                                             }
                                         </div>
                                     </td>

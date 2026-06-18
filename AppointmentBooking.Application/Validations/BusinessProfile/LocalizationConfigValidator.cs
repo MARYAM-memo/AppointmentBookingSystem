@@ -30,40 +30,10 @@ public class LocalizationConfigValidator : AbstractValidator<LocalizationConfigV
                 .Must(dir => dir == "rtl" || dir == "ltr")
                 .WithMessage(_localizer["Localization_Direction_Invalid"]);
 
-            // Check the time zone
-            RuleFor(x => x.TimeZone)
-                .NotEmpty().WithMessage(_localizer["Localization_TimeZone_Required"])
-                .Must(BeValidTimeZone).WithMessage(_localizer["Localization_TimeZone_Invalid"]);
-
             // Advanced
             RuleFor(x => x)
                 .Must(HaveConsistentLanguageAndDirection)
                 .WithMessage(_localizer["Localization_ConsistentLanguageAndDirection"]);
-      }
-
-      /// <summary>
-      /// Validates that the provided time zone ID exists in the system (supports both Windows and IANA time zone IDs).
-      /// </summary>
-      private bool BeValidTimeZone(string timeZone)
-      {
-            try
-            {
-                  TimeZoneInfo.FindSystemTimeZoneById(timeZone);
-                  return true;
-            }
-            catch (TimeZoneNotFoundException)
-            {
-                  try
-                  {
-                        // Attempt to search the IANA time zone list
-                        var timeZones = TimeZoneInfo.GetSystemTimeZones();
-                        return timeZones.Any(tz => tz.Id == timeZone);
-                  }
-                  catch
-                  {
-                        return false;
-                  }
-            }
       }
 
       /// <summary>

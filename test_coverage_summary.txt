@@ -1,0 +1,70 @@
+// ============================================
+// APPOINTMENT TEST COVERAGE SUMMARY
+// ============================================
+
+## Files Created:
+1. appointment_service_tests.cs - Tests for AppointmentService (Create/Edit/Delete)
+2. availability_service_tests.cs - Tests for AvailabilityService (Overlap logic)
+
+## Test Categories:
+
+### AppointmentServiceTests (Create)
+✓ CreateAppointmentAsync_SlotAvailable_CreatesSuccessfully
+✓ CreateAppointmentAsync_SlotNotAvailable_ThrowsDomainException
+✓ CreateAppointmentAsync_DoubleBookingSameTime_ThrowsDomainException
+✓ CreateAppointmentAsync_OverlappingTime_ThrowsDomainException
+✓ CreateAppointmentAsync_AdjacentTime_Allowed
+✓ CreateAppointmentAsync_ZeroPrice_Allowed
+
+### AppointmentServiceTests (Edit)
+✓ UpdateAppointmentAsync_ValidEdit_UpdatesSuccessfully
+✓ UpdateAppointmentAsync_SameTimeNoChange_Allowed
+✓ UpdateAppointmentAsync_ToOccupiedSlot_ThrowsDomainException
+✓ UpdateAppointmentAsync_NonExistent_ThrowsDomainException
+✓ UpdateAppointmentAsync_DeletedAppointment_ThrowsDomainException
+
+### AvailabilityServiceTests (Core Overlap Logic)
+✓ IsSlotAvailableAsync_EmptySchedule_ReturnsTrue
+✓ IsSlotAvailableAsync_SameTimeAsExisting_ReturnsFalse
+✓ IsSlotAvailableAsync_OverlappingStart_ReturnsFalse
+✓ IsSlotAvailableAsync_OverlappingEnd_ReturnsFalse
+✓ IsSlotAvailableAsync_CompletelyInsideExisting_ReturnsFalse
+✓ IsSlotAvailableAsync_ExistingCompletelyInsideNew_ReturnsFalse
+✓ IsSlotAvailableAsync_NonOverlapping_ReturnsTrue
+✓ IsSlotAvailableAsync_TouchingEndToStart_ReturnsTrue
+✓ IsSlotAvailableAsync_ExcludeCurrentAppointment_ReturnsTrue
+✓ IsSlotAvailableAsync_CancelledAppointment_Ignored
+✓ IsSlotAvailableAsync_NoShowAppointment_Ignored
+✓ IsSlotAvailableAsync_DifferentService_ReturnsTrue
+✓ IsSlotAvailableAsync_DifferentDate_ReturnsTrue
+✓ IsSlotAvailableAsync_MaxCapacityReached_ReturnsFalse
+✓ IsSlotAvailableAsync_CapacityNotReached_ReturnsTrue
+
+### AvailabilityServiceTests (GetAvailableSlots)
+✓ GetAvailableSlotsAsync_ReturnsCorrectSlots
+✓ GetAvailableSlotsAsync_WithExistingAppointment_MarksOccupied
+✓ GetAvailableSlotsAsync_ExcludeCurrentAppointment_MarksAvailable
+✓ GetAvailableSlotsAsync_PastSlots_MarkedAsPast
+
+## Overlap Scenarios Covered:
+
+Same Time:        [====EXISTING====]  [====NEW====]     → BLOCKED
+Overlap Start:    [====EXISTING====]    [====NEW====]   → BLOCKED
+Overlap End:        [====NEW====]    [====EXISTING====] → BLOCKED
+Inside Existing:  [====EXISTING====]  [==NEW==]         → BLOCKED
+Wraps Around:     [==NEW==]  [====EXISTING====]  [==]   → BLOCKED
+Non-Overlapping:  [====EXISTING====]              [====NEW====] → ALLOWED
+Touching:         [====EXISTING====][====NEW====]         → ALLOWED
+
+## Required NuGet Packages:
+- xunit
+- xunit.runner.visualstudio
+- Microsoft.EntityFrameworkCore.InMemory
+- Moq
+- FluentAssertions (optional)
+
+## How to Run:
+```bash
+dotnet test --filter "FullyQualifiedName~Appointment"
+dotnet test --filter "FullyQualifiedName~Availability"
+```

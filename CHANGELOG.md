@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - 2026-06-06
+## [1.0.0] - 2026-06-18
 
 ### ✨ Initial Release
 
@@ -20,13 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Real-time slot availability checking with conflict prevention
 - ✅ Customer management system with appointment history
 - ✅ Service management with pricing and duration configuration
-- ✅ Role-based access control (Admin, User)
+- ✅ Authorization policies (User/Admin roles)
+- ✅ View-only mode for standard users
 - ✅ Dashboard with real-time statistics and analytics
+- ✅ Currency selection at application level
 
 **User Experience**
-- ✅ Multi-language support (Arabic, English)
-- ✅ Dark mode / Light mode theme switching
-- ✅ Responsive design (Mobile, Tablet, Desktop)
+- ✅ Multi-language support (`Arabic`, `English`)
+- ✅ Multi-currency support (`ج.م`, `EGP`, `USD`, `SAR`, `AED`, `EUR`)
+- ✅ `Dark` mode / `Light` mode theme switching
+- ✅ Responsive design (`Mobile`, `Tablet`, `Desktop`)
 - ✅ Calendar view for appointment visualization
 - ✅ Customizable business branding
 

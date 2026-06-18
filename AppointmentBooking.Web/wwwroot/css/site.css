@@ -1175,6 +1175,10 @@ main {
   gap: 0.75rem;
 }
 
+[data-bs-theme="dark"].settings-title {
+  color: #e2e8f0;
+}
+
 .settings-card {
   background: white;
   border-radius: var(--biz-radius-xl);
@@ -1213,6 +1217,11 @@ main {
   color: #374151;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
+}
+
+[data-bs-theme="dark"]
+.form-label-biz {
+  color: #6e83a3;
 }
 
 .form-control-biz {
@@ -1320,11 +1329,6 @@ main {
   color: #6b7280;
   font-size: 0.875rem;
   min-width: 120px;
-}
-
-.timezone-select {
-  direction: ltr;
-  text-align: left;
 }
 
 .action-bar {
@@ -1838,4 +1842,61 @@ textarea[readonly] {
 [data-bs-theme="dark"] textarea[readonly]:focus {
   border-color: var(--biz-primary);
   box-shadow: 0 0 0 0.2rem rgba(var(--biz-primary-rgb), 0.15);
+}
+
+.language-warning-popup {
+  border-radius: 16px !important;
+}
+
+.language-warning-popup .swal2-actions {
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.language-warning-popup .swal2-confirm {
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+}
+
+.language-warning-popup .swal2-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(44, 110, 124, 0.3);
+}
+
+.language-warning-popup .swal2-cancel {
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+}
+
+.language-warning-popup .swal2-cancel:hover {
+  background-color: #d1d5db !important;
+}
+/* تنسيق الـ Select عند التغيير التلقائي */
+select.form-control-biz {
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+select.form-control-biz.highlight-change {
+  border-color: #2c6e7c !important;
+  background-color: #f0f9ff !important;
+}
+
+.direction-select-wrapper {
+  position: relative;
+}
+
+.direction-select-wrapper::after {
+  content: "↔";
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+[dir="rtl"] .direction-select-wrapper::after {
+  right: auto;
+  left: 40px;
 }

@@ -250,24 +250,12 @@
   <value>Left to Right (LTR)</value>
   <comment/>
 </data>
-  <data name="TimeZone_UTC" xml:space="preserve">
-  <value>UTC</value>
+  <data name="Language_ChangeHint" xml:space="preserve">
+  <value>Language selection automatically changes page direction</value>
   <comment/>
 </data>
-  <data name="TimeZone_Cairo" xml:space="preserve">
-  <value>Cairo (EET)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Riyadh" xml:space="preserve">
-  <value>Riyadh (AST)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Dubai" xml:space="preserve">
-  <value>Dubai (GST)</value>
-  <comment/>
-</data>
-  <data name="TimeZone_Istanbul" xml:space="preserve">
-  <value>Istanbul (TRT)</value>
+  <data name="Auto_syncs" xml:space="preserve">
+  <value>It changes automatically with the language.</value>
   <comment/>
 </data>
   <data name="Section_WorkingHours" xml:space="preserve">
@@ -396,10 +384,6 @@
 </data>
   <data name="Section_Localization" xml:space="preserve">
   <value>Localization</value>
-  <comment/>
-</data>
-  <data name="Label_TimeZone" xml:space="preserve">
-  <value>Time Zone</value>
   <comment/>
 </data>
   <data name="Language_Arabic" xml:space="preserve">

@@ -8,7 +8,7 @@
     var isEdit = ViewBag.IsEdit as bool? ?? false;
     var labels = ViewBag.CustomLabels as Dictionary<string, string> ?? new Dictionary<string, string>();
     ViewData["Title"] = (isEdit ? Localizer["PageTitle_Edit"] : Localizer["PageTitle_Add"]) + " " +
-labels.GetValueOrDefault("serviceItem", Localizer["Service_Item"].Value);
+labels.GetLabel("serviceItem", Localizer["Service_Item"]);
 }
 
 @* Page Header *@

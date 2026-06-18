@@ -42,7 +42,7 @@ public class AppointmentRequestValidator : AbstractValidator<AppointmentRequestV
         RuleFor(x => x.StartTime)
             .NotEmpty()
             .WithMessage(_localizer["Appointment_Time_Required"])
-            .MustAsync(BeValidBusinessHoursAsync)
+            .Must(BeValidBusinessHours)
             .WithMessage(_localizer["Appointment_Time_InvalidBusinessHours"])
             .Must(BeInFutureTime)
             .When(x => x.AppointmentDate.Date == DateTime.Today)
@@ -113,16 +113,18 @@ public class AppointmentRequestValidator : AbstractValidator<AppointmentRequestV
         return date.DayOfWeek == DayOfWeek.Friday || date.DayOfWeek == DayOfWeek.Saturday;
     }
 
-    /// <summary>
-    /// Asynchronously validates whether the provided time falls within the current business profile's working hours.
-    /// </summary>
-    private async Task<bool> BeValidBusinessHoursAsync(TimeSpan time, CancellationToken ct)
+    private bool BeValidBusinessHours(TimeSpan time)
     {
-        var profile = await _businessProfile.GetCurrentAsync();
-        return time >= profile.WorkingHoursStart &&
-               time <= profile.WorkingHoursEnd;
+        try
+        {
+            var profile = _businessProfile.GetCurrentAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            return time >= profile.WorkingHoursStart && time <= profile.WorkingHoursEnd;
+        }
+        catch
+        {
+            return true; // If profile not available, skip validation
+        }
     }
-
     /// <summary>
     /// Checks if the given time is in the future, allowing a 5-minute buffer for immediate appointments.
     /// </summary>

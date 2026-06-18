@@ -204,42 +204,178 @@
             markWarningSeen() {
                   localStorage.setItem('biz-lang-warning', 'true');
             },
-
             showFirstTimeWarning(newLang) {
                   const isRtl = this.currentLang === 'ar';
 
                   const html = isRtl ? `
-            <div class="text-end" dir="rtl">
-                <h5 class="mb-3">⚠️ تنبيه قبل تغيير اللغة</h5>
-                <p>النصوص الحالية (اسم الموقع , القوائم مثل: الخدمات/العملاء/الحجوزات , العملة...إلخ) مُدخلة يدوياً بالعربية.</p>
-                <p>عند التبديل للإنجليزية، ستظل النصوص "<strong>بالعربية</strong>" حتى تقوم بتغييرها من:</p>
-                <p class="fw-bold text-primary mb-0">الإعدادات ← الملف الشخصي ← النصوص المخصصة</p>
+        <div class="text-end" dir="rtl" style="font-family: 'Segoe UI', 'Tahoma', sans-serif;">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="flex-shrink-0">
+                    <div style="
+                        width: 48px; 
+                        height: 48px; 
+                        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                        border-radius: 12px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+                    ">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="mb-1 fw-bold" style="color: #1f2937; font-size: 1.15rem;">تنبيه قبل تغيير اللغة</h5>
+                    <p class="mb-0 text-muted" style="font-size: 0.875rem;">يرجى قراءة المعلومات التالية بعناية</p>
+                </div>
             </div>
-        ` : `
-            <div class="text-start" dir="ltr">
-                <h5 class="mb-3">⚠️ Language Switch Notice</h5>
-                <p>Current texts (Website name, menus such as: Services/Customers/Appointments, Currency...etc.) are manually set in <strong>Arabic</strong>.</p>
-                <p>Switching to English will keep Arabic texts until you change them from:</p>
-                <p class="fw-bold text-primary mb-0">Settings → Profile → Custom Labels</p>
+            
+            <div style="
+                background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+                border: 1px solid #f59e0b;
+                border-radius: 12px;
+                padding: 1rem 1.25rem;
+                margin-bottom: 1.25rem;
+            ">
+                <p class="mb-2" style="color: #5d920ec1; line-height: 1.7;">
+                   عند تغيير لغة التطبيق، سيتم ترجمة جميع النصوص الافتراضية تلقائيًا.
+                </p>
+                <p class="mb-2" style="color: #92400e; line-height: 1.7;">
+                   أما النصوص المخصصة التي قمت بتعديلها بنفسك <span style="background: #fde68a; padding: 2px 8px; border-radius: 6px; font-weight: 500;">(اسم الموقع، عناصر القائمة، العملة...وغيرها)</span> فستظل كما أدخلتها ولن تتغير تلقائيًا مع تغيير اللغة.
+                </p>
+                <p class="mb-0" style="color: #92400e; line-height: 1.7;">
+                   إذا كنت ترغب في عرض هذه النصوص بلغة أخرى، يمكنك تعديلها من إعدادات الملف الشخصي.
+                </p>
             </div>
-        `;
+
+            <div style="
+                background: #f0f9ff;
+                border: 1px solid #0ea5e9;
+                border-radius: 12px;
+                padding: 1rem 1.25rem;
+            ">
+                <p class="mb-2 fw-semibold" style="color: #0369a1; font-size: 0.9rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" style="vertical-align: middle; margin-left: 6px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                    لتعديل النصوص، انتقل إلى:
+                </p>
+                <div class="d-flex align-items-center gap-2" style="color: #0284c7;">
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px;">الإعدادات</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px;">الملف الشخصي</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span class="badge" style="background: #bae6fd; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px; font-weight: 700;">النصوص المخصصة</span>
+                </div>
+            </div>
+        </div>
+    ` : `
+        <div class="text-start" dir="ltr" style="font-family: 'Segoe UI', 'Tahoma', sans-serif;">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="flex-shrink-0">
+                    <div style="
+                        width: 48px; 
+                        height: 48px; 
+                        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                        border-radius: 12px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+                    ">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="mb-1 fw-bold" style="color: #1f2937; font-size: 1.15rem;">Language Switch Notice</h5>
+                    <p class="mb-0 text-muted" style="font-size: 0.875rem;">Please read the following information carefully</p>
+                </div>
+            </div>
+            
+            <div style="
+                background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+                border: 1px solid #f59e0b;
+                border-radius: 12px;
+                padding: 1rem 1.25rem;
+                margin-bottom: 1.25rem;
+            ">
+                <p class="mb-2" style="color: #5d920ec1; line-height: 1.7;">
+                  When changing the application language, all default system texts will be translated automatically.
+                </p>
+                <p class="mb-2" style="color: #92400e; line-height: 1.7;">
+                  However, any custom texts that you have modified yourself <span style="background: #fde68a; padding: 2px 8px; border-radius: 6px; font-weight: 500;">(such as the website name, menu items, currency labels, ...and similar settings)</span> will remain unchanged and will continue to appear exactly as entered.
+                </p>
+                <p class="mb-0" style="color: #92400e; line-height: 1.7;">
+                  If you want these texts to appear in another language, you can update them from the Profile Settings page.
+                </p>
+            </div>
+
+            <div style="
+                background: #f0f9ff;
+                border: 1px solid #0ea5e9;
+                border-radius: 12px;
+                padding: 1rem 1.25rem;
+            ">
+                <p class="mb-2 fw-semibold" style="color: #0369a1; font-size: 0.9rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                    To edit texts, navigate to:
+                </p>
+                <div class="d-flex align-items-center gap-2" style="color: #0284c7;">
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px;">Settings</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px;">Profile</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span class="badge" style="background: #bae6fd; color: #0369a1; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px; font-weight: 700;">Custom Labels</span>
+                </div>
+            </div>
+        </div>
+    `;
 
                   Swal.fire({
                         title: '',
                         html: html,
-                        icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: isRtl ? 'تغيير اللغة فقط' : 'Switch Language Only',
                         cancelButtonText: isRtl ? 'إلغاء' : 'Cancel',
                         confirmButtonColor: '#2c6e7c',
-                        allowOutsideClick: false
+                        cancelButtonColor: '#9ca3af',
+                        allowOutsideClick: false,
+                        customClass: {
+                              popup: 'language-warning-popup',
+                              confirmButton: 'btn fw-semibold px-4 py-2',
+                              cancelButton: 'btn fw-semibold px-4 py-2'
+                        },
+                        width: '32rem',
+                        padding: '1.5rem',
+                        showCloseButton: false,
+                        backdrop: 'rgba(0, 0, 0, 0.4)',
+                        didOpen: () => {
+                              // Add subtle animation to the popup
+                              const popup = Swal.getPopup();
+                              if (popup) {
+                                    popup.style.borderRadius = '16px';
+                                    popup.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                              }
+                        }
                   }).then((result) => {
                         this.markWarningSeen();
-
                         if (result.isConfirmed) {
                               this.doSwitch(newLang);
                         }
-                        // Cancel: do nothing, stay on current page
                   });
             },
 

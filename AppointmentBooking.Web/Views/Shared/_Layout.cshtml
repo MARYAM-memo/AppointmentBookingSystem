@@ -62,9 +62,8 @@
                         <span class="biz-brand-name">@theme.BusinessName</span>
                         @if (!string.IsNullOrEmpty(theme.Tagline))
                         {
-                            <small class="biz-brand-tagline">@(theme.Tagline.Length > 50 ? theme.Tagline.Substring(0, 50) +
-                                                                                                                                                                                                                                                                                                     "..." :
-                                                                                                                                                                                                                                                                                                                                theme.Tagline)</small>
+                            <small class="biz-brand-tagline">@(theme.Tagline.Length > 50 ? theme.Tagline.Substring(0, 50)
+                                                                                            + "..." : theme.Tagline)</small>
                             }
                         </div>
                     </a>
@@ -82,25 +81,22 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Services" asp-action="Index">
-                                    <i class="bi bi-grid"></i> @(theme.CustomLabels.GetValueOrDefault("service",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"]) ==
-                                                                                                                                                                                                                                                                                                                                                                                                                                       "Services" ?
-                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"] :
-                                                                                                                                                                                                                                                                                                                                                                                                    theme.CustomLabels.GetValueOrDefault("service",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Services"]) )
+                                    <i class="bi bi-grid"></i>@theme.CustomLabels.GetLabel("service", ViewsSharedLocalizer["Layout_Nav_Services"])
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Customers" asp-action="Index">
-                                    <i class="bi bi-people"></i> @(theme.CustomLabels.GetValueOrDefault("customer",
-                                                                                                                                                                                                                                                                                                                                                                                                                                    @ViewsSharedLocalizer["Layout_Nav_Customers"]))
-                                </a>
-                            </li>
+                            @if (User.IsInRole(Constants.AdminRole))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Customers" asp-action="Index">
+                                        <i class="bi bi-people"></i>
+                                        @theme.CustomLabels.GetLabel("customer", ViewsSharedLocalizer["Layout_Nav_Customers"])
+                                    </a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Appointments" asp-action="Index">
                                     <i class="bi bi-calendar-week"></i>
-                                    @(theme.CustomLabels.GetValueOrDefault("appointment",
-                                                                                                                                                                                                                                                                                                                                                                @ViewsSharedLocalizer["Layout_Nav_Appointments"]))
+                                    @theme.CustomLabels.GetLabel("appointment", ViewsSharedLocalizer[ "Layout_Nav_Appointments"])
                                 </a>
                             </li>
                         </ul>
@@ -184,7 +180,6 @@
                 dir: '@direction',
                 isRtl: @(theme.IsRtl.ToString().ToLower()),
                 currency: '@theme.Localization.Currency',
-                timeZone: '@theme.Localization.TimeZone',
                 workingHours: {
                 start: '@theme.WorkingHoursStart.FormatTime()',
                 end: '@theme.WorkingHoursEnd.FormatTime()'

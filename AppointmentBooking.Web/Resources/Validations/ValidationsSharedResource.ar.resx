@@ -331,14 +331,6 @@
     <value>اتجاه النص يجب أن يكون 'rtl' أو 'ltr'</value>
     <comment/>
 </data>
-  <data name="Localization_TimeZone_Required" xml:space="preserve">
-    <value>المنطقة الزمنية مطلوبة</value>
-    <comment/>
-</data>
-  <data name="Localization_TimeZone_Invalid" xml:space="preserve">
-    <value>المنطقة الزمنية غير صالحة</value>
-    <comment/>
-</data>
   <data name="Localization_ConsistentLanguageAndDirection" xml:space="preserve">
     <value>اللغات العربية يجب أن تستخدم الاتجاه 'rtl'، واللغات الإنجليزية تستخدم 'ltr'</value>
     <comment/>

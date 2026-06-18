@@ -61,6 +61,12 @@ public class AppointmentService(IUnitOfWork unitOfWork, IAvailabilityService ava
 
       public async Task<Appointment> CreateAppointmentAsync(AppointmentRequestViewModel model, string? createdByUserId)
       {
+            // Validate date is not in the past
+            if (model.AppointmentDate.Date < DateTime.Today.Date)
+            {
+                  throw new DomainException(_localizationService["Appointment_Date_Past"]);
+            }
+
             // Check availability
             if (!await _availabilityService.IsSlotAvailableAsync(model.ServiceId, model.AppointmentDate, model.StartTime))
                   throw new DomainException(_localizationService["Appointment_Time_NotAvailable"]);
@@ -74,9 +80,9 @@ public class AppointmentService(IUnitOfWork unitOfWork, IAvailabilityService ava
                   AppointmentDate = model.AppointmentDate,
                   StartTime = model.StartTime,
                   Status = model.Status,
-                  TotalPrice = service.Price,
+                  TotalPrice = model.TotalPrice,
                   DiscountAmount = model.DiscountAmount,
-                  FinalPrice = CalculateFinalPrice(service.Price, model.DiscountAmount),
+                  FinalPrice = CalculateFinalPrice(model.TotalPrice ?? 0m, model.DiscountAmount),
                   Currency = (await _businessProfile.GetCurrentAsync()).Localization.Currency,
                   Notes = SanitizeNotes(model.Notes), // FIXED: XSS protection
                   CreatedAt = DateTime.UtcNow,
@@ -111,6 +117,11 @@ public class AppointmentService(IUnitOfWork unitOfWork, IAvailabilityService ava
 
       public async Task<Appointment> UpdateAppointmentAsync(int id, AppointmentRequestViewModel model)
       {
+            // Validate date is not in the past
+            if (model.AppointmentDate.Date < DateTime.Today.Date)
+            {
+                  throw new DomainException(_localizationService["Appointment_Date_Past"]);
+            }
             var appointment = await _unitOfWork.Appointments.FindFirstOrDefaultAsync(predicate: b => b.Id == id && !b.IsDeleted, orderBy: x => x.Id);
             if (appointment == null || appointment.IsDeleted)
                   throw new DomainException(_localizationService["Appointment_NotFound"]);
@@ -131,9 +142,9 @@ public class AppointmentService(IUnitOfWork unitOfWork, IAvailabilityService ava
             appointment.AppointmentDate = model.AppointmentDate;
             appointment.StartTime = model.StartTime;
             appointment.Status = model.Status;
-            appointment.TotalPrice = service.Price;
+            appointment.TotalPrice = model.TotalPrice;
             appointment.DiscountAmount = model.DiscountAmount;
-            appointment.FinalPrice = CalculateFinalPrice(service.Price, model.DiscountAmount);
+            appointment.FinalPrice = CalculateFinalPrice(model.TotalPrice??0m, model.DiscountAmount);
             appointment.Notes = SanitizeNotes(model.Notes);
             appointment.UpdatedAt = DateTime.UtcNow;
 

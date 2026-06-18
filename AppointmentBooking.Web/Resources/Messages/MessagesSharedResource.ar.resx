@@ -229,6 +229,9 @@
     <value>تم حذف العميل بنجاح</value>
     <comment/>
 </data>
+<data name="ValidationError" xml:space="preserve">
+    <value>حدث خطأ في التحقق من البيانات</value>
+</data>
   <data name="Error_UnknownPath" xml:space="preserve">
     <value>غير معروف</value>
     <comment/>
@@ -476,6 +479,9 @@
   <data name="Service_IdMismatch" xml:space="preserve">
     <value>المعرف غير موجود</value>
     <comment/>
+</data>
+<data name="Warning_CurrencyNotSupported" xml:space="preserve">
+    <value>العملة {0} غير مدعومة. سيتم استخدام {1}.</value>
 </data>
 
 </root>

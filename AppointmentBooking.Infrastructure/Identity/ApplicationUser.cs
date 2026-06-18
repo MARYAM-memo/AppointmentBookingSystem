@@ -1,3 +1,4 @@
+using AppointmentBooking.Application.Shared;
 using AppointmentBooking.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -23,7 +24,7 @@ public class ApplicationUser : IdentityUser
   public DateTime? LastLoginAt { get; set; }
 
   //Computed
-  public string DisplayName => !string.IsNullOrEmpty(FullName) ? FullName : UserName ?? Email ?? "User";
+  public string DisplayName => !string.IsNullOrEmpty(FullName) ? FullName : UserName ?? Email ?? Constants.UserRole;
   public int? Age => DateOfBirth.HasValue
     ? DateTime.UtcNow.Year - DateOfBirth.Value.Year
     : null;

@@ -167,8 +167,7 @@
                             <thead>
                                 <tr>
                                     <th>@Localizer["TableHeader_ID"]</th>
-                                    <th>@labels.GetValueOrDefault("serviceItem",
-                                                                                                                                                                                                                                                                                                                            ViewsSharedLocalizer["TableHeader_Service"].Value)
+                                    <th>@labels.GetLabel("serviceItem", ViewsSharedLocalizer["TableHeader_Service"])
                                     </th>
                                     <th>@ViewsSharedLocalizer["TableHeader_Date"]</th>
                                     <th>@ViewsSharedLocalizer["TableHeader_Time"]</th>
@@ -231,7 +230,8 @@
             <div class="row g-3 mt-2">
                 @{
                     var completed = Model.Appointments.Count(a => a.Status == BookingStatus.Completed);
-                    var cancelled = Model.Appointments.Count(a => a.Status == BookingStatus.Cancelled);
+                    var cancelled = Model.Appointments.Count(a => a.Status == BookingStatus.Cancelled || a.Status ==
+            BookingStatus.NoShow);
                     var pending = Model.Appointments.Count(a => a.Status == BookingStatus.Pending || a.Status ==
             BookingStatus.Confirmed);
                 }

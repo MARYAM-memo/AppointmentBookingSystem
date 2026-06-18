@@ -49,7 +49,7 @@ public class DashboardRepository(DatabaseContext context) : IDashboardRepository
                           NewCustomersThisMonth = _context.Customers.Count(c => c.CreatedAt >= monthStart && !c.IsDeleted),
 
                           // Booking counts
-                          CancelledAppointments = _context.Appointments.Count(b => b.Status == BookingStatus.Cancelled && !b.IsDeleted),
+                          CancelledAppointments = _context.Appointments.Count(b => (b.Status == BookingStatus.Cancelled || b.Status == BookingStatus.NoShow )&& !b.IsDeleted),
                           TotalAppointmentsAllTime = _context.Appointments.Count(b => !b.IsDeleted),
                           TotalCompletedAppointments = _context.Appointments.Count(b => b.Status == BookingStatus.Completed && !b.IsDeleted),
 

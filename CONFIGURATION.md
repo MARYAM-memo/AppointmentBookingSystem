@@ -37,6 +37,7 @@ Comprehensive guide for configuring the Appointment Booking System for your envi
     "Password": {
       "RequireDigit": true,
       "RequiredLength": 6,
+      "RequiredMaxLength": 50,
       "RequireNonAlphanumeric": true,
       "RequireUppercase": true,
       "RequireLowercase": true
@@ -49,7 +50,6 @@ Comprehensive guide for configuring the Appointment Booking System for your envi
       "Currency": "ج.م",
       "Language": "ar",
       "Direction": "rtl",
-      "TimeZone": "UTC",
       "WorkingHoursStart": "09:00:00",
       "WorkingHoursEnd": "22:00:00",
       "SlotDurationMinutes": 30,
@@ -100,7 +100,16 @@ Comprehensive guide for configuring the Appointment Booking System for your envi
     "AvailableLanguages": [
       "ar",
       "en"
-    ]
+    ],
+    "SupportedCurrencies": [
+      "ج.م",
+      "EGP",
+      "USD",
+      "SAR",
+      "AED",
+      "EUR"
+    ],
+    "DefaultCurrency": "ج.م"
   },
   "Serilog": {
     "MinimumLevel": {
@@ -197,19 +206,21 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 ### 2. Identity Password Policy
 
 ```json
-"Identity": {
-  "Password": {
-    "RequireDigit": true,
-    "RequiredLength": 6,
-    "RequireNonAlphanumeric": true,
-    "RequireUppercase": true,
-    "RequireLowercase": true
-  }
-}
+  "Identity": {
+    "Password": {
+      "RequireDigit": true,
+      "RequiredLength": 6,
+      "RequiredMaxLength": 50,
+      "RequireNonAlphanumeric": true,
+      "RequireUppercase": true,
+      "RequireLowercase": true
+    }
+  },
 ```
 
 **Configuration Options:**
 - `RequiredLength` - Minimum password length
+- `RequiredMaxLength` - Maximum password length
 - `RequireNonAlphanumeric` - Require special characters (!@#$%^&*)
 - `RequireUppercase` - Require uppercase letters (A-Z)
 - `RequireLowercase` - Require lowercase letters (a-z)
@@ -219,12 +230,14 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 
 **Current Settings (Medium Security):**
 - Minimum length: *6* characters
+- Maximum length: *50* characters
 - Requires: *uppercase*, *lowercase*, *digit*, *special character*
 
 **High Security (Recommended for Production):**
 ```json
 {
   "RequiredLength": 12,
+  "RequiredMaxLength": 50,
   "RequireNonAlphanumeric": true,
   "RequireUppercase": true,
   "RequireLowercase": true,
@@ -236,6 +249,7 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 ```json
 {
   "RequiredLength": 6,
+  "RequiredMaxLength": 50,
   "RequireNonAlphanumeric": false,
   "RequireUppercase": false,
   "RequireLowercase": false,
@@ -255,7 +269,6 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
     "Currency": "ج.م",
     "Language": "ar",
     "Direction": "rtl",
-    "TimeZone": "UTC",
     "WorkingHoursStart": "09:00:00",
     "WorkingHoursEnd": "22:00:00",
     "SlotDurationMinutes": 30,
@@ -282,7 +295,6 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 - `Currency` - Currency symbol for prices (e.g., "ج.م", "$", "€")
 - `Language` - Default UI language code (e.g., "ar", "en")
 - `Direction` - Text direction (rtl for Arabic, ltr for English)
-- `TimeZone` - Server timezone (IANA format, e.g., "UTC", "Africa/Cairo")
 
 *Working Hours*
 - `WorkingHoursStart` - Business hours start in 24-hour format (HH:mm:ss)
@@ -383,16 +395,25 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 
 ```json
 "LocalizationSettings": {
-  "SupportedCultures": {
-    "ar": "ar-EG",
-    "en": "en-US"
-  },
-  "DefaultCulture": "ar-EG",
-  "DefaultLanguage": "ar",
-  "AvailableLanguages": [
-    "ar",
-    "en"
-  ]
+    "SupportedCultures": {
+      "ar": "ar-EG",
+      "en": "en-US"
+    },
+    "DefaultCulture": "ar-EG",
+    "DefaultLanguage": "ar",
+    "AvailableLanguages": [
+      "ar",
+      "en"
+    ],
+    "SupportedCurrencies": [
+      "ج.م",
+      "EGP",
+      "USD",
+      "SAR",
+      "AED",
+      "EUR"
+    ],
+    "DefaultCurrency": "ج.م"
 }
 ```
 
@@ -403,12 +424,33 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
 - `DefaultCulture` - Default culture for new users (ar-EG)
 - `DefaultLanguage` - Default language code (ar)
 - `AvailableLanguages` - List of enabled languages for language switcher
+- `SupportedCurrencies` - List of available currencies
+- `DefaultCurrency` - Default currency for the application
 
 **Supported Culture Codes:**
 - `ar-EG` - Arabic (Egypt) - RTL
 - `en-US` - English (United States) - RTL
 - `ar-SA` - Arabic (Saudi Arabia) - LTR
 - `en-GB` - English (United Kingdom) - LTR
+
+**How Currency Works:**
+- Currency is set at *application level* (not per business)
+- All prices use the same currency throughout the app
+- Users can change currency from settings
+- Custom labels for services/customers remain in Arabic by default
+
+**Adding a New Currency:**
+```json
+"SupportedCurrencies": [
+  "ج.م",
+  "EGP", 
+  "USD",
+  "SAR",
+  "AED",
+  "EUR",
+  "GBP"  // Add British Pound
+]
+```
 
 **Adding a New Language:**
 ```json
@@ -426,6 +468,22 @@ Host=myserver.postgres.database.azure.com;Port=5432;Database=appointment_booking
     "fr"
   ]
 }
+```
+
+**Custom Labels & Localization:**
+- Default labels are translated (AR/EN)
+- If user customizes labels (e.g., changes "الخدمات" to "المنتجات"):
+  - Custom labels *do NOT* auto-translate when switching languages
+  - User must manually update custom labels in Settings → Profile
+- This preserves business-specific terminology
+
+**Example:**
+```
+Default Labels:
+  AR: "الخدمات" → EN: "Services"
+  
+Customized Labels (User changes):
+  AR: "المنتجات" → EN: "Products" (must be set manually in settings)
 ```
 ---
 
@@ -847,7 +905,6 @@ Before deploying:
 - [ ] Password policy appropriate for environment
 - [ ] Rate limits calibrated for expected traffic
 - [ ] Serilog path writable and disk space sufficient
-- [ ] Timezone configured correctly for your region
 - [ ] Business settings (name, currency, hours) customized
 - [ ] Localization settings match target audience
 - [ ] Email service configured (if using notifications)

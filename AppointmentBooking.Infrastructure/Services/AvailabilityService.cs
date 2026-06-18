@@ -26,7 +26,7 @@ public class AvailabilityService(IUnitOfWork unitOfWork, IBusinessProfileService
                 b => b.AppointmentDate.Date == date.Date &&
                 b.ServiceId == serviceId &&
                 !b.IsDeleted &&
-                b.Status != BookingStatus.Cancelled,
+                b.Status != BookingStatus.Cancelled&& b.Status != BookingStatus.NoShow,
                 asNoTracking: true
             );
 
@@ -101,7 +101,7 @@ public class AvailabilityService(IUnitOfWork unitOfWork, IBusinessProfileService
                 b => b.AppointmentDate.Date == date.Date &&
                      b.ServiceId == serviceId &&
                      !b.IsDeleted &&
-                     b.Status != BookingStatus.Cancelled,
+                     b.Status != BookingStatus.Cancelled&& b.Status != BookingStatus.NoShow,
                 asNoTracking: true
             );
 
